@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Products>
+	<CPUFamily id="0x69056820" mask="0xfffffff0" name="PXA32x Processor" details="pxa3xx.xml">
+		<!-- Refer PXA3xx Developer Manual (MV-S301374-01 Rev.C) Chapter 2.16.6.1 -->
+		<CPU id="0x69056825" name="PXA32x Processor B1" details="pxa3xx.xml"/>
+		<CPU id="0x69056826" name="PXA32x Processor B2" details="pxa3xx.xml"/>
+	</CPUFamily>
+	<CPUFamily id="0x69056890" mask="0xfffffff0" name="PXA31x Processor" details="pxa3xx.xml">
+		<!-- Refer PXA3xx Developer Manual (MV-S301374-01 Rev.C) Chapter 2.16.6.1 -->
+		<CPU id="0x69056890" name="PXA31x Processor A0" details="pxa3xx.xml"/>
+		<CPU id="0x69056891" name="PXA31x Processor A1" details="pxa3xx.xml"/>
+		<CPU id="0x69056892" name="PXA31x Processor A2" details="pxa3xx.xml"/>
+	</CPUFamily>
+	<CPUFamily id="0x69056880" mask="0xfffffff0" name="PXA30x Processor" details="pxa3xx.xml">
+		<!-- Refer PXA3xx Developer Manual (MV-S301374-01 Rev.C) Chapter 2.16.6.1 -->
+		<CPU id="0x69056880" name="PXA30x Processor A0" details="pxa3xx.xml"/>
+		<CPU id="0x69056881" name="PXA30x Processor A1" details="pxa3xx.xml"/>
+	</CPUFamily>
+	<CPUFamily id="0x69056830" mask="0xfffffff0" name="PXA93x Processor" details="pxa93x.xml">
+		<!-- Refer PXA930 Developer Manual (MV-S104308-01 Rev.B) Chapter 4.3.2 -->
+		<CPU id="0x69056835" name="PXA93x Processor B0" details="pxa93x.xml"/>
+		<CPU id="0x69056837" name="PXA93x Processor B1" details="pxa93x.xml"/>
+		<CPU id="0x69056838" name="PXA93x Processor B2" details="pxa93x.xml"/>
+	</CPUFamily>
+	<CPUFamily id="0x56056930" mask="0xfffffff0" name="PXA940 Processor" details="pxa940.xml">
+		<!-- Refer PXA940 Developer Manual (MV-S104848-01 Rev.A) Chapter 4.3.2 -->
+		<CPU id="0x56056931" name="PXA940 Processor A0" details="pxa940.xml"/>
+		<CPU id="0x56056936" name="PXA940 Processor B0" details="pxa940.xml"/>
+	</CPUFamily>
+	<CPUFamily id="0x56056970" mask="0xfffffff0" name="PXA950 Processor" details="pxa940.xml">
+	</CPUFamily>
+	<CPUFamily id="0x56158000" mask="0xffffff00" name="PXA91x/PXA92x Processor" details="mohawk.xml">
+		<!-- Refer 88SV331x-v5 PJ1 Datasheet (MV-S105191-00 Rev.2.0) Chapter 4.3.1 -->
+	</CPUFamily>
+	<CPUFamily id="0x560f5811" mask="0xffffffff" name="ARMADA 610 Processor" details="pxa610.xml">
+		<!-- Refer PXA688 Registers (MV-S105844-00) Chapter 3.1.2.3 -->
+	</CPUFamily>
+	<CPUFamily id="0x560f5815" mask="0xffffffff" name="ARMADA 610 Processor" details="pxa610.xml">
+		<!-- Refer PXA688 Registers (MV-S105844-00) Chapter 3.1.2.3 -->
+	</CPUFamily>
+	<CPUFamily id="0x560f5814" mask="0xffffffff" name="PXA955 Processor" details="pxa955.xml">
+	</CPUFamily>
+	<CPUFamily id="0x56158400" mask="0xffffff00" name="ARMADA 168 Processor" details="pxa168.xml">
+	</CPUFamily>
+	<CPUFamily id="0x560f5812" mask="0xffffffff" name="ARMADA 510 Processor" details="pxa510.xml">
+	    <!-- Refer PXA410 Registers Chapter 3.1.2.61 -->
+	</CPUFamily>
+</Products>

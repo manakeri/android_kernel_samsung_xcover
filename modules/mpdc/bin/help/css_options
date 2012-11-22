@@ -1,0 +1,21 @@
+ Option                         Comment
+[1m-bs[0m, [1m-buf-size[0m <size>           size of the buffer used by profiler, in KB.
+[1m-d[0m, [1m-duration[0m <duration>        duration of the profiling period, in second
+[1m-pri[0m, [1m-prevent-idle[0m <y|n>       prevent cpu to idle mode.
+[1m-soe[0m, [1m-stop-on-exit[0m <y|n>       stop sampling when launched application exits.
+[1m-ca[0m, [1m-calibration[0m <y|n>         enable/disable calibration for EBS.
+[1m-sm[0m, [1m-sampling-mechanism[0m <tbs|ebs|both>
+                                specify the sampling mode.
+[1m-app[0m, [1m-application[0m <app full path with params>
+                                launch this application when sampling started.
+[1m-wd[0m, [1m-workdir[0m <full path of working dir>
+                                set the working directory for the launched application.
+[1m-wi[0m, [1m-wait-image[0m <full path of the image>
+                                delay the sampling until the image loaded into memory.
+[1m-si[0m, [1m-sampling-interval[0m <interval>
+                                sample interval time for TBS, in microseconds.
+[1m-e[0m, [1m-event[0m <event string>	
+    event to be sampled. use "[1mhelp event[0m" to view all supported events.
+    [1mevent string[0m    <event id>:<counter name>[:<events per sample>|<samples per second>]
+    [1mexample[0m:
+        [1m-e[0m "0x7:PMN0:5000"

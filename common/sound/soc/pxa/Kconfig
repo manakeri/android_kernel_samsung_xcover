@@ -1,0 +1,275 @@
+config SND_PXA2XX_SOC
+	tristate "SoC Audio for the Intel PXA2xx chip"
+	depends on ARCH_PXA
+	select SND_PXA2XX_LIB
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the PXA2xx AC97, I2S or SSP interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_PXA2XX_AC97
+	tristate
+	select SND_AC97_CODEC
+
+config SND_PXA2XX_SOC_AC97
+	tristate
+	select AC97_BUS
+	select SND_ARM
+	select SND_PXA2XX_LIB_AC97
+	select SND_SOC_AC97_BUS
+
+config SND_PXA2XX_SOC_I2S
+	tristate
+
+config SND_PXA_SOC_SSP
+	tristate
+	select PXA_SSP
+
+config SND_PXA2XX_SOC_CORGI
+	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
+	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8731
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-C7x0 models (Corgi, Shepherd, Husky).
+
+config SND_PXA2XX_SOC_SPITZ
+	tristate "SoC Audio support for Sharp Zaurus SL-Cxx00"
+	depends on SND_PXA2XX_SOC && PXA_SHARP_Cxx00
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8750
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-Cxx00 models (Spitz, Borzoi and Akita).
+
+config SND_PXA2XX_SOC_Z2
+	tristate "SoC Audio support for Zipit Z2"
+	depends on SND_PXA2XX_SOC && MACH_ZIPIT2
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8750
+	help
+	  Say Y if you want to add support for SoC audio on Zipit Z2.
+
+config SND_PXA2XX_SOC_POODLE
+	tristate "SoC Audio support for Poodle"
+	depends on SND_PXA2XX_SOC && MACH_POODLE
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8731
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-5600 model (Poodle).
+
+config SND_PXA2XX_SOC_TOSA
+	tristate "SoC AC97 Audio support for Tosa"
+	depends on SND_PXA2XX_SOC && MACH_TOSA
+	depends on MFD_TC6393XB
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-C6000x models (Tosa).
+
+config SND_PXA2XX_SOC_E740
+	tristate "SoC AC97 Audio support for e740"
+	depends on SND_PXA2XX_SOC && MACH_E740
+	select SND_SOC_WM9705
+	select SND_PXA2XX_SOC_AC97
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  toshiba e740 PDA
+
+config SND_PXA2XX_SOC_E750
+	tristate "SoC AC97 Audio support for e750"
+	depends on SND_PXA2XX_SOC && MACH_E750
+	select SND_SOC_WM9705
+	select SND_PXA2XX_SOC_AC97
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  toshiba e750 PDA
+
+config SND_PXA2XX_SOC_E800
+	tristate "SoC AC97 Audio support for e800"
+	depends on SND_PXA2XX_SOC && MACH_E800
+	select SND_SOC_WM9712
+	select SND_PXA2XX_SOC_AC97
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Toshiba e800 PDA
+
+config SND_PXA2XX_SOC_EM_X270
+	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
+	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
+			MACH_CM_X300)
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on
+	  CompuLab EM-x270, eXeda and CM-X300 machines.
+
+config SND_PXA2XX_SOC_PALM27X
+	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
+	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
+			MACH_PALMT5 || MACH_PALMTE2)
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on
+	  Palm T|X, T5, E2 or LifeDrive handheld computer.
+
+config SND_SOC_ZYLONITE
+	tristate "SoC Audio support for Marvell Zylonite"
+	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+	select SND_PXA2XX_SOC_AC97
+	select SND_PXA_SOC_SSP
+	select SND_SOC_WM9713
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Marvell Zylonite reference platform.
+
+config SND_SOC_RAUMFELD
+	tristate "SoC Audio support Raumfeld audio adapter"
+	depends on SND_PXA2XX_SOC && (MACH_RAUMFELD_SPEAKER || MACH_RAUMFELD_CONNECTOR)
+	select SND_PXA_SOC_SSP
+	select SND_SOC_CS4270
+	select SND_SOC_AK4104
+	help
+	  Say Y if you want to add support for SoC audio on Raumfeld devices
+
+config SND_PXA2XX_SOC_MAGICIAN
+	tristate "SoC Audio support for HTC Magician"
+	depends on SND_PXA2XX_SOC && MACH_MAGICIAN
+	select SND_PXA2XX_SOC_I2S
+	select SND_PXA_SOC_SSP
+	select SND_SOC_UDA1380
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  HTC Magician.
+
+config SND_PXA2XX_SOC_MIOA701
+        tristate "SoC Audio support for MIO A701"
+        depends on SND_PXA2XX_SOC && MACH_MIOA701
+        select SND_PXA2XX_SOC_AC97
+        select SND_SOC_WM9713
+        help
+          Say Y if you want to add support for SoC audio on the
+          MIO A701.
+
+config SND_PXA2XX_SOC_IMOTE2
+       tristate "SoC Audio support for IMote 2"
+       depends on SND_PXA2XX_SOC && MACH_INTELMOTE2 && I2C
+       select SND_PXA2XX_SOC_I2S
+       select SND_SOC_WM8940
+       help
+         Say Y if you want to add support for SoC audio on the
+	 IMote 2.
+
+config SND_PXA3XX_SOC_SSP
+	bool "Soc Audio for the Intel PXA3xx SSP interface"
+	depends on ARCH_MMP && SND
+        help
+	  Say Y or M if you want to add support for PXA3xx ssp interface.
+
+menu "SoC Audio for the Marvell PXA910"
+config SND_PXA910_SOC
+	tristate "SoC Audio for the Marvell PXA910 chip"
+	depends on ARCH_MMP && SND
+	select SND_PCM
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the PXA3xx AC97, I2S or SSP interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_PXA910_SOC_TTC_DKB
+        bool "SoC Audio support for TTC DKB"
+	depends on SND_PXA910_SOC && MACH_TTC_DKB
+	select PXA_SSP
+	select SND_PXA3XX_SOC_SSP
+	select SND_SOC_88PM860X_AUDIO
+	help
+	  Say Y if you want to add support for SoC audio on TTC DKB
+
+endmenu
+
+menu "SoC Audio for the Marvell PXA95x"
+config SND_PXA95X_SOC
+	tristate "SoC Audio for the Marvell PXA95x chip"
+	depends on PXA95x && SND
+	select SND_PCM
+	select SND_PXA3XX_SOC_SSP
+	select SND_PXA95X_SOC_ABU
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the PXA3xx AC97, I2S or SSP interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_PXA95X_SOC_SAARB_MG1
+        bool "SoC Audio support for SAARB"
+	depends on SND_PXA95X_SOC && (MACH_TAVOREVB3_MG1||MACH_SAARB_MG1||MACH_NEVOEVB3||MACH_GFORCE||MACH_ALKON)
+	select SND_SOC_88PM860X_AUDIO
+	select SND_SOC_HDMI_AUDIO
+	help
+	  Say Y if you want to add support for SoC audio on TavorEVB3 MG1 or SaarB_MG1
+
+config SND_PXA95X_SOC_SAARC_MG2
+	bool "SoC Audio support for SAARC"
+	depends on SND_PXA95X_SOC && MACH_SAARC_MG2
+	select SND_SOC_88PM860X_AUDIO
+	select SND_SOC_HDMI_AUDIO
+	help
+	  Say Y if you want to add support for SoC audio on SaarC MG2
+
+config SND_PXA95X_SOC_SAARB_D1981_MG1
+        bool "SoC Audio support for SAARB"
+	depends on SND_PXA95X_SOC && (MACH_TAVOREVB3_MG1||MACH_SAARB_MG1||MACH_NEVOEVB3||MACH_GFORCE||MACH_JETTA)
+	select SND_SOC_D1981
+	select SND_SOC_HDMI_AUDIO
+	help
+	  Say Y if you want to add support for SoC audio on TavorEVB3 MG1 or SaarB_MG1
+
+config SND_PXA95X_SOC_SAARC_D1981_MG2
+	bool "SoC Audio support for SAARC"
+	depends on SND_PXA95X_SOC && MACH_SAARC_MG2
+	select SND_SOC_D1981
+	select SND_SOC_HDMI_AUDIO
+	help
+	  Say Y if you want to add support for SoC audio on SaarC MG2
+
+config SND_PXA95X_SOC_ABU
+	bool
+
+endmenu
+
+menu "SoC Audio for the Marvell MMPx"
+config SND_MMP3_SOC
+	tristate "SoC Audio for the Marvell MMPx chip"
+	depends on ARCH_MMP && SND
+	select SND_PCM
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the MMP3 AC97, I2S, SSP or SSPA interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_MMP3_SOC_ABILENE
+        bool "SoC Audio support for MMP3 ABILENE"
+	depends on SND_MMP3_SOC && MACH_ABILENE
+	select SND_SOC_WM8994
+	help
+	  Say Y if you want to add support for SoC audio on TTC DKB
+
+config SND_WM8994_MASTER_MODE
+        bool "Audio wm8994 master mode"
+	depends on SND_MMP3_SOC_ABILENE
+	select SND_SOC_WM8994
+	help
+	  Say Y if you want to add support for SoC audio master mode on MMP2
+
+config SND_WM8994_SLAVE_MODE
+        bool "Audio wm8994 slave mode"
+	depends on SND_MMP3_SOC_ABILENE
+	select SND_SOC_WM8994
+	help
+	  Say Y if you want to add support for SoC audio slave mode on MMP2
+
+endmenu
+

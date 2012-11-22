@@ -1,0 +1,272 @@
+#!/bin/sh
+
+#  (C) Copyright 2007 Marvell International Ltd.
+#             All Rights Reserved
+#  This software file (the "File") is distributed by Marvell International Ltd. 
+#  under the terms of the GNU General Public License Version 2, June 1991 (the "License"). 
+#  You may use, redistribute and/or modify this File in accordance with the terms and 
+#  conditions of the License, a copy of which is available along with the File in the 
+#  license.txt file or by writing to the Free Software Foundation, Inc., 59 Temple Place, 
+#  Suite 330, Boston, MA 02111-1307 or on the worldwide web at http://www.gnu.org/licenses/gpl.txt.
+#  THE FILE IS DISTRIBUTED AS-IS, WITHOUT WARRANTY OF ANY KIND, AND THE IMPLIED WARRANTIES 
+#  OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.  
+#  The License provides additional details about this warranty disclaimer.
+
+CROSS_COMPILE_DEF=/usr/local/arm-linux/bin/arm-linux-
+PXALINUX_DEF=/usr/local/src/preview-kit/linux
+
+SCRIPT=$0
+
+repeat_or_exit()
+{
+  EXIT_CODE=$1
+  echo ""
+  echo -n "Quit or Retry building the driver? [q/R] "
+  read QUIT
+  if [ "${QUIT}x" = "qx" -o "${QUIT}x" = "Qx" ] ; then
+    echo ""
+    exit ${EXIT_CODE}
+  else
+    exec ${SCRIPT}
+  fi
+  echo ""
+}
+
+select_pxa91x_timer()
+{
+  DEFAULT_PJ1_TIMER_GROUP=1
+  DEFAULT_PJ1_TIMER_NO=2
+
+  echo "Select which the timer group will be used in the driver"
+ 
+  echo "1) Application Subsystem Timers 1"
+  echo "2) Application Subsystem Timers 2"
+
+  echo -n "Select the corresponding number [$DEFAULT_PJ1_TIMER_GROUP]: "
+  read pj1_timer_group
+
+  if [ -z $pj1_timer_group ]; then
+        pj1_timer_group=${DEFAULT_PJ1_TIMER_GROUP}
+  fi
+
+  if [ $pj1_timer_group -ne 1 -a $pj1_timer_group -ne 2 ]; then
+  	echo "Invalid number input!"
+	repeat_or_exit -5
+  fi
+
+  EXTRA_FLAG="$EXTRA_FLAG PJ1_TIMER_GROUP=$pj1_timer_group"
+
+  echo "Select the timer # in Application Subsystem Timers $pj1_timer_group which will be used in the driver"
+  
+  echo "0) Timer #0"
+  echo "1) Timer #1"
+  echo "2) Timer #2"
+ 
+  echo -n "Select the corresponding number [$DEFAULT_PJ1_TIMER_NO]: "
+  read pj1_timer_no
+
+  if [ -z $pj1_timer_no ]; then
+        pj1_timer_no=${DEFAULT_PJ1_TIMER_NO}
+  fi
+
+  if [ $pj1_timer_no -ne 0 -a $pj1_timer_no -ne 1 -a $pj1_timer_no -ne 2 ]; then
+  	echo "Invalid number input!"
+	repeat_or_exit -5
+  fi
+
+  EXTRA_FLAG="$EXTRA_FLAG PJ1_TIMER_NO=$pj1_timer_no"
+}
+
+select_pxa168_timer()
+{
+  pj1_timer_group=1
+  EXTRA_FLAG="$EXTRA_FLAG PJ1_TIMER_GROUP=$pj1_timer_group"
+
+  echo "Select the timer # which will be used in the driver"
+  
+  echo "0) Timer #0"
+  echo "1) Timer #1"
+  echo "2) Timer #2"
+ 
+  DEFAULT_PJ1_TIMER_NO=2
+
+  echo -n "Select the corresponding number [$DEFAULT_PJ1_TIMER_NO]: "
+  read pj1_timer_no
+
+  if [ -z $pj1_timer_no ]; then
+        pj1_timer_no=${DEFAULT_PJ1_TIMER_NO}
+  fi
+
+  if [ $pj1_timer_no -ne 0 -a $pj1_timer_no -ne 1 -a $pj1_timer_no -ne 2 ]; then
+  	echo "Invalid number input!"
+	repeat_or_exit -5
+  fi
+
+  EXTRA_FLAG="$EXTRA_FLAG PJ1_TIMER_NO=$pj1_timer_no"
+}
+
+select_pxa610_timer()
+{
+  pj4_timer_group=1
+  EXTRA_FLAG="$EXTRA_FLAG PJ4_TIMER_GROUP=$pj4_timer_group"
+
+  echo "Select the timer # which will be used in the driver"
+  
+  echo "0) Timer #0"
+  echo "1) Timer #1"
+  echo "2) Timer #2"
+ 
+  DEFAULT_PJ4_TIMER_NO=2
+
+  echo -n "Select the corresponding number [$DEFAULT_PJ4_TIMER_NO]: "
+  read pj4_timer_no
+
+  if [ -z $pj4_timer_no ]; then
+        pj4_timer_no=${DEFAULT_PJ4_TIMER_NO}
+  fi
+
+  if [ $pj4_timer_no -ne 0 -a $pj4_timer_no -ne 1 -a $pj4_timer_no -ne 2 ]; then
+  	echo "Invalid number input!"
+	repeat_or_exit -5
+  fi
+
+  EXTRA_FLAG="$EXTRA_FLAG PJ4_TIMER_NO=$pj4_timer_no"
+}
+
+#select_dove_timer()
+#{
+#
+#}
+
+select_cpu_type()
+{
+  # prompt for silicon type
+  echo "Which CPU type will the driver be built for?"
+  index=0
+  for CPU_TYPE in "PXA3xx/PXA93x/PXA94x/PXA950" "PXA91x" "ARMADA 168" "ARMADA 610" "ARMADA 510" "PXA955"; do
+  	echo "(${index})" ${CPU_TYPE}
+  	index=`expr $index + 1`
+  done
+  
+  DEFAULT_CPU_INDEX=0
+  echo -n "Select the corresponding number for the CPU type [${DEFAULT_CPU_INDEX}]: "
+ 
+  
+  read cpu_index
+  if [ -z $cpu_index ]; then
+  	cpu_index=${DEFAULT_CPU_INDEX}
+  fi
+  
+  if [ $cpu_index = 0 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PXA2"
+  elif [ $cpu_index = 1 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PJ1 SOC_TYPE=PXA91x"
+  	select_pxa91x_timer
+  elif [ $cpu_index = 2 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PJ1 SOC_TYPE=PXA168"
+  	select_pxa168_timer
+  elif [ $cpu_index = 3 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PJ4 SOC_TYPE=PXA688"
+  	select_pxa610_timer
+  elif [ $cpu_index = 4 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PJ4 SOC_TYPE=PXA510"
+#  	select_dove_timer
+  elif [ $cpu_index = 5 ]; then
+  	EXTRA_FLAG="$EXTRA_FLAG CPU_TYPE=PJ4 SOC_TYPE=PXA968"
+  else
+  	echo "Invalid number input for the CPU type!"
+  	repeat_or_exit -5
+  fi
+}
+
+# describe default option
+
+echo ""
+echo "Options in brackets \"[ ... ]\" indicate default values"
+echo "that will be used when only the ENTER key is pressed."
+echo ""
+
+# prompt for kernel source directory
+
+echo -n "Kernel source directory: [ ${PXALINUX_DEF} ] "
+read PXALINUX
+if [ -z "${PXALINUX}" ] ; then
+  PXALINUX=${PXALINUX_DEF}
+fi
+
+export PXALINUX
+
+# check avaiability of kernel sources
+version_header=$PXALINUX/include/linux/version.h
+if [ ! -f $version_header ] ; then
+  echo "Invalid kernel source directory or the directory has not been built for the linux image!" 
+  repeat_or_exit -5
+fi
+  
+# check kernel version
+KERNELVER_STRING=`awk '/UTS_RELEASE/{print $3}' $version_header`
+case $KERNELVER_STRING in
+    *) MAKEFILE_SUFFIX="2.6";;
+esac
+
+# Prompt for tool chain prefix for 2.6 kernel
+echo -n "Please specify the toolchain to use: [$CROSS_COMPILE_DEF]"
+read CROSS_COMPILE
+echo ""
+if [ -z ${CROSS_COMPILE} ]; then
+	CROSS_COMPILE=$CROSS_COMPILE_DEF
+fi
+ 
+CROSS_TOOL_PATH=`type -p ${CROSS_COMPILE}gcc`
+if [ -z "${CROSS_TOOL_PATH}" ]; then
+	echo "Can't find the toolchain!"
+  	repeat_or_exit -5
+fi
+
+export CROSS_COMPILE
+
+# prompt for make command
+MAKE_DEF=make
+echo -n "Make command to use: [ ${MAKE_DEF} ] "
+read MAKE
+if [ -z "${MAKE}" ] ; then
+	MAKE=${MAKE_DEF}
+fi
+
+MAKE_PATH=`type -p $MAKE`
+if [ -z "${MAKE_PATH}" ] ; then
+	echo "Invalid Make command!"
+	repeat_or_exit -5
+fi
+
+echo ""
+
+select_cpu_type
+
+${MAKE} -C HSProfiler clean all ${EXTRA_FLAG}
+ERR=$?
+if [ ${ERR} -ne 0 ] ; then
+	repeat_or_exit -4
+fi
+cp HSProfiler/*.ko .
+
+${MAKE} -C CSSProfiler clean all ${EXTRA_FLAG}
+ERR=$?
+if [ ${ERR} -ne 0 ] ; then
+	repeat_or_exit -4
+fi
+cp CSSProfiler/*.ko .
+
+${MAKE} -C CMProfiler clean all ${EXTRA_FLAG}
+ERR=$?
+if [ ${ERR} -ne 0 ] ; then
+	repeat_or_exit -4
+fi
+cp CMProfiler/*.ko .
+
+# all done
+echo ""
+echo "Marvell Performance Data Collector driver has been built successfully."
+echo ""
+
+exit 0

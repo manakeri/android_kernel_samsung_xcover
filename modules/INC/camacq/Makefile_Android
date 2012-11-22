@@ -1,0 +1,20 @@
+#
+# Makefile for camacq kernel module
+#
+
+obj-m := camacq.o
+camacq-objs := camacq_core.o camacq_api.o camacq_ext.o
+
+.EXPORT_ALL_VARIABLES:
+KDIR := ../../../../kernel/kernel
+PWD  := $(shell pwd)
+MAKE := make
+
+.PHONY: all clean
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules 
+
+clean:
+	rm -rf *.o *.ko *.mod.c .*.cmd ./.tmp* *~ modules.order  Module.symvers
+

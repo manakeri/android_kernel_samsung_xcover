@@ -1,0 +1,99 @@
+#!/busybox/bin/sh
+
+PATH=/busybox/bin:/busybox/sbin:/busybox/usr/bin:/busybox/usr/sbin
+export PATH
+
+ROOTFS=/rootfs
+INIT_FSRBLK=/dev/bml13
+INIT_FSRBLK2=/dev/bml14
+INIT_RCVBLK=/dev/bml15
+INIT_SIZE=256k
+INIT_RCVSIZE=1536k
+INIT_IMG=/tmp/ramdisk.img
+INIT_RECIMG=/tmp/ramdisk-recovery.img
+PANIC_CMD=panic_debug
+DCMD_M=/dcmd_ko
+
+rdinit_prepare() {
+	mkdir /dev
+	mkdir /rootfs
+	mkdir /tmp
+	mknod $INIT_FSRBLK b 137 13
+	mknod $INIT_FSRBLK2 b 137 14
+	mknod $INIT_RCVBLK b 137 15
+	mknod /dev/console c 5 1
+	exec > /dev/console
+	exec < /dev/console
+	cd /
+	mkdir /proc
+	mount -t proc proc /proc
+	mkdir /sys
+	mount -t sysfs sysfs /sys
+	insmod fsr.ko
+	insmod fsr_stl.ko
+	cmdline=`cat /proc/cmdline`
+	for arg in $cmdline ; do
+		if [ "$PANIC_CMD" = $arg ]; then
+			echo "enable panic debug..."
+			insmod $DCMD_M
+		fi
+
+		cmd=`echo $arg | cut -d'=' -f1`
+
+		if [ "bootrd" = $cmd ]; then
+			INIT_FSRBLK=`echo $arg | cut -d'=' -f2`
+			echo "Boot from $INIT_FSRBLK"
+		fi
+		if [ "recovery_mode" = $cmd ]; then
+			INIT_SIZE=$INIT_RCVSIZE
+			INIT_FSRBLK=$INIT_RCVBLK
+			INIT_IMG=$INIT_RECIMG
+			echo "Boot from recovery mode"
+		fi
+	done
+	insmod sec_param.ko
+	chown radio radio /proc/LinuStoreIII/efs_info 
+	chmod 0664 /proc/LinuStoreIII/efs_info
+	chown radio radio /proc/LinuStoreIII/keystr 
+	chmod 0664 /proc/LinuStoreIII/keystr
+	chown radio radio /proc/LinuStoreIII/ril_prop 
+	chmod 0664 /proc/LinuStoreIII/ril_prop
+}
+
+rdinit_cleanup() {
+	umount /proc
+	umount /sys
+	mount -o remount,rw rootfs /
+	rm -rf /g_ether.ko /proc /sys /tmp /dev
+}
+
+try_boot_from_ramdisk() {
+	dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=1
+	cd $ROOTFS
+	gzip -dc $INIT_IMG | cpio -i
+	rm -rf $INIT_IMG
+	cd /
+	insmod rfs_glue.ko
+	insmod rfs_fat.ko
+    	insmod j4fs.ko
+	rdinit_cleanup
+	mv $ROOTFS/* /
+	rm -rf $ROOTFS
+	rm /rfs_glue.ko /rfs_fat.ko /j4fs.ko /fsr.ko /fsr_stl.ko /sec_param.ko
+	exec /init
+	return 0
+}
+
+boot_abort() {
+	echo "boot abort ..."
+	rdinit_cleanup
+	rm -rf $ROOTFS
+	mv /busybox/* /
+	/bin/rm /busybox rdinit -rf
+	exec /sbin/init
+}
+
+rdinit_prepare
+try_boot_from_ramdisk $INIT_FSRBLK
+boot_abort
+

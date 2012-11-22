@@ -1,0 +1,34 @@
+if PLAT_PXA
+
+config PXA_SSP
+	tristate
+	help
+	  Enable support for PXA2xx SSP ports
+
+config PXA_VBUS
+	tristate
+        default y
+	help
+	  Enable support for PXA VBUS
+
+config PXA_32KTIMER
+	bool "PXA 32K Timer"
+	depends on (ARCH_PXA || ARCH_MMP)
+	help
+	  32KHz timer support for PXA27x and PXA3xx/9xx Processor
+
+config PXA_MFP_CFG_BITS
+	bool "PXA MFP_CFG per bit support"
+	depends on ARCH_PXA
+	default n
+	help
+	  By enabling this option the mfp_config() call when is used with
+	  MFP_CFG_ to compose its first parameter will affect the desired bits
+	  only. Otherwise, the whole MFPR value will be overwritten
+	  The maintainer of each board should decide either to stick to the old
+	  MFP_CFG_ behavior, so all legacy MFPR configurations in the board
+	  specific code will not be changed or switch to the new MFP_CFG_, which
+	  provides bit granularity access and in this case all legacy mfp_config()
+	  calls will affect explicitly specified MFPR bits only.
+
+endif

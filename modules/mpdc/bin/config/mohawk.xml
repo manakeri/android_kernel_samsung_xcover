@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+    <!-- Refer 88SV331x-v5 PJ1 Datasheet (MV-S105191-00 Rev.2.0) Chapter 4.21 -->
+	<Counters>
+		<!-- Hotspot EBS can only use the counter with type=1 -->
+		<Counter name="OS_Timer" id="0" type="0"  location="core" content="time">
+			<EventSet name="OS_Timer"/>
+		</Counter>
+		<Counter name="PMN0" id="1" type="1" location="core" content="event">
+			<EventSet name="PMN0"/>
+		</Counter>
+		<Counter name="PMN1" id="2" type="1" location="core" content="event">
+			<EventSet name="PMN1"/>
+		</Counter>
+		<Counter name="PMN2" id="3" type="1" location="core" content="event">
+			<EventSet name="PMN2"/>
+		</Counter>
+		<Counter name="PMN3" id="4" type="1" location="core" content="event">
+			<EventSet name="PMN3"/>
+		</Counter>
+	</Counters>
+
+	<EventSets>
+	    <EventSet name="OS_Timer">
+	    	<Event id="0xffff" abbr="Timer">
+			    <Name value="Timer" />
+			    <Description value="OS Timer" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+		<EventSet name="PMN0">
+			<Event id="0x3" >
+			    <Name value="Cycle Count" />
+			    <Description value="Counts the number of clock cycles. Every clock cycle increments the counter" />
+			</Event>
+			<Event id="0x5" >
+			    <Name value="DCache Read Hit" />
+			    <Description value="Counts the number of data-cache read hits" />
+			</Event>
+			<Event id="0x9" >
+			    <Name value="DCache Read Miss" />
+			    <Description value="Counts the number of data-cache read misses (including non-cacheable and non-bufferable cache accesses)" />
+			</Event>
+			<Event id="0x11" >
+			    <Name value="DCache Write Hit" />
+			    <Description value="Counts the number of data-cache write hits" />
+			</Event>
+			<Event id="0x21" >
+			    <Name value="DCache Write Miss" />
+			    <Description value="Counts the number of data-cache write misses (including non-cacheable and non-bufferable misses)" />
+			</Event>
+			<Event id="0x41" >
+			    <Name value="Retired Instruction" />
+			    <Description value="Counts every time an instruction is retired" />
+			</Event>
+			<Event id="0x401" >
+			    <Name value="MMU Bus Request (Read Latency)" />
+			    <Description value="Counts the number of cycles to complete a request via the MMU bus. This request can derive from multiple masters" />
+			</Event>
+			<Event id="0x801" >
+			    <Name value="ICache Bus Request (Read Latency)" />
+			    <Description value="Counts the number of cycles the Instruction cache requests the bus until the data returns" />
+			</Event>
+			<Event id="0x1001" >
+			    <Name value="WB Bus Request (Write Latency)" />
+			    <Description value="Counts the number of cycles the write-back buffer requests the bus until the data is written to the bus" />
+			</Event>
+			<Event id="0x2001" >
+			    <Name value="Hold LDM/STM" />
+			    <Description value="Counts the number of cycles the pipeline is blocked because of multiple load/store operations" />
+			</Event>
+			<Event id="0x40001" >
+			    <Name value="Data Write Access Count" />
+			    <Description value="Data Write Access Count" />
+			</Event>
+			<Event id="0x80001" >
+			    <Name value="Data Read Access Count" />
+			    <Description value="Counts all data reads" />
+			</Event>
+			<Event id="0x1000001" >
+			    <Name value="SIMD Cycle Count" />
+			    <Description value="Counts the number of SIMD cycles" />
+			</Event>
+			<Event id="0x2000001" >
+			    <Name value="Predicted Branch Count" />
+			    <Description value="Counts the number of times a branch is predicted successfully" />
+			</Event>
+			<Event id="0x20000001" >
+			    <Name value="L2C Write Hit" />
+			    <Description value="" />
+			</Event>
+			<Event id="0x40000001" >
+			    <Name value="L2C Write Miss" />
+			    <Description value="" />
+			</Event>
+			<Event id="0x80000001" >
+			    <Name value="L2C Read Count" />
+			    <Description value="The number of L2C cache-to-bus external read requests" />
+			</Event>
+		</EventSet>
+		<EventSet name="PMN1">
+			<Event id="0x3" >
+			    <Name value="Cycle Count" />
+			    <Description value="Counts the number of clock cycles. Every clock cycle increments the counter" />
+			</Event>
+			<Event id="0x5" >
+			    <Name value="ICache Read Miss" />
+			    <Description value="Counts the number of instruction-cache read misses" />
+			</Event>
+			<Event id="0x9" >
+			    <Name value="DCache Read Miss" />
+			    <Description value="Counts the number of data-cache read misses (including non-cacheable and non-bufferable cache accesses)" />
+			</Event>
+			<Event id="0x11" >
+			    <Name value="DCache Write Miss" />
+			    <Description value="Counts the number of data-cache write misses (including non-cacheable and non-bufferable misses)" />
+			</Event>
+			<Event id="0x21" >
+			    <Name value="ITLB Miss" />
+			    <Description value="Counts the number of instruction TLB misses" />
+			</Event>
+			<Event id="0x41" >
+			    <Name value="Single Issue" />
+			    <Description value="Counts the number of cycles the processor single-issues instructions" />
+			</Event>
+			<Event id="0x101" >
+			    <Name value="Branch Retired" />
+			    <Description value="Counts the number of times one branch retires" />
+			</Event>
+			<Event id="0x201" >
+			    <Name value="ROB Full" />
+			    <Description value="Counts the number of cycles the ROB is full" />
+			</Event>
+			<Event id="0x401" >
+			    <Name value="MMU Read Beat" />
+			    <Description value="Counts the number of times the bus returns RDY to the MMU, useful when determining bus efficiency. A user can use the signal that the MMU is requesting the bus and how long it takes on average for the data to return. (mmu_bus_req / mmu_read_count)" />
+			</Event>
+			<Event id="0x801" >
+			    <Name value="ICache Read Beat" />
+			    <Description value="Counts the number of times the bus returns RDY to the instruction cache, useful to determine the cache’s average read latency (also known as read miss or read count)" />
+			</Event>
+			<Event id="0x8001" >
+			    <Name value="Hold IS" />
+			    <Description value="Count the number of cycles the instruction issue is stalled" />
+			</Event>
+			<Event id="0x1001" >
+			    <Name value="WB Write Beat" />
+			    <Description value="Counts the number times the bus returns RDY to the write buffer, useful to determine the write buffer’s average write latency (WB Write Latency/WB Write Beat)" />
+			</Event>
+			<Event id="0x10001" >
+			    <Name value="Data Read Access Count" />
+			    <Description value="Counts all data reads" />
+			</Event>
+			<Event id="0x1000001" >
+			    <Name value="SIMD Retired Instructions" />
+			    <Description value="Counts the number of retired SIMD instructions" />
+			</Event>
+			<Event id="0x2000001" >
+			    <Name value="SIMD Store FIFO Full" />
+			    <Description value="Counts the number of cycles the SIMD coprocessor store FIFO is full" />
+			</Event>
+			<Event id="0x20000001" >
+			    <Name value="L2C Write Hit" />
+			    <Description value="" />
+			</Event>
+			<Event id="0x40000001" >
+			    <Name value="L2C Write Miss" />
+			    <Description value="" />
+			</Event>
+			<Event id="0x80000001" >
+			    <Name value="L2C Latency" />
+			    <Description value="The latency for the most recent L2C read from the external bus" />
+			</Event>
+		</EventSet>
+		<EventSet name="PMN2">
+			<Event id="0x3" >
+			    <Name value="Cycle Count" />
+			    <Description value="Counts the number of clock cycles. Every clock cycle increments the counter" />
+			</Event>
+			<Event id="0x9" >
+			    <Name value="DCache Access" />
+			    <Description value="Counts the number of data-cache accesses (read hits / misses and write hits / misses)" />
+			</Event>
+			<Event id="0x11" >
+			    <Name value="DTLB Miss" />
+			    <Description value="Counts the number of TLB misses for data entries" />
+			</Event>
+			<Event id="0x101" >
+			    <Name value="Branch Predict Miss" />
+			    <Description value="Counts the number of times branch prediction causes the wrong branch to be prefetched" />
+			</Event>
+			<Event id="0x201" >
+			    <Name value="WB Write Beat" />
+			    <Description value="Counts the number times the bus returns RDY to the write buffer, useful to determine the write buffer’s average write latency (WB Write Latency/WB Write Beat)" />
+			</Event>
+			<Event id="0x401" >
+			    <Name value="A1 Stall" />
+			    <Description value="Counts the number of cycles ALU A1 is stalled" />
+			</Event>
+			<Event id="0x801" >
+			    <Name value="DCache Read Latency" />
+			    <Description value="Counts the number of cycles the data cache requests the bus for a read" />
+			</Event>
+			<Event id="0x1001" >
+			    <Name value="DCache Write Latency" />
+			    <Description value="Counts the number of cycles the data cache requests the bus for a write" />
+			</Event>
+			<Event id="0x10001" >
+			    <Name value="BIU Simultaneous Access" />
+			    <Description value="Counts the number of cycles the bus is requested by more than one master" />
+			</Event>
+			<Event id="0x1000001" >
+			    <Name value="SIMD Hold IS" />
+			    <Description value="Counts the number of cycles the SIMD coprocessor holds in its Issue (IS) stage" />
+			</Event>
+			<Event id="0x2000001" >
+			    <Name value="SIMD Instr Buffer Full" />
+			    <Description value="Counts the number of cycles the SIMD coprocessor instruction buffer is full" />
+			</Event>
+			<Event id="0x20000001" >
+			    <Name value="L2C Read Hit" />
+			    <Description value="The number of read accesses served from the L2C" />
+			</Event>
+			<Event id="0x40000001" >
+			    <Name value="L2C Read Miss" />
+			    <Description value="The number of L2C read accesses that resulted in an external read request" />
+			</Event>
+		</EventSet>
+		<EventSet name="PMN3">
+			<Event id="0x3" >
+			    <Name value="Cycle Count" />
+			    <Description value="Counts the number of clock cycles. Every clock cycle increments the counter" />
+			</Event>
+			<Event id="0x5" >
+			    <Name value="DCache Read Miss" />
+			    <Description value="Counts the number of data-cache read misses (including non-cacheable and non-bufferable cache accesses)" />
+			</Event>
+			<Event id="0x9" >
+			    <Name value="DCache Write Miss" />
+			    <Description value="Counts the number of data-cache write misses (including non-cacheable and non-bufferable misses)" />
+			</Event>
+			<Event id="0x11" >
+			    <Name value="TLB Miss" />
+			    <Description value="Counts the number of instruction and data TLB misses" />
+			</Event>
+			<Event id="0x101" >
+			    <Name value="Branches Taken" />
+			    <Description value="Counts the number of times branch prediction correctly prefetches the required branch" />
+			</Event>
+			<Event id="0x201" >
+			    <Name value="WB Full" />
+			    <Description value="Counts the number of cycles WB is full" />
+			</Event>
+			<Event id="0x801" >
+			    <Name value="DCache Read Beat" />
+			    <Description value="Counts the number of times the bus returns data to the data cache during read requests" />
+			</Event>
+			<Event id="0x1001" >
+			    <Name value="DCache Write Beat" />
+			    <Description value="Counts the number of times the bus returns ready to the data cache during write requests" />
+			</Event>
+			<Event id="0x10001" >
+			    <Name value="BIU Any Access" />
+			    <Description value="Counts the number of cycles the BIU is accessed by any unit" />
+			</Event>
+			<Event id="0x400001" >
+			    <Name value="Data Write Access Count" />
+			    <Description value="Data Write Access Count" />
+			</Event>
+			<Event id="0x1000001" >
+			    <Name value="SIMD Hold Writeback Stage" />
+			    <Description value="Counts the number of cycles the SIMD coprocessor holds in its writeback stage" />
+			</Event>
+			<Event id="0x2000001" >
+			    <Name value="SIMD Retire FIFO Full" />
+			    <Description value="Counts the number of cycles the SIMD coprocessor retire FIFO is full" />
+			</Event>
+			<Event id="0x20000001" >
+			    <Name value="L2C Read Hit" />
+			    <Description value="The number of read accesses served from the L2C" />
+			</Event>
+			<Event id="0x40000001" >
+			    <Name value="L2C Read Miss" />
+			    <Description value="The number of L2C read accesses that resulted in an external read request" />
+			</Event>
+		</EventSet>
+	</EventSets>
+</Configuration>

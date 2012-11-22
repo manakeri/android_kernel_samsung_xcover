@@ -1,0 +1,301 @@
+#!/busybox/bin/sh
+# The rdinit for android and generic rootfs boot on all devices
+# It search rootfs on devices as following sequence,
+#	1. INIT_FSRBLK
+#	2. Default network
+#	3. USB network
+#	4. SD Card (TODO)
+# If multi rootfs are available, it will load one as following sequence,
+#	1. Android
+#	2. generic rootfs
+#
+# Draft by Bin Yang <bin.yang@marvell.com> on 20 Sept. 2009
+#
+
+PATH=/busybox/bin:/busybox/sbin:/busybox/usr/bin:/busybox/usr/sbin
+export PATH
+
+ROOTFS=/rootfs
+INIT_MTDBLK=/dev/mtdblock0
+INIT_MMCBLK=/dev/mmcblk
+INIT_FSRBLK=/dev/bml13
+INIT_RCVBLK=/dev/bml15	#smn-c: For Recovery mode.
+INIT_SKIP=77
+INIT_RCVSKIP=79
+INIT_COUNT=1
+INIT_RCVCOUNT=6   # hyungari: Recovery image size: 256k x 6
+INIT_SIZE=256k
+INIT_RCVSIZE=1536k	#eunyong: Recovery image size is 1536K
+INIT_IMG=/tmp/ramdisk.img
+INIT_RECIMG=/tmp/ramdisk-recovery.img	#smn-c:  For recovery mode.
+
+#the rootfs arg from kernel command line. e.g. android@nfs, generic@flash
+CMDLINE_CMD=set_rootfs
+PANIC_CMD=panic_debug
+ROOTFS_ARG=
+ROOTFS_TYPE="android generic"
+ROOTFS_DEV="flash mmc0 mmc1 nfs"
+
+HOST_IP="192.168.1.100"
+TARGET_IP="192.168.1.101"
+MOUNT_OPTION="-t nfs -o nolock,rsize=1024,wsize=1024"
+ANDROID_NFS_PATH=/nfs/android
+ROOTFS_NFS_PATH=/nfs/rootfs
+USB_ETHER_M1=/g_ether.ko
+USB_ETHER_M2=/g_ether_ko
+USB_ETHER_M=$USB_ETHER_M2
+DCMD_M=/dcmd_ko
+
+MMC_DEV=/dev/mmcblk0p1
+
+rdinit_prepare() {
+
+# +SAMSUNG_SSENI : make directory because empty folder is not supported at P4 source control
+	mkdir /dev
+	mkdir /rootfs
+	mkdir /tmp
+# -SAMSUNG_SSENI : make directory because empty folder is not supported at P4 source control
+
+	mknod /dev/console c 5 1
+	exec > /dev/console
+	exec < /dev/console
+	cd /
+	mkdir /proc
+	mount -t proc proc /proc
+	mkdir /sys
+	mount -t sysfs sysfs /sys
+
+	mdev -s
+	cmdline=`cat /proc/cmdline`
+	for arg in $cmdline ; do
+		if [ "$PANIC_CMD" = $arg ]; then
+			echo "enable panic debug..."
+			insmod $DCMD_M
+		fi
+
+		cmd=`echo $arg | cut -d'=' -f1`
+		if [ "$CMDLINE_CMD" = $cmd ]; then
+			ROOTFS_TYPE=`echo $arg | cut -d'=' -f2 | cut -d'@' -f1`
+			ROOTFS_DEV=`echo $arg | cut -d'=' -f2 | cut -d'@' -f2`
+		fi
+		if [ "bootrd" = $cmd ]; then
+			INIT_FSRBLK=`echo $arg | cut -d'=' -f2`
+			echo "Boot from $INIT_FSRBLK"
+		fi
+		if [ "bootsz" = $cmd ]; then
+			INIT_SIZE=`echo $arg | cut -d'=' -f2`
+			echo "load image size $INIT_SIZE"
+		fi
+		#smn-c:  For recovery mode.
+		if [ "recovery_mode" = $cmd ]; then
+			echo " Entered in Recovery mode entered "
+			INIT_COUNT=$INIT_RCVCOUNT
+			INIT_SKIP=$INIT_RCVSKIP
+			INIT_FSRBLK=$INIT_RCVBLK
+			INIT_IMG=$INIT_RECIMG
+			echo "Load Recovery Ramdisk... "
+		fi
+	done
+### SEC_PARAM
+	insmod sec_param.ko
+
+#    # for multi csc
+	chown radio radio /proc/LinuStoreIII/efs_info 
+	chmod 0664 /proc/LinuStoreIII/efs_info
+#    # for protecting key string
+	chown radio radio /proc/LinuStoreIII/keystr 
+	chmod 0664 /proc/LinuStoreIII/keystr
+#    # for ril_prop
+	chown radio radio /proc/LinuStoreIII/ril_prop 
+	chmod 0664 /proc/LinuStoreIII/ril_prop
+#    # for fsbuild_check
+#    # chown radio radio /proc/LinuStoreIII/fsbuild_check 
+#    # chmod 0664 /proc/LinuStoreIII/fsbuild_check
+}
+
+rdinit_cleanup() {
+	echo "clean before boot to rootfs..."
+	umount /proc
+	umount /sys
+	mount -o remount,rw rootfs /
+	rm -rf /g_ether.ko /proc /sys /tmp /dev
+}
+
+try_boot_from_ramdisk() {
+	echo "extract init img from $1..."
+	if [ -e $1 ]; then
+		if [ $1 = $INIT_FSRBLK ]; then
+			dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=1
+		else
+		    #ramimage location in emmc must be calculated as follows:
+			#Address=0x1300000
+			#0x1300000/256K(1024*256)=56
+			echo "### hyungari ### dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=$INIT_COUNT skip=$INIT_SKIP"
+			dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=$INIT_COUNT skip=$INIT_SKIP
+			#dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=4 skip=3
+			INIT_PARAM1="$1"p1
+		fi
+		cd $ROOTFS
+		gzip -dc $INIT_IMG | cpio -i
+		rm -rf $INIT_IMG
+		cd /
+## hyungari
+#		insmod j4fs.ko
+#		mv j4fs.ko j4fs.ko.org
+#		cp j4fs.ko.org j4fs.ko
+
+		if [ -e "$ROOTFS/init" ] ; then
+			echo "find rootfs in init partition, boot from it..."
+			if [ -e $INIT_FSRBLK] ; then
+				echo "MTD device found, boot from MTD..."
+				rm $ROOTFS/init.ext3.rc
+				rm $ROOTFS/init_bsp.ext3.rc
+			else
+				echo "MTD device not found, boot from MMC..."
+#				## mv $ROOTFS/init.ext3.rc $ROOTFS/init.rc
+#				## mv $ROOTFS/init_bsp.ext3.rc $ROOTFS/init_bsp.rc
+				rm $ROOTFS/init.ext3.rc
+				rm $ROOTFS/init_bsp.ext3.rc
+			fi
+			rdinit_cleanup
+			mv $ROOTFS/* /
+			rm -rf $ROOTFS
+# hyungari
+#			rm /j4fs.ko /sec_param.ko
+#			mkdir /mnt/.lfs
+#			mkdir /efs
+			echo "### hyungari ### exec /init $INIT_PARAM1"
+			exec /init $INIT_PARAM1
+
+			return 0
+		fi
+	fi
+	return 1
+}
+
+try_prepare_network() {
+	echo "try default network..."
+	ping -w 1 -c 1 $HOST_IP
+	if [ 0 = $? ]; then
+		echo "default network works";
+		return 0;
+	fi
+
+	echo "try usb network...";
+	if [ -e $USB_ETHER_M1 ]; then
+		USB_ETHER_M=$USB_ETHER_M1
+	fi
+
+	if [ -e $USB_ETHER_M ]; then
+		insmod $USB_ETHER_M
+		ifconfig usb0 $TARGET_IP
+		ping -w 5 -c 1 $HOST_IP
+		if [ 0 = $? ]; then
+			echo "usb network works";
+			return 0;
+		fi
+		rmmod $USB_ETHER_M
+	else
+		echo "no usb network driver $USB_ETHER_M, abort";
+	fi
+	echo "network does not work"
+	return 1
+}
+
+try_prepare_mmc() {
+	echo "try to mount mmc..."
+	mount $MMC_DEV $ROOTFS
+	if [ 0 = $? ]; then
+		echo "MMC is available";
+		return 0;
+	fi
+	echo "MMC does not work"
+	return 1
+}
+
+try_boot_from_android_nfs() {
+	echo "try to boot from android nfs...";
+	mount $MOUNT_OPTION $HOST_IP:$ANDROID_NFS_PATH $ROOTFS
+	if [ -e "$ROOTFS/init" ]; then
+		rdinit_cleanup
+		exec switch_root $ROOTFS /init
+	fi
+
+}
+
+try_boot_from_rootfs_nfs() {
+	echo "try to boot from rootfs nfs...";
+	mount $MOUNT_OPTION $HOST_IP:$ROOTFS_NFS_PATH $ROOTFS
+	if [ -e "$ROOTFS/sbin/init" ] ; then
+		rdinit_cleanup
+		exec switch_root $ROOTFS /sbin/init
+	fi
+}
+
+try_boot_from_mmc() {
+	dev="$INIT_MMCBLK""$1"p1
+	echo "try to boot from $dev...";
+	if [ -e $dev ]; then
+		mount $dev $ROOTFS
+		if [ -e "$ROOTFS/init" ]; then
+			rdinit_cleanup
+			exec switch_root $ROOTFS /init
+		fi
+	fi
+}
+
+boot_abort() {
+	echo "boot abort ..."
+	rdinit_cleanup
+	rm -rf $ROOTFS
+	mv /busybox/* /
+	/bin/rm /busybox rdinit -rf
+	exec /sbin/init
+}
+
+#########Boot sequence###########
+rdinit_prepare
+echo "Try $ROOTFS_TYPE rootfs on $ROOTFS_DEV device ... "
+for dev in $ROOTFS_DEV ; do
+	if [ "$dev" = "flash" ]; then
+		echo "### hyungari ### try_boot_from_ramdisk $INIT_FSRBLK"
+		try_boot_from_ramdisk $INIT_FSRBLK
+		continue
+	fi
+	if [ "$dev" = "nfs" ]; then
+		if try_prepare_network ; then
+			for type in $ROOTFS_TYPE ; do
+				if [ "$type" = "android" ]; then
+					echo "### hyungari ### try_boot_from_android_nfs"
+					try_boot_from_android_nfs
+				fi
+				if [ "$type" = "generic" ]; then
+					echo "### hyungari ### try_boot_from_rootfs_nfs"
+					try_boot_from_rootfs_nfs
+				fi
+
+
+			done
+		fi
+	fi
+	if [ "$dev" = "mmc0" ]; then
+		echo "### hyungari ### try_boot_from_ramdisk $INIT_MMCBLK 0"
+		try_boot_from_ramdisk "$INIT_MMCBLK"0
+		if [ $? = 0 ]; then
+			echo "### hyungari ### try_boot_from_mmc 0"
+			try_boot_from_mmc 0
+		fi
+		continue
+	fi
+	if [ "$dev" = "mmc1" ]; then
+		echo "### hyungari ### try_boot_from_ramdisk $INIT_MMCBLK 1"
+		try_boot_from_ramdisk "$INIT_MMCBLK"1
+		if [ $? = 0 ]; then
+			echo "### hyungari ### try_boot_from_mmc 1"
+			try_boot_from_mmc 1
+		fi
+		continue
+	fi
+done
+boot_abort
+

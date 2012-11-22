@@ -1,0 +1,22 @@
+#
+# Makefile for bmm kernel module
+#
+
+#CFLAGS += -DBMM_DEBUG 
+
+obj-m    := bmm.o
+bmm-objs := bmm_drv.o
+
+.EXPORT_ALL_VARIABLES:
+KDIR := ./linux
+PWD  := $(shell pwd)
+MAKE := make
+
+.PHONY: all clean
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules 
+
+clean:
+	rm -rf *.o *.ko *.mod.c .*.cmd ./.tmp* *~ modules.order  Module.symvers
+

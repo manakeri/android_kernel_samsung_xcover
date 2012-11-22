@@ -1,0 +1,103 @@
+Event Id	Proper Counters		Comments
+[1m0xffff[0m		OS_Timer		Timer
+[1m0xff[0m		CCNT			Core Clock Tick
+[1m0xfe[0m		CCNT			Core Clock Tick(64 clock base)
+[1m0x0[0m		PMN0,PMN1,PMN2,PMN3	Software increment
+[1m0x1[0m		PMN0,PMN1,PMN2,PMN3	Instruction fetch that causes a refill at the lowest level of instruction or unified cache
+[1m0x2[0m		PMN0,PMN1,PMN2,PMN3	Instruction fetch that causes a TLB refill at the lowest level of TLB
+[1m0x3[0m		PMN0,PMN1,PMN2,PMN3	Data read or write operation that causes a refill at the lowest level of data or unified cache
+[1m0x4[0m		PMN0,PMN1,PMN2,PMN3	Data read or write operation that causes a cache access at the lowest level of data or unified cache
+[1m0x5[0m		PMN0,PMN1,PMN2,PMN3	Data read or write operation that causes a TLB refill at the lowest level of TLB
+[1m0x6[0m		PMN0,PMN1,PMN2,PMN3	Data read architecturally executed
+[1m0x7[0m		PMN0,PMN1,PMN2,PMN3	Data write architecturally executed
+[1m0x8[0m		PMN0,PMN1,PMN2,PMN3	Instruction architecturally executed
+[1m0x9[0m		PMN0,PMN1,PMN2,PMN3	Exception taken
+[1m0xa[0m		PMN0,PMN1,PMN2,PMN3	Exception return architecturally executed
+[1m0xb[0m		PMN0,PMN1,PMN2,PMN3	Instruction that writes to the Context ID Register architecturally executed
+[1m0xc[0m		PMN0,PMN1,PMN2,PMN3	Software change of PC, except by an exception, architecturally executed
+[1m0xd[0m		PMN0,PMN1,PMN2,PMN3	Immediate branch architecturally executed, taken or not taken
+[1m0xe[0m		PMN0,PMN1,PMN2,PMN3	Procedure return, other than exception returns, architecturally executed
+[1m0xf[0m		PMN0,PMN1,PMN2,PMN3	Unaligned access architecturally executed
+[1m0x10[0m		PMN0,PMN1,PMN2,PMN3	Branch mispredicted or not predicted
+[1m0x11[0m		PMN0,PMN1,PMN2,PMN3	Cycle Count
+[1m0x12[0m		PMN0,PMN1,PMN2,PMN3	Branches or other change in the program flow that could have been predicted by the branch prediction resources of the processor
+[1m0x40[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Read Hit
+[1m0x41[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Read Miss
+[1m0x42[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Write Hit
+[1m0x43[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Write Miss
+[1m0x44[0m		PMN0,PMN1,PMN2,PMN3	MMU Bus Request
+[1m0x45[0m		PMN0,PMN1,PMN2,PMN3	I-Cache Bus Request
+[1m0x46[0m		PMN0,PMN1,PMN2,PMN3	WB write latency
+[1m0x47[0m		PMN0,PMN1,PMN2,PMN3	Hold LDM/STM
+[1m0x48[0m		PMN0,PMN1,PMN2,PMN3	No Dual cflag
+[1m0x49[0m		PMN0,PMN1,PMN2,PMN3	No Dual Register Plus
+[1m0x4a[0m		PMN0,PMN1,PMN2,PMN3	LDST ROB0 on Hold
+[1m0x4b[0m		PMN0,PMN1,PMN2,PMN3	LDST ROB1 on Hold
+[1m0x4c[0m		PMN0,PMN1,PMN2,PMN3	Data Write Access Count
+[1m0x4d[0m		PMN0,PMN1,PMN2,PMN3	Data Read Access Count
+[1m0x4e[0m		PMN0,PMN1,PMN2,PMN3	A2 Stall
+[1m0x4f[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Write Hit
+[1m0x50[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Write Miss
+[1m0x51[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Read Count
+[1m0x60[0m		PMN0,PMN1,PMN2,PMN3	I-Cache Read Miss
+[1m0x61[0m		PMN0,PMN1,PMN2,PMN3	ITLB Miss
+[1m0x62[0m		PMN0,PMN1,PMN2,PMN3	Single Issue
+[1m0x63[0m		PMN0,PMN1,PMN2,PMN3	Branch Retired
+[1m0x64[0m		PMN0,PMN1,PMN2,PMN3	ROB Full
+[1m0x65[0m		PMN0,PMN1,PMN2,PMN3	MMU Read Beat
+[1m0x66[0m		PMN0,PMN1,PMN2,PMN3	WB Write Beat
+[1m0x67[0m		PMN0,PMN1,PMN2,PMN3	Dual Issue
+[1m0x68[0m		PMN0,PMN1,PMN2,PMN3	No Dual raw
+[1m0x69[0m		PMN0,PMN1,PMN2,PMN3	Hold IS
+[1m0x6a[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Latency
+[1m0x70[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Access
+[1m0x71[0m		PMN0,PMN1,PMN2,PMN3	DTLB Miss
+[1m0x72[0m		PMN0,PMN1,PMN2,PMN3	Branch Prediction Miss
+[1m0x74[0m		PMN0,PMN1,PMN2,PMN3	A1 Stall
+[1m0x75[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Read Latency
+[1m0x76[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Write Latency
+[1m0x77[0m		PMN0,PMN1,PMN2,PMN3	No Dual Register File
+[1m0x78[0m		PMN0,PMN1,PMN2,PMN3	BIU Simultaneous Access
+[1m0x79[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Read Hit
+[1m0x7a[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Read Miss
+[1m0x7b[0m		PMN0,PMN1,PMN2,PMN3	L2 Cache Eviction
+[1m0x80[0m		PMN0,PMN1,PMN2,PMN3	TLB Miss
+[1m0x81[0m		PMN0,PMN1,PMN2,PMN3	Branches Taken
+[1m0x82[0m		PMN0,PMN1,PMN2,PMN3	WB Full
+[1m0x83[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Read Beat
+[1m0x84[0m		PMN0,PMN1,PMN2,PMN3	D-Cache Write Beat
+[1m0x85[0m		PMN0,PMN1,PMN2,PMN3	No Dual HW
+[1m0x86[0m		PMN0,PMN1,PMN2,PMN3	No Dual Multiple
+[1m0x87[0m		PMN0,PMN1,PMN2,PMN3	BIU Any Access
+[1m0x88[0m		PMN0,PMN1,PMN2,PMN3	Main TLB refill caused by I-Cache
+[1m0x89[0m		PMN0,PMN1,PMN2,PMN3	Main TLB refill caused by D-Cache
+[1m0x8a[0m		PMN0,PMN1,PMN2,PMN3	I-Cache read beat
+[1m0x90[0m		PMN0,PMN1,PMN2,PMN3	Counts any event from external input source PMUEXTIN[0]
+[1m0x91[0m		PMN0,PMN1,PMN2,PMN3	Counts any event from external input source PMUEXTIN[1]
+[1m0x92[0m		PMN0,PMN1,PMN2,PMN3	Counts any event from both external input sources PMUEXTIN[0] and PMUEXTIN[1]
+[1m0xc0[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 store FIFO full
+[1m0xc1[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 finish FIFO full
+[1m0xc2[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 instruction FIFO full
+[1m0xc3[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 instruction retired
+[1m0xc4[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 Busy
+[1m0xc5[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 Hold MI
+[1m0xc6[0m		PMN0,PMN1,PMN2,PMN3	WMMX2 Hold MW
+[1m0xf0[0m		PMN0,PMN1,PMN2,PMN3	L0IC line fill
+[1m0xf1[0m		PMN0,PMN1,PMN2,PMN3	L0IC hit prefetch buffer
+[1m0x1D[0m		MC0,MC1,MC2,MC3		Auto-refresh (non-idle)
+[1m0x1C[0m		MC0,MC1,MC2,MC3		Auto-refresh (all)
+[1m0x1A[0m		MC0,MC1,MC2,MC3		Write request
+[1m0x19[0m		MC0,MC1,MC2,MC3		Read request
+[1m0x18[0m		MC0,MC1,MC2,MC3		All data request
+[1m0x16[0m		MC0,MC1,MC2,MC3		Write command
+[1m0x15[0m		MC0,MC1,MC2,MC3		Read command
+[1m0x14[0m		MC0,MC1,MC2,MC3		Read + Write command
+[1m0x10[0m		MC0,MC1,MC2,MC3		ACTIVE command
+[1m0xe[0m		MC0,MC1,MC2,MC3		PRECHARGE command (non-data)
+[1m0xd[0m		MC0,MC1,MC2,MC3		PRECHARGE command (data)
+[1m0xc[0m		MC0,MC1,MC2,MC3		PRECHARGE command (all)
+[1m0x4[0m		MC0,MC1,MC2,MC3		Non-idle cycles with no data bus utilization
+[1m0x3[0m		MC0,MC1,MC2,MC3		(reserved) Non-idle cycles waiting for tWTR
+[1m0x2[0m		MC0,MC1,MC2,MC3		Non-idle cycles when waiting for tRFC
+[1m0x1[0m		MC0,MC1,MC2,MC3		Idle cycles (Memory Controller pipeline empty)
+[1m0x0[0m		MC0,MC1,MC2,MC3		Clock

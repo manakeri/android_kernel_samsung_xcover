@@ -1,0 +1,123 @@
+Event Id	Proper Counters		Comments
+[1m0xffff[0m		OS_Timer		Timer
+[1m0xff[0m		CCNT			Core Clock Tick
+[1m0xfe[0m		CCNT			Core Clock Tick(64 clock base)
+[1m0x0[0m		PMN0,PMN1,PMN2,PMN3	L1 ICache miss
+[1m0x1[0m		PMN0,PMN1,PMN2,PMN3	L1 ICache can't deliver
+[1m0x2[0m		PMN0,PMN1,PMN2,PMN3	Data dependency stall
+[1m0x3[0m		PMN0,PMN1,PMN2,PMN3	Instruction TLB miss
+[1m0x4[0m		PMN0,PMN1,PMN2,PMN3	Data TLB miss
+[1m0x5[0m		PMN0,PMN1,PMN2,PMN3	B and BL Instruction retired
+[1m0x6[0m		PMN0,PMN1,PMN2,PMN3	B and BL mispredicted
+[1m0x7[0m		PMN0,PMN1,PMN2,PMN3	Instruction retired
+[1m0x8[0m		PMN0,PMN1,PMN2,PMN3	L1 DCache buffer full stall(cycle)
+[1m0x9[0m		PMN0,PMN1,PMN2,PMN3	L1 DCache buffer full stall(sequence)
+[1m0xa[0m		PMN0,PMN1,PMN2,PMN3	L1 DCache access
+[1m0xb[0m		PMN0,PMN1,PMN2,PMN3	L1 DCache miss
+[1m0xc[0m		PMN0,PMN1,PMN2,PMN3	L1 DCache write-back
+[1m0xd[0m		PMN0,PMN1,PMN2,PMN3	Software changed the PC
+[1m0xe[0m		PMN0,PMN1,PMN2,PMN3	Branch instruction retired
+[1m0xf[0m		PMN0,PMN1,PMN2,PMN3	Instruction issue cycle of retired instruction
+[1m0x17[0m		PMN0,PMN1,PMN2,PMN3	Coprocessor stalled the instruction pipeline
+[1m0x18[0m		PMN0,PMN1,PMN2,PMN3	All changes to the PC
+[1m0x19[0m		PMN0,PMN1,PMN2,PMN3	Pipeline flush
+[1m0x1a[0m		PMN0,PMN1,PMN2,PMN3	Instruction issue failed
+[1m0x1b[0m		PMN0,PMN1,PMN2,PMN3	Multiplier in use
+[1m0x1c[0m		PMN0,PMN1,PMN2,PMN3	Multiplier stalled the instruction pipeline
+[1m0x1d[0m		PMN0,PMN1,PMN2,PMN3	Coprocessor stalled the instruction pipeline
+[1m0x1e[0m		PMN0,PMN1,PMN2,PMN3	Data Cache stalled the instruction pipeline
+[1m0x1f[0m		PMN0,PMN1,PMN2,PMN3	Snoop request stalled the instruction pipeline
+[1m0x20[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache request
+[1m0x21[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 data request
+[1m0x22[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 instruction request
+[1m0x23[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache miss
+[1m0x24[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache data miss
+[1m0x25[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache instruction fetch miss
+[1m0x26[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache data read miss
+[1m0x27[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache data read request
+[1m0x28[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache data write miss
+[1m0x29[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache data write request
+[1m0x2a[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache line writeback
+[1m0x2b[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop or snoop confirm access
+[1m0x2c[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop miss
+[1m0x2d[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache active
+[1m0x2e[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 push access
+[1m0x2f[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache access
+[1m0x40[0m		PMN0,PMN1,PMN2,PMN3	Address bus transaction
+[1m0x41[0m		PMN0,PMN1,PMN2,PMN3	Self initiated address bus transaction
+[1m0x42[0m		PMN0,PMN1,PMN2,PMN3	Bus grant delay of self initiated address bus transaction
+[1m0x43[0m		PMN0,PMN1,PMN2,PMN3	Bus clock
+[1m0x44[0m		PMN0,PMN1,PMN2,PMN3	Bus initiated (core generated) data bus transaction
+[1m0x45[0m		PMN0,PMN1,PMN2,PMN3	Bus grant delay of self initiated data bus transaction
+[1m0x47[0m		PMN0,PMN1,PMN2,PMN3	Self initiated data bus transaction
+[1m0x48[0m		PMN0,PMN1,PMN2,PMN3	Data bus transaction
+[1m0x49[0m		PMN0,PMN1,PMN2,PMN3	Retired bus transaction
+[1m0x50[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache line allocation
+[1m0x51[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 cache line update
+[1m0x52[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 recirculated operation
+[1m0x53[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop request
+[1m0x54[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop confirm
+[1m0x55[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 push request
+[1m0x56[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 push update
+[1m0x57[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 push allocation
+[1m0x58[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 special operation
+[1m0x59[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop hit on clean cache line
+[1m0x5a[0m		PMN0,PMN1,PMN2,PMN3	Unified L2 snoop hit on dirty cache line
+[1m0x60[0m		PMN0,PMN1,PMN2,PMN3	Address transaction retry
+[1m0x61[0m		PMN0,PMN1,PMN2,PMN3	Snoop transaction retry
+[1m0x71[0m		PMN0,PMN1,PMN2,PMN3	B2I Deblock FIFO full
+[1m0x72[0m		PMN0,PMN1,PMN2,PMN3	B2I Deblock FIFO empty
+[1m0x73[0m		PMN0,PMN1,PMN2,PMN3	B2I Decode FIFO full
+[1m0x74[0m		PMN0,PMN1,PMN2,PMN3	B2I Decode FIFO empty
+[1m0x10000000[0m	PMN0,PMN1,PMN2,PMN3	Core is performing a new instruction fetch
+[1m0x10000001[0m	PMN0,PMN1,PMN2,PMN3	Core is performing a new data fetch
+[1m0x10000002[0m	PMN0,PMN1,PMN2,PMN3	Core read request count
+[1m0x10000009[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 bus utilization
+[1m0x1000000a[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 utilization
+[1m0x1000000e[0m	PMN0,PMN1,PMN2,PMN3	Dynamic memory queue occupied
+[1m0x1000000f[0m	PMN0,PMN1,PMN2,PMN3	Dynamic memory queue occupied by more than 1 request
+[1m0x10000010[0m	PMN0,PMN1,PMN2,PMN3	Dynamic memory queue occupied by more than 2 requests
+[1m0x10000011[0m	PMN0,PMN1,PMN2,PMN3	Dynamic memory queue occupied by more than 3 requests
+[1m0x10000012[0m	PMN0,PMN1,PMN2,PMN3	Static memory queue occupied
+[1m0x10000013[0m	PMN0,PMN1,PMN2,PMN3	Static memory queue occupied by more than one request
+[1m0x10000014[0m	PMN0,PMN1,PMN2,PMN3	Static memory queue occupied by more than two requests
+[1m0x10000015[0m	PMN0,PMN1,PMN2,PMN3	Static memory queue occupied by more than three requests
+[1m0x1000001a[0m	PMN0,PMN1,PMN2,PMN3	Internal SRAM memory queue occupied
+[1m0x1000001b[0m	PMN0,PMN1,PMN2,PMN3	Internal SRAM memory queue occupied by more than one request
+[1m0x1000001c[0m	PMN0,PMN1,PMN2,PMN3	Internal SRAM memory queue occupied by more than two requests
+[1m0x1000001d[0m	PMN0,PMN1,PMN2,PMN3	Internal SRAM memory queue occupied by more than three requests
+[1m0x1000001e[0m	PMN0,PMN1,PMN2,PMN3	Number of cycles when External Memory controller bus is occupied
+[1m0x1000001f[0m	PMN0,PMN1,PMN2,PMN3	Number of cycles when External Data Flash bus is occupied
+[1m0x10000024[0m	PMN0,PMN1,PMN2,PMN3	Core write access count
+[1m0x1000002a[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 bus request
+[1m0x1000002b[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 bus request
+[1m0x1000002c[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 bus retries
+[1m0x1000002d[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 bus retries
+[1m0x1000002e[0m	PMN0,PMN1,PMN2,PMN3	Temperature level 1
+[1m0x1000002f[0m	PMN0,PMN1,PMN2,PMN3	Temperature level 2
+[1m0x10000030[0m	PMN0,PMN1,PMN2,PMN3	Temperature level 3
+[1m0x10000031[0m	PMN0,PMN1,PMN2,PMN3	Temperature level 4
+[1m0x10000032[0m	PMN0,PMN1,PMN2,PMN3	Core read/write latency measurement 1
+[1m0x10000033[0m	PMN0,PMN1,PMN2,PMN3	Core read/write latency measurement 2
+[1m0x10000034[0m	PMN0,PMN1,PMN2,PMN3	Core read/write latency measurement 3
+[1m0x10000035[0m	PMN0,PMN1,PMN2,PMN3	Core read/write latency measurement 4
+[1m0x10000036[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to internal memory read/write latency measurement
+[1m0x10000037[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to internal memory read/write latency measurement 2
+[1m0x10000038[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to internal memory read/write latency measurement 3
+[1m0x10000039[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to internal memory read/write latency measurement 4
+[1m0x1000003a[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to dynamic/static memory read/write latency measurement
+[1m0x1000003b[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to dynamic/static memory read/write latency measurement 2
+[1m0x1000003c[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to dynamic/static memory read/write latency measurement 3
+[1m0x1000003d[0m	PMN0,PMN1,PMN2,PMN3	System Bus 1 to dynamic/static memory read/write latency measurement 4
+[1m0x1000003e[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to internal memory read/write latency measurement
+[1m0x1000003f[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to internal memory read/write latency measurement 2
+[1m0x10000040[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to internal memory read/write latency measurement 3
+[1m0x10000041[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to internal memory read/write latency measurement 4
+[1m0x10000042[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to dynamic/static memory read/write latency measurement
+[1m0x10000043[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to dynamic/static memory read/write latency measurement 2
+[1m0x10000044[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to dynamic/static memory read/write latency measurement 3
+[1m0x10000045[0m	PMN0,PMN1,PMN2,PMN3	System Bus 2 to dynamic/static memory read/write latency measurement 4
+[1m0x10000071[0m	PMN0,PMN1,PMN2,PMN3	B2I Deblock FIFO full
+[1m0x10000072[0m	PMN0,PMN1,PMN2,PMN3	B2I Deblock FIFO empty
+[1m0x10000073[0m	PMN0,PMN1,PMN2,PMN3	B2I Decode FIFO full
+[1m0x10000074[0m	PMN0,PMN1,PMN2,PMN3	B2I Decode FIFO empty

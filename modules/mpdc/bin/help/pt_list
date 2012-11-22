@@ -1,0 +1,4 @@
+Profiler Type	Comment
+[1mcm[0m		counter monitor, use "[1mhelp cm_options[0m" for extra options.
+[1mhs[0m		hotspot profiler, use "[1mhelp hs_options[0m" for extra options.
+[1mcss[0m		call stack sampling profiler, use "[1mhelp css_options[0m" for extra options.

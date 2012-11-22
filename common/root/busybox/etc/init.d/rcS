@@ -1,0 +1,9 @@
+#! /bin/busybox sh
+
+# Set the path
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export PATH
+
+mount -a
+mdev -s
+

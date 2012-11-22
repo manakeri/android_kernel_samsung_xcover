@@ -1,0 +1,539 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+	<Counters>
+		<Counter name="OS_Timer" id="0" type="0" location="core" content="time">
+			<EventSet name="OS_Timer"/>
+		</Counter>
+		<Counter name="CCNT" id="1" type="1" location="core" content="event">
+		    <EventSet name="Core Clock"/>
+		</Counter>
+		<Counter name="PMN0" id="2" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+		</Counter>
+		<Counter name="PMN1" id="3" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+		</Counter>
+		<Counter name="PMN2" id="4" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+		</Counter>
+		<Counter name="PMN3" id="5" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+		</Counter>
+		<Counter name="MC0" id="6" location="peripheral" content="event">
+			<EventSet name="Memory Controller"/>
+		</Counter>
+		<Counter name="MC1" id="7" location="peripheral" content="event">
+			<EventSet name="Memory Controller"/>
+		</Counter>
+		<Counter name="MC2" id="8" location="peripheral" content="event">
+			<EventSet name="Memory Controller"/>
+		</Counter>
+		<Counter name="MC3" id="9" location="peripheral" content="event">
+			<EventSet name="Memory Controller"/>
+		</Counter>
+	</Counters>
+
+	<EventSets>
+	    <EventSet name="OS_Timer">
+	    	<Event id="0xffff" abbr="Timer">
+			    <Name value="Timer" />
+			    <Description value="OS Timer" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+	    <EventSet name="Core Clock">
+			<Event id="0xff" abbr="CT">
+			    <Name value="Core Clock Tick" />
+			    <Description value="Increments once for every core clock" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xfe" abbr="CT_64">
+			    <Name value="Core Clock Tick(64 clock base)" />
+			    <Description value="Increments once for every 64 core clock" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+	    <EventSet name="Core">
+	    	<Event id="0x0" >
+			    <Name value="Software increment" />
+			    <Description value="The register is incremented only on writes to the R9-Software Increment (cp15.0.R9.c12.4)" />
+   			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x1" >
+			    <Name value="Instruction fetch that causes a refill at the lowest level of instruction or unified cache" />
+			    <Description value="Each instruction fetch from normal cacheable memory that causes a refill from outside of the cache is counted. Accesses that do not cause a new cache refill but are satisfied from refilling data of a previous miss are not counted. Where instruction fetches consist of multiple instructions, these accesses count as single events. CP15 cache maintenance operations do not count as events. This counter increments for speculative instruction fetches and for fetches of instructions that reach execution" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x2" >
+			    <Name value="Instruction fetch that causes a TLB refill at the lowest level of TLB" />
+			    <Description value="Each instruction fetch that causes a translation table walk or an access to another level of TLB caching is counted. CP15 TLB maintenance operations do not count as events. This counter increments for speculative instruction fetches and for fetches of instructions that reach execution." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x3" >
+			    <Name value="Data read or write operation that causes a refill at the lowest level of data or unified cache" />
+			    <Description value="Each data read from or write to normal cacheable memory that causes a refill from outside of the cache is counted. Accesses that do not cause a new cache refill, but are satisfied from refilling data of a previous miss are not counted. Each access to a cache line to normal cacheable memory that causes a new linefill is counted, including the multiple transaction of instructions such as LDM or STM, PUSH and POP. Write-through writes that hit in the cache do not cause a linefill and so are not counted. CP15 cache maintenance operations do not count as events. This counter increments for speculative data accesses and for data accesses that are explicitly made by instructions." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x4" >
+			    <Name value="Data read or write operation that causes a cache access at the lowest level of data or unified cache" />
+			    <Description value="Each access to a cache line to normal cacheable memory is counted including the multiple transaction of instructions such as LDM or STM. CP15 cache maintenance operations do not count as events. This counter increments for speculative data accesses and for data accesses that are explicitly made by instructions" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x5" >
+			    <Name value="Data read or write operation that causes a TLB refill at the lowest level of TLB" />
+			    <Description value="Each data read or write operation that causes a translation table walk or an access to another level of TLB caching is counted. CP15 TLB maintenance operations do not count as events. This counter increments for speculative data accesses and for data accesses that are explicitly made by instructions." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x6" >
+			    <Name value="Data read architecturally executed" />
+			    <Description value="This counter increments for every instruction that explicitly read data, including SWP. This counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x7" >
+			    <Name value="Data write architecturally executed" />
+			    <Description value="The counter increments for every instruction that explicitly wrote data, including SWP. This counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x8" >
+			    <Name value="Instruction architecturally executed" />
+			    <Description value="This counter counts for all instructions, including conditional instructions that fail their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x9" >
+			    <Name value="Exception taken" />
+			    <Description value="This counts for each exception taken" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xa" >
+			    <Name value="Exception return architecturally executed" />
+			    <Description value="This includes:\nRFE &lt;addressing_mode&gt; &lt;Rn&gt;{!}\nMOVS PC (and other similar data processing instructions)\nLDM &lt;addressing_mode&gt; Rn{!}, &lt;registers_and_pc&gt;\nThis counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xb" >
+			    <Name value="Instruction that writes to the Context ID Register architecturally executed" />
+			    <Description value="This counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc" >
+			    <Name value="Software change of PC, except by an exception, architecturally executed" />
+			    <Description value="This counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xd" >
+			    <Name value="Immediate branch architecturally executed, taken or not taken" />
+			    <Description value="This includes B{L}, BLX, CB{N}Z, HB{L}, and HBLP. This counter counts for all immediate branch instructions that are architecturally executed, including conditional instructions that fail their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xe" >
+			    <Name value="Procedure return, other than exception returns, architecturally executed" />
+			    <Description value="This includes:\nBX R14\nMOV PC, LR\nPOP {..., PC}\nLDR PC, [R13], #offset\nLDMIA R9!, {...,PC}LDR PC, [R9], #offset\nThis counter only increments for instructions that are unconditional or that pass their condition codes." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xf" >
+			    <Name value="Unaligned access architecturally executed" />
+			    <Description value="This counts each instruction that is an access to an unaligned address. This counter only increments for instructions that are unconditional or that pass their condition codes" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x10" >
+			    <Name value="Branch mispredicted or not predicted" />
+			    <Description value="This counts for every pipeline flush because of a misprediction from the program flow prediction resources." />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x11" >
+			    <Name value="Cycle Count" />
+			    <Description value="Counts for every clock cycle" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x12" >
+			    <Name value="Branches or other change in the program flow that could have been predicted by the branch prediction resources of the processor" />
+			    <Description value="Branches or other change in the program flow that could have been predicted by the branch prediction resources of the processor" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x40" >
+			    <Name value="D-Cache Read Hit" />
+			    <Description value="Counts the number of Data Cache read hits. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x41" >
+			    <Name value="D-Cache Read Miss" />
+			    <Description value="Counts the number of Data Cache read misses. This includes data cache accesses that are non-cacheable. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x42" >
+			    <Name value="D-Cache Write Hit" />
+			    <Description value="Counts the number of Data Cache write hits. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x43" >
+			    <Name value="D-Cache Write Miss" />
+			    <Description value="Counts the number Data Cache write misses. This includes data cache accesses that are non-cacheable and/or non-bufferable. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x44" >
+			    <Name value="MMU Bus Request" />
+			    <Description value="Counts the number of cycles of requests to the MMU bus. This request can come from multiple masters. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x45" >
+			    <Name value="I-Cache Bus Request" />
+			    <Description value="Counts the number of cycles the Instruction Cache requests the bus until the data returns. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x46" >
+			    <Name value="WB write latency" />
+			    <Description value="Counts the number of cycles the Write Buffer requests the bus. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x47" >
+			    <Name value="Hold LDM/STM" />
+			    <Description value="Counts the number of cycles the pipeline is held because of a load/store multiple instruction. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x48" >
+			    <Name value="No Dual cflag" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because of a Carry flag dependency. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x49" >
+			    <Name value="No Dual Register Plus" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because the register file does not have enough read ports and at least one other reason. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x4a" >
+			    <Name value="LDST ROB0 on Hold" />
+			    <Description value="Counts the number of cycles a load or store instruction waits to retire from ROB0. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x4b" >
+			    <Name value="LDST ROB1 on Hold" />
+			    <Description value="Counts the number of cycles a load or store instruction waits to retire from ROB0=1. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x4c" >
+			    <Name value="Data Write Access Count" />
+			    <Description value="Counts the number of any Data write access. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x4d" >
+			    <Name value="Data Read Access Count" />
+			    <Description value="Counts the number of any Data read access. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x4e" >
+			    <Name value="A2 Stall" />
+			    <Description value="Counts the number of cycles ALU A2 is stalled. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x4f" >
+			    <Name value="L2 Cache Write Hit" />
+			    <Description value="Counts the number of write accesses to addresses already in the L2C. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x50" >
+			    <Name value="L2 Cache Write Miss" />
+			    <Description value="Counts the number of write accesses to addresses not in the L2 Cache. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x51" >
+			    <Name value="L2 Cache Read Count" />
+			    <Description value="Counts the number of 64-bit read transactions (read ready) sent from the bus. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x60" >
+			    <Name value="I-Cache Read Miss" />
+			    <Description value="Counts the number of Instruction Cache read misses. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x61" >
+			    <Name value="ITLB Miss" />
+			    <Description value="Counts the number of instruction TLB misses. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x62" >
+			    <Name value="Single Issue" />
+			    <Description value="Counts the number of cycles the processor single issues. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x63" >
+			    <Name value="Branch Retired" />
+			    <Description value="Counts the number of times one branch retires. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x64" >
+			    <Name value="ROB Full" />
+			    <Description value="Counts the number of cycles the Re-order Buffer (ROB) is full. Counts cycle." />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x65" >
+			    <Name value="MMU Read Beat" />
+			    <Description value="Counts the number of times the bus returns RDY to the MMU. This is a useful when determining bus efficiency. A user can use the signal that the MMU is requesting the bus and how long it takes on average for the data to return. (mmu_bus_req / mmu_read_count) Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x66" >
+			    <Name value="WB Write Beat" />
+			    <Description value="Counts the number times the bus returns ready to the Write Buffer. Counts events. This is useful to determine the average write latency of the write buffer (WB write latency/WB write count)." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x67" >
+			    <Name value="Dual Issue" />
+			    <Description value="Counts the number of cycles the processor dual issues. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x68" >
+			    <Name value="No Dual raw" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because of a Read after Write hazard. Counts cycles." />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x69" >
+			    <Name value="Hold IS" />
+			    <Description value="Counts the number of cycles the issue is held. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x6a" >
+			    <Name value="L2 Cache Latency" />
+			    <Description value="Counts the total number of cycles that L2C line fill requests to the bus. Counts cycles." />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x70" >
+			    <Name value="D-Cache Access" />
+			    <Description value="Counts the number of times the Data cache is accessed. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x71" >
+			    <Name value="DTLB Miss" />
+			    <Description value="Counts the number of data TLB misses. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x72" >
+			    <Name value="Branch Prediction Miss" />
+			    <Description value="Counts the number of mispredicted branches. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x74" >
+			    <Name value="A1 Stall" />
+			    <Description value="Counts the number of cycles ALU A1 is stalled. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x75" >
+			    <Name value="D-Cache Read Latency" />
+			    <Description value="Counts the number of cycles the Data cache requests the bus for a read. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x76" >
+			    <Name value="D-Cache Write Latency" />
+			    <Description value="Counts the number of cycles the Data cache requests the bus for a write. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x77" >
+			    <Name value="No Dual Register File" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because the register file doesn&apos;t have enough read ports. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x78" >
+			    <Name value="BIU Simultaneous Access" />
+			    <Description value="BIU Simultaneous Access" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x79" >
+			    <Name value="L2 Cache Read Hit" />
+			    <Description value="Counts the number of L2 Cache cache-to-bus external read requests. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x7a" >
+			    <Name value="L2 Cache Read Miss" />
+			    <Description value="Counts the number of L2 Cache read accesses that resulted in an external read request. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x7b" >
+			    <Name value="L2 Cache Eviction" />
+			    <Description value="Counts the number of evictions (Castouts) of a line from the L2 cache. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x80" >
+			    <Name value="TLB Miss" />
+			    <Description value="Counts the number of instruction and data TLB misses. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x81" >
+			    <Name value="Branches Taken" />
+			    <Description value="Counts the number of taken branches. Counts events." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x82" >
+			    <Name value="WB Full" />
+			    <Description value="Counts the number of cycles WB is full. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x83" >
+			    <Name value="D-Cache Read Beat" />
+			    <Description value="Counts the number of times the bus returns Data to the Data cache during read requests. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x84" >
+			    <Name value="D-Cache Write Beat" />
+			    <Description value="Counts the number of times the bus returns ready to the Data cache during write requests. Counts events" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x85" >
+			    <Name value="No Dual HW" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because of hardware conflict. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x86" >
+			    <Name value="No Dual Multiple" />
+			    <Description value="Counts the number of cycles the processor cannot dual issue because of multiple reasons. Counts cycles" />
+			    <Type value="duration" />
+			</Event>
+	    	<Event id="0x87" >
+			    <Name value="BIU Any Access" />
+			    <Description value="Counts the number of cycles the BIU is accessed by any unit" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x88" >
+			    <Name value="Main TLB refill caused by I-Cache" />
+			    <Description value="Counts the number of Instruction fetch operations that causes a Main TLB walk" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x89" >
+			    <Name value="Main TLB refill caused by D-Cache" />
+			    <Description value="Counts the number of Data read or write operations that causes a Main TLB walk" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x8a" >
+			    <Name value="I-Cache read beat" />
+			    <Description value="Counts the number of times the bus returns RDY to the instruction cache, useful to determine the cache&apos; average read latency (also known as &quot;read miss&quot; or &quot;read count&quot;." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x90" >
+			    <Name value="Counts any event from external input source PMUEXTIN[0]" />
+			    <Description value="Counts any event from external input source PMUEXTIN[0]" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0x91" >
+			    <Name value="Counts any event from external input source PMUEXTIN[1]" />
+			    <Description value="Counts any event from external input source PMUEXTIN[1]" />
+			    <Type value="occurence" />
+			</Event>
+            <Event id="0x92" >
+			    <Name value="Counts any event from both external input sources PMUEXTIN[0] and PMUEXTIN[1]" />
+			    <Description value="Counts any event from both external input sources PMUEXTIN[0] and PMUEXTIN[1]" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc0" >
+			    <Name value="WMMX2 store FIFO full" />
+			    <Description value="Counts the number of cycles when the WMMX2 store FIFO is full." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc1" >
+			    <Name value="WMMX2 finish FIFO full" />
+			    <Description value="Counts the number of cycles when the WMMX2 finish FIFO is full." />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc2" >
+			    <Name value="WMMX2 instruction FIFO full" />
+			    <Description value="Counts the number of cycles when the WMMX2 instruction FIFO is full" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc3" >
+			    <Name value="WMMX2 instruction retired" />
+			    <Description value="Counts the number of retired WMMX2 instructions" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc4" >
+			    <Name value="WMMX2 Busy" />
+			    <Description value="Counts the number of cycles when the WMMX2 is busy" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc5" >
+			    <Name value="WMMX2 Hold MI" />
+			    <Description value="Counts the number of cycles when WMMX2 holds the issue stage" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xc6" >
+			    <Name value="WMMX2 Hold MW" />
+			    <Description value="Counts the number cycles when WMMX2 holds the writeback stage" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xf0" >
+			    <Name value="L0IC line fill" />
+			    <Description value="L0IC line fill" />
+			    <Type value="occurence" />
+			</Event>
+	    	<Event id="0xf1" >
+			    <Name value="L0IC hit prefetch buffer" />
+			    <Description value="L0IC hit prefetch buffer" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+	    <EventSet name="Memory Controller">
+	    	<Event id="0x1D" >
+			    <Name value="Auto-refresh (non-idle)" />
+                <Description value="" />
+			</Event>
+	    	<Event id="0x1C" >
+			    <Name value="Auto-refresh (all)" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x1A" >
+			    <Name value="Write request" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x19" >
+			    <Name value="Read request" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x18" >
+			    <Name value="All data request" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x16" >
+			    <Name value="Write command" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x15" >
+			    <Name value="Read command" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x14" >
+			    <Name value="Read + Write command" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x10" >
+			    <Name value="ACTIVE command" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0xe" >
+			    <Name value="PRECHARGE command (non-data)" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0xd" >
+			    <Name value="PRECHARGE command (data)" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0xc" >
+			    <Name value="PRECHARGE command (all)" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x4" >
+			    <Name value="Non-idle cycles with no data bus utilization" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x3" >
+			    <Name value="(reserved) Non-idle cycles waiting for tWTR" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x2" >
+			    <Name value="Non-idle cycles when waiting for tRFC" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x1" >
+			    <Name value="Idle cycles (Memory Controller pipeline empty)" />
+			    <Description value="" />
+			</Event>
+	    	<Event id="0x0" >
+			    <Name value="Clock" />
+			    <Description value="" />
+			</Event>
+	    </EventSet>
+	</EventSets>
+</Configuration>

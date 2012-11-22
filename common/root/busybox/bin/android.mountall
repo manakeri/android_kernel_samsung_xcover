@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Draft by Bin Yang <bin.yang@marvell.com> on 12nd Jan. 2010
+#
+
+SYSTEM_DEV=/dev/mtdblock4 
+DATA_DEV=/dev/mtdblock5 
+MARVELL_DEV=/dev/mtdblock6
+FS_TYPE=yaffs
+
+echo "Mount android ..."
+mkdir -p /system /data /marvell
+mount -t $FS_TYPE $SYSTEM_DEV /system
+mount -t $FS_TYPE $DATA_DEV /data
+mount -t $FS_TYPE $MARVELL_DEV /marvell
+

@@ -1,0 +1,19 @@
+#
+# Makefile for touch kernel module
+#
+
+obj-m := seh.o
+
+.EXPORT_ALL_VARIABLES:
+KDIR := ../../common
+PWD  := $(shell pwd)
+MAKE := make
+
+.PHONY: all clean
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules 
+
+clean:
+	rm -rf *.o *.ko *.mod.c .*.cmd ./.tmp* *~ modules.order  Module.symvers
+

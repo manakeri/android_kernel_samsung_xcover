@@ -1,0 +1,681 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+    <!-- Refer Manzano Core EAS (MV-S104620-00 Rev.A) Chapter 11 -->
+    <!-- Refer PXA930 Developer Manual (MV-S104308-02 Rev.-) Chapter 14.4.2 -->
+	<Counters>
+		<!-- Hotspot EBS can only use the counter with type=1 -->
+		<Counter name="OS_Timer" id="0" type="0" location="core" content="time">
+			<EventSet name="OS_Timer"/>
+		</Counter>
+		<Counter name="CCNT" id="1" type="1" location="core" content="event">
+		    <EventSet name="Core Clock"/>
+		</Counter>
+		<Counter name="PMN0" id="2" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+			<EventSet name="ASSP" />
+		</Counter>
+		<Counter name="PMN1" id="3" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+			<EventSet name="ASSP" />
+		</Counter>
+		<Counter name="PMN2" id="4" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+			<EventSet name="ASSP" />
+		</Counter>
+		<Counter name="PMN3" id="5" type="1" location="core" content="event">
+			<EventSet name="Core"/>
+			<EventSet name="ASSP" />
+		</Counter>
+	</Counters>
+
+	<EventSets>
+	    <EventSet name="OS_Timer">
+	    	<Event id="0xffff" abbr="Timer">
+			    <Name value="Timer" />
+			    <Description value="OS Timer" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+	    <EventSet name="Core Clock">
+			<Event id="0xff" abbr="CT">
+			    <Name value="Core Clock Tick" />
+			    <Description value="Increments once for every core clock" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xfe" abbr="CT_64">
+			    <Name value="Core Clock Tick(64 clock base)" />
+			    <Description value="Increments once for every 64 core clock" />
+			    <Type value="occurence" />
+			</Event>
+	    </EventSet>
+		<EventSet name="Core">
+			<!-- The type properties of event indecates this event is a occurence or duration event, occurence=0, duration=1 -->
+			<Event id="0x0" abbr="ICacheMiss" >
+			    <Name value="L1 ICache miss" />
+			    <Description value="L1 Instruction cache miss requires fetch from external memory" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x1" abbr="INDeliv">
+			    <Name value="L1 ICache can't deliver" />
+			    <Description value="L1 Instruction cache cannot deliver an instruction. This could indicate an instruction cache or TLB miss. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x2" abbr="DDStall">
+			    <Name value="Data dependency stall" />
+			    <Description value="Stall due to a data dependency. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x3" abbr="ITLBMiss">
+			    <Name value="Instruction TLB miss" />
+			    <Description value="Instruction TLB miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x4" abbr="DTLBMiss">
+			    <Name value="Data TLB miss" />
+			    <Description value="Data TLB miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x5" abbr="BIR">
+			    <Name value="B and BL Instruction retired" />
+			    <Description value="Branch instruction retired, branch may or may not have changed program flow. (Counts only B and BL instructions, in both ARM and Thumb mode)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x6" abbr="BMisP">
+			    <Name value="B and BL mispredicted" />
+			    <Description value="Branch mispredicted. (Counts only B and BL instructions, in both ARM and Thumb mode)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x7" abbr="IRET">
+			    <Name value="Instruction retired" />
+			    <Description value="Instruction retired. This event steps in a count of the number of executed instructions" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x8" abbr="DBufSC">
+			    <Name value="L1 DCache buffer full stall(cycle)" />
+			    <Description value="L1 Data cache buffer full stall. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x9" abbr="DBufSS" >
+			    <Name value="L1 DCache buffer full stall(sequence)" />
+			    <Description value="L1 Data cache buffer full stall. This event occurs once for each contiguous sequence of this type of stall" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xa" abbr="DCacheAcc" >
+			    <Name value="L1 DCache access" />
+			    <Description value="L1 Data cache access, not including Cache Operations. All data accesses are treated as cacheable accesses and are counted here even if the cache is not enabled" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xb" abbr="DCacheMiss">
+			    <Name value="L1 DCache miss" />
+			    <Description value="L1 Data cache miss, not including Cache Operations. All data accesses are treated as cacheable accesses and are counted as misses if the data cache is not enabled" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xc" abbr="DCacheWB">
+			    <Name value="L1 DCache write-back" />
+			    <Description value="L1 Data cache write-back. This event occurs once for each line (32 bytes) that is written back from the cache" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xd" abbr="PCSoftCHG" >
+			    <Name value="Software changed the PC" />
+			    <Description value="Software changed the PC ('b', 'bx', 'bl', 'blx', 'and', 'eor', 'sub', 'rsb', 'add', 'adc', 'sbc', 'rsc', 'orr', 'mov', 'bic', 'mvn', 'ldm Rn, {..., pc}', 'ldr pc, [...]', pop {..., pc} will be counted). The count does not increment when an exception occurs and the PC changes to the exception address (e.g., IRQ, FIQ, SWI, ...)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xe" abbr="BIRET">
+			    <Name value="Branch instruction retired" />
+			    <Description value="Branch instruction retired. Branch may or may not have changed program flow. (Count ALL branch instructions, indirect as well as direct)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0xf" abbr="IIssCyc">
+			    <Name value="Instruction issue cycle of retired instruction" />
+			    <Description value="Instruction issue cycle of retired instruction. This event is a count of the number of core cycles each instruction requires to issue" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x17" abbr="CPStallPipe" >
+			    <Name value="Coprocessor stalled the instruction pipeline" />
+			    <Description value="Coprocessor stalled the instruction pipeline. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x18" abbr="PCAllCHG">
+			    <Name value="All changes to the PC" />
+			    <Description value="All changes to the PC. (includes software changes and exceptions)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x19" abbr="PipeFlush">
+			    <Name value="Pipeline flush" />
+			    <Description value="Pipeline flush due to branch mispredict or exception" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x1a" abbr="IIssFail">
+			    <Name value="Instruction issue failed" />
+			    <Description value="The core could not issue an instruction due to a backend stall. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x1b" abbr="MulInUse">
+			    <Name value="Multiplier in use" />
+			    <Description value="Multiplier in use. This event will occur every cycle in which the multiplier is active" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x1c" abbr="MulStallPipe">
+			    <Name value="Multiplier stalled the instruction pipeline" />
+			    <Description value="Multiplier stalled the instruction pipeline due to a resource stall. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x1d" abbr="CPStallPipe" >
+			    <Name value="Coprocessor stalled the instruction pipeline" />
+			    <Description value="Coprocessor stalled the instruction pipeline. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x1e" abbr="DCacheStallPipe">
+			    <Name value="Data Cache stalled the instruction pipeline" />
+			    <Description value="Data Cache stalled the instruction pipeline. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x1f" abbr="SnoopRequestStallPipe">
+			    <Name value="Snoop request stalled the instruction pipeline" />
+			    <Description value="Snoop request stalled the instruction pipeline. This event will occur every cycle in which the condition is present" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x20" abbr="UL2CacheReq">
+			    <Name value="Unified L2 cache request" />
+			    <Description value="Unified L2 cache request, not including cache operations. This event includes table walks, data and instruction requests" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x21" abbr="UL2DataReq">
+			    <Name value="Unified L2 data request" />
+			    <Description value="Unified L2 data request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x22" abbr="UL2IReq">
+			    <Name value="Unified L2 instruction request" />
+			    <Description value="Unified L2 instruction request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x23" abbr="UL2CacheMiss">
+			    <Name value="Unified L2 cache miss" />
+			    <Description value="Unified L2 cache miss, not including Cache Operations" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x24" abbr="UL2CacheDataMiss">
+			    <Name value="Unified L2 cache data miss" />
+			    <Description value="Unified L2 cache data miss. (L2 data access that misses the cache)" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x25" abbr="UL2CacheIFetchMiss">
+			    <Name value="Unified L2 cache instruction fetch miss" />
+			    <Description value="Unified L2 cache instruction fetch miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x26" abbr="UL2CacheDataReadMiss">
+			    <Name value="Unified L2 cache data read miss" />
+			    <Description value="Unified L2 cache data read miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x27" abbr="UL2CacheDataReadReq">
+			    <Name value="Unified L2 cache data read request" />
+			    <Description value="Unified L2 cache data read request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x28" abbr="UL2CacheDataWriteMiss">
+			    <Name value="Unified L2 cache data write miss" />
+			    <Description value="Unified L2 cache data write miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x29" abbr="UL2CacheDataWriteReq">
+			    <Name value="Unified L2 cache data write request" />
+			    <Description value="Unified L2 cache data write request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x2a" abbr="UL2CacheLineWB">
+			    <Name value="Unified L2 cache line writeback" />
+			    <Description value="Unified L2 cache line writeback" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x2b" abbr="UL2SnoopAccess">
+			    <Name value="Unified L2 snoop or snoop confirm access" />
+			    <Description value="Unified L2 snoop or snoop confirm access" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x2c" abbr="UL2SnoopMiss">
+			    <Name value="Unified L2 snoop miss" />
+			    <Description value="Unified L2 snoop miss" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x2d" abbr="UL2CacheActive">
+			    <Name value="Unified L2 cache active" />
+			    <Description value="Unified L2 cache active. This event occurs once for each L2 cycle" />
+			    <Type value="both" />
+			</Event>
+			<Event id="0x2e" abbr="UL2PushMiss">
+			    <Name value="Unified L2 push access" />
+			    <Description value="Unified L2 push access" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x2f" abbr="UL2CacheAccess">
+			    <Name value="Unified L2 cache access" />
+			    <Description value="Unified L2 cache access, not including Cache Operations" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x40" abbr="ABusTrans">
+			    <Name value="Address bus transaction" />
+			    <Description value="Address bus transaction" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x41" abbr="SIniABusTrans" >
+			    <Name value="Self initiated address bus transaction" />
+			    <Description value="Self initiated (core generated) address bus transaction" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x42" abbr="BGDAddr">
+			    <Name value="Bus grant delay of self initiated address bus transaction" />
+			    <Description value="Bus grant delay of self initiated address bus transaction. This event will occur every bus cycle in which the condition is present. (Bus cycle count from request to grant)" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x43" abbr="BusClock">
+			    <Name value="Bus clock" />
+			    <Description value="Bus clock. This event occurs once for each bus cycle" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x44" abbr="BusInitDBT">
+			    <Name value="Bus initiated (core generated) data bus transaction" />
+			    <Description value="Bus initiated (core generated) data bus transaction" />
+			    <Type value="both" />
+			</Event>
+			<Event id="0x45" abbr="BGDData">
+			    <Name value="Bus grant delay of self initiated data bus transaction" />
+			    <Description value="Bus grant delay of self initiated data bus transaction.	This event will occur every bus cycle in which the condition is present. (Bus cycle count from request to grant)" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x47" abbr="SIniDBusTrans">
+			    <Name value="Self initiated data bus transaction" />
+			    <Description value="Self initiated (core generated) data bus transaction. This event occurs once for each self initiated data bus cycle" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x48" abbr="DBusTrans" >
+			    <Name value="Data bus transaction" />
+			    <Description value="Data bus transaction. This event occurs once for each data bus cycle" />
+			    <Type value="duration" />
+			</Event>
+			<Event id="0x49" abbr="RetBusTrans">
+			    <Name value="Retired bus transaction" />
+			    <Description value="Retired bus transaction" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x50" abbr="UL2CLAlloc">
+			    <Name value="Unified L2 cache line allocation" />
+			    <Description value="Unified L2 cache line allocation" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x51" abbr="UL2CLUpdate">
+			    <Name value="Unified L2 cache line update" />
+			    <Description value="Unified L2 cache line update" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x52" abbr="UL2RecOp">
+			    <Name value="Unified L2 recirculated operation" />
+			    <Description value="Unified L2 recirculated operation" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x53" abbr="UL2SnoopReq" >
+			    <Name value="Unified L2 snoop request" />
+			    <Description value="Unified L2 snoop request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x54" abbr="UL2SnoopConfirm" >
+			    <Name value="Unified L2 snoop confirm" />
+			    <Description value="Unified L2 snoop confirm" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x55" abbr="UL2PushReq">
+			    <Name value="Unified L2 push request" />
+			    <Description value="Unified L2 push request" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x56" abbr="UL2PushUpdate">
+			    <Name value="Unified L2 push update" />
+			    <Description value="Unified L2 push update" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x57" abbr="UL2PushAlloc">
+			    <Name value="Unified L2 push allocation" />
+			    <Description value="Unified L2 push allocation" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x58" abbr="UL2SpecOp">
+			    <Name value="Unified L2 special operation" />
+			    <Description value="Unified L2 special operation" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x59" abbr="UL2SnoopHitClean">
+			    <Name value="Unified L2 snoop hit on clean cache line" />
+			    <Description value="Unified L2 snoop hit on clean cache line" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x5a" abbr="UL2SnoopHitDirty" >
+			    <Name value="Unified L2 snoop hit on dirty cache line" />
+			    <Description value="Unified L2 snoop hit on dirty cache line" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x60" abbr="ATRet" >
+			    <Name value="Address transaction retry" />
+			    <Description value="Address transaction retry" />
+			    <Type value="occurence" />
+			</Event>
+			<Event id="0x61" abbr="STRet" >
+			    <Name value="Snoop transaction retry" />
+			    <Description value="Snoop transaction retry" />
+			    <Type value="occurence" />
+			</Event>
+		</EventSet>
+		<EventSet name="ASSP" zone="0x10000000" >
+		    <Event id="0" abbr="CNIF">
+		        <Name value="Core is performing a new instruction fetch" />
+		        <Description value="Core is performing a new instruction fetch. e.g. an L2 cache miss" />
+		    </Event>
+		    <Event id="1" abbr="CNDF">
+		        <Name value="Core is performing a new data fetch" />
+		        <Description value="Core is performing a new data fetch (for example, an L2 cache miss)" />
+		    </Event>
+		    <Event id="2" abbr="CRRC">
+		        <Name value="Core read request count" />
+		        <Description value="Core read request count" />
+		    </Event>
+		    <Event id="9" abbr="B1BU">
+		        <Name value="System Bus 1 bus utilization" />
+		        <Description value="System Bus 1 bus utilization (number of cycles during which System Bus 1 bus is occupied) " />
+		    </Event>
+		    <Event id="10" abbr="B2BU">
+		        <Name value="System Bus 2 utilization" />
+		        <Description value="System Bus 2 utilization (number of cycles during which System Bus 2 is occupied)" />
+		    </Event>
+		    <Event id="14" abbr="DMQO">
+		        <Name value="Dynamic memory queue occupied" />
+		        <Description value="Dynamic memory queue  occupied (number of cycles when the dynamic memory controller queue is not empty)" />
+		    </Event>
+		    <Event id="15" abbr="DMQO1">
+		        <Name value="Dynamic memory queue occupied by more than 1 request" />
+		        <Description value="Dynamic memory queue occupied by more than 1 request (number of cycles when the dynamic memory controller queue has two or more requests)" />
+		    </Event>
+		    <Event id="16" abbr="DMQO2">
+		        <Name value="Dynamic memory queue occupied by more than 2 requests" />
+		        <Description value="Dynamic memory queue occupied by more than 2 requests (number of cycles when the dynamic memory controller queue has three or more requests)" />
+		    </Event>
+		    <Event id="17" abbr="DMQO3">
+		        <Name value="Dynamic memory queue occupied by more than 3 requests" />
+		        <Description value="Dynamic memory queue occupied by more than 3 requests (number of cycles when the dynamic memory controller queue is full)" />
+		    </Event>
+		    <Event id="18" abbr="SMQO">
+		        <Name value="Static memory queue occupied" />
+		        <Description value="Static memory queue occupied (number of cycles when the static memory controler queue is not empty)" />
+		    </Event>
+		    <Event id="19" abbr="SMQO1">
+		        <Name value="Static memory queue occupied by more than one request" />
+		        <Description value="Static memory queue occupied by more than one request (number of cycles when the static memory controller queue has two or more requests)" />
+		    </Event>
+		    <Event id="20" abbr="SMQO2">
+		        <Name value="Static memory queue occupied by more than two requests" />
+		        <Description value="Static memory queue occupied by more than two requests (number of cycles when the static memory controller queue has three or more requests)" />
+		    </Event>
+		    <Event id="21" abbr="SMQO3">
+		        <Name value="Static memory queue occupied by more than three requests" />
+		        <Description value="Static memory queue occupied by more than three requests (number of cycles when the static memory controller queue is full)" />
+		    </Event>
+		    <Event id="26" abbr="ISMQO">
+		        <Name value="Internal SRAM memory queue occupied" />
+		        <Description value="Internal SRAM memory queue occupied. Number of cycles when the internal memory controller queue is not empty" />
+		    </Event>
+		    <Event id="27" abbr="ISMQO1">
+		        <Name value="Internal SRAM memory queue occupied by more than one request" />
+		        <Description value="Internal SRAM memory queue occupied by more than one request. Number of cycles when the internal memory controller queue has two or more requests" />
+		    </Event>
+		    <Event id="28" abbr="ISMQO2">
+		        <Name value="Internal SRAM memory queue occupied by more than two requests" />
+		        <Description value="Internal SRAM memory queue occupied by more than two requests. Number of cycles when the internal memory controller queue three or more requests" />
+		    </Event>
+		    <Event id="29" abbr="ISMQO3">
+		        <Name value="Internal SRAM memory queue occupied by more than three requests" />
+		        <Description value="Internal SRAM memory queue occupied by more than three requests. Number of cycles when the internal memory controller queue is full" />
+		    </Event>
+		    <Event id="30" abbr="EMCBO">
+		        <Name value="Number of cycles when External Memory controller bus is occupied" />
+		        <Description value="Number of cycles when External Memory controller bus is occupied" />
+		    </Event>
+		    <Event id="31" abbr="EDFBO">
+		        <Name value="Number of cycles when External Data Flash bus is occupied" />
+		        <Description value="Number of cycles when External Data Flash bus is occupied" />
+		    </Event>
+		    <Event id="36" abbr="CWAC">
+		        <Name value="Core write access count" />
+		        <Description value="Core write access count. Number of writes from the core" />
+		    </Event>
+		    <Event id="42" abbr="SB1BReq">
+		        <Name value="System Bus 1 bus request" />
+		        <Description value="System Bus 1 bus request. Length of time that at least one bus request is asserted on System Bus 1" />
+		    </Event>
+		    <Event id="43" abbr="SB2BReq">
+		        <Name value="System Bus 2 bus request" />
+		        <Description value="System Bus 2 bus request. Length of time that at least one bus request is asserted on System Bus 2" />
+		    </Event>
+		    <Event id="44" abbr="SB1BRet">
+		        <Name value="System Bus 1 bus retries" />
+		        <Description value="System Bus 1 bus retries. Number of retries on System Bus 1" />
+		    </Event>
+		    <Event id="45" abbr="SB2Ret">
+		        <Name value="System Bus 2 bus retries" />
+		        <Description value="System Bus 2 bus retries. Number of retries on System Bus 2" />
+		    </Event>
+		    <Event id="46" abbr="TL1">
+		        <Name value="Temperature level 1" />
+		        <Description value="Temperature level 1 (time the PXA930 processor has spent in temperature range 1). The PSR register shows the current temperature range of operation (TSS field)." />
+		    </Event>
+		    <Event id="47" abbr="TL2">
+		        <Name value="Temperature level 2" />
+		        <Description value="Temperature level 2 (time the PXA930 processor has spent in temperature range 2). The PSR register shows the current temperature range of operation (TSS field)." />
+		    </Event>
+		    <Event id="48" abbr="TL3">
+		        <Name value="Temperature level 3" />
+		        <Description value="Temperature level 3 (time the PXA930 processor has spent in temperature range 3). The PSR register shows the current temperature range of operation (TSS field)." />
+		    </Event>
+		    <Event id="49" abbr="TL4">
+		        <Name value="Temperature level 4" />
+		        <Description value="Temperature level 4 (time the PXA930 processor has spent in temperature range 4). The PSR register shows the current temperature range of operation (TSS field)." />
+		    </Event>
+		    <Event id="50" abbr="CRWL1">
+		        <Name value="Core read/write latency measurement 1" />
+		        <Description value="Core read/write latency measurement. Amount of time when core has more than 1 read/write requests outstanding" />
+		    </Event>
+		    <Event id="51" abbr="CRWL2">
+		        <Name value="Core read/write latency measurement 2" />
+		        <Description value="Core read/write latency measurement. Amount of time when core has more than 2 read/write requests outstanding" />
+		    </Event>
+		    <Event id="52" abbr="CRWL3">
+		        <Name value="Core read/write latency measurement 3" />
+		        <Description value="Core read/write latency measurement. Amount of time when core has more than 3 read/write requests outstanding" />
+		    </Event>
+		    <Event id="53" abbr="CRWL4">
+		        <Name value="Core read/write latency measurement 4" />
+		        <Description value="Core read/write latency measurement. Amount of time when core has more than 4 read/write requests outstanding" />
+		    </Event>
+		    <Event id="54" abbr="SB1IML">
+		        <Name value="System Bus 1 to internal memory read/write latency measurement" />
+		        <Description value="System Bus 1 to internal memory read/write latency measurement. Amount of time when System Bus 1 to internal memory has more than 1 read/write requests outstanding" />
+		    </Event>
+		    <Event id="55" abbr="SB1IML2">
+		        <Name value="System Bus 1 to internal memory read/write latency measurement 2" />
+		        <Description value="System Bus 1 to internal memory read/write latency measurement. Amount of time when System Bus 1 to internal memory has more than 2 read/write requests outstanding" />
+		    </Event>
+		    <Event id="56" abbr="SB1IML3">
+		        <Name value="System Bus 1 to internal memory read/write latency measurement 3" />
+		        <Description value="System Bus 1 to internal memory read/write latency measurement. Amount of time when System Bus 1 to internal memory has more than 3 read/write requests outstanding" />
+		    </Event>
+		    <Event id="57" abbr="SB1IML4">
+		        <Name value="System Bus 1 to internal memory read/write latency measurement 4" />
+		        <Description value="System Bus 1 to internal memory read/write latency measurement. Amount of time when System Bus 1 to internal memory has more than 4 read/write requests outstanding" />
+		    </Event>
+		    <Event id="58" abbr="SB1DSML">
+		        <Name value="System Bus 1 to dynamic/static memory read/write latency measurement" />
+		        <Description value="System Bus 1 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 1 to dynamic/static memory has more than 1 read/write requests outstanding" />
+		    </Event>
+		    <Event id="59" abbr="SB1DSML 2">
+		        <Name value="System Bus 1 to dynamic/static memory read/write latency measurement 2" />
+		        <Description value="System Bus 1 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 1 to dynamic/static memory has more than 2 read/write requests outstanding" />
+		    </Event>
+		    <Event id="60" abbr="SB1DSML 3">
+		        <Name value="System Bus 1 to dynamic/static memory read/write latency measurement 3" />
+		        <Description value="System Bus 1 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 1 to dynamic/static memory has more than 3 read/write requests outstanding" />
+		    </Event>
+		    <Event id="61" abbr="SB1DSML 4">
+		        <Name value="System Bus 1 to dynamic/static memory read/write latency measurement 4" />
+		        <Description value="System Bus 1 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 1 to dynamic/static memory has more than 4 read/write requests outstanding" />
+		    </Event>
+		    <Event id="62" abbr="SB2IML1">
+		        <Name value="System Bus 2 to internal memory read/write latency measurement" />
+		        <Description value="System Bus 2 to internal memory read/write latency measurement. Amount of time when System Bus 2 to internal memory has more than 1 read/write requests outstanding" />
+		    </Event>
+		    <Event id="63" abbr="SB2IML2">
+		        <Name value="System Bus 2 to internal memory read/write latency measurement 2" />
+		        <Description value="System Bus 2 to internal memory read/write latency measurement. Amount of time when System Bus 2 to internal memory has more than 2 read/write requests outstanding" />
+		    </Event>
+		    <Event id="64" abbr="SB2IML3">
+		        <Name value="System Bus 2 to internal memory read/write latency measurement 3" />
+		        <Description value="System Bus 2 to internal memory read/write latency measurement. Amount of time when System Bus 2 to internal memory has more than 3 read/write requests outstanding" />
+		    </Event>
+		    <Event id="65" abbr="SB2IML4">
+		        <Name value="System Bus 2 to internal memory read/write latency measurement 4" />
+		        <Description value="System Bus 2 to internal memory read/write latency measurement. Amount of time when System Bus 2 to internal memory has more than 4 read/write requests outstanding" />
+		    </Event>
+		    <Event id="66" abbr="SB2DSML">
+		        <Name value="System Bus 2 to dynamic/static memory read/write latency measurement" />
+		        <Description value="System Bus 2 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 2 to dynamic/static memory has more than 1 read/write requests outstanding" />
+		    </Event>
+		    <Event id="67" abbr="SB2DSML2">
+		        <Name value="System Bus 2 to dynamic/static memory read/write latency measurement 2" />
+		        <Description value="System Bus 2 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 2 to dynamic/static memory has more than 2 read/write requests outstanding" />
+		    </Event>
+		    <Event id="68" abbr="SB2DSML3">
+		        <Name value="System Bus 2 to dynamic/static memory read/write latency measurement 3" />
+		        <Description value="System Bus 2 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 2 to dynamic/static memory has more than 3 read/write requests outstanding" />
+		    </Event>
+		    <Event id="69" abbr="SB2DSML4">
+		        <Name value="System Bus 2 to dynamic/static memory read/write latency measurement 4" />
+		        <Description value="System Bus 2 to dynamic/static memory read/write latency measurement. Amount of time when System Bus 2 to dynamic/static memory has more than 4 read/write requests outstanding" />
+		    </Event>
+		</EventSet>
+	</EventSets>
+
+	<Ratios>
+		<Ratio name="Instruction Cache miss-rate" abbr="ICMR">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x0"/>
+			<event2 id="0x7"/>
+		</Ratio>
+		<Ratio name="Cycle Per Instruction(CPI)" abbr="CPI">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0xff"/>
+			<event2 id="0x7"/>
+		</Ratio>
+		<Ratio name="Data Cache miss-rate" abbr="DCMR">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0xb"/>
+			<event2 id="0xa"/>
+		</Ratio>
+		<Ratio name="Data Cache hit-rate" abbr="DCHR">
+			<step id="0" oper="sub" op1="event2" op2="event1"/>
+			<step id="1" oper="div" op1="step0" op2="event2"/>
+			<event1 id="0xb"/>
+			<event2 id="0xa"/>
+		</Ratio>
+		<Ratio name="Average cycle of processor stalled due to instruction fetch from external memory" abbr="ASCIF">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x1"/>
+			<event2 id="0x0"/>
+		</Ratio>
+		<Ratio name="Percentage of processor stalled due to instruction fetch from external memory" abbr="SPERIF">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x1"/>
+			<event2 id="0xff"/>
+		</Ratio>
+		<Ratio name="Average cycle of processor stalled due to DCache stall" abbr="ASCDS">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x8"/>
+			<event2 id="0x9"/>
+		</Ratio>
+		<Ratio name="Percentage of processor stalled due to DCache stall" abbr="SPERDS">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x8"/>
+			<event2 id="0xff"/>
+		</Ratio>
+		<Ratio name="Percentage of processor stalled due to data depencency" abbr="SPERDD">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x2"/>
+			<event2 id="0xff"/>
+		</Ratio>
+		<Ratio name="Instruction TLB miss-rate" abbr="ITMR">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x3"/>
+			<event2 id="0x7"/>
+		</Ratio>
+		<Ratio name="Data TLB miss-rate" abbr="DTMR">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x4"/>
+			<event2 id="0xa"/>
+		</Ratio>
+		<Ratio name="Average Dynamic Block Length" abbr="ADBL">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x7"/>
+			<event2 id="0x18"/>
+		</Ratio>
+		<Ratio name="Table Walks" abbr="TW">
+			<step id="0" oper="add" op1="event1" op2="event2"/>
+			<event1 id="0x3"/>
+			<event2 id="0x4"/>
+		</Ratio>
+		<Ratio name="Core Utilization" default="true" abbr="CU">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0xf"/>
+			<event2 id="0xff"/>
+		</Ratio>
+		<Ratio name="Exception" abbr="EXCPT">
+			<step id="0" oper="sub" op1="event1" op2="event2"/>
+			<event1 id="0x18"/>
+			<event2 id="0xd"/>
+		</Ratio>
+		<Ratio name="MAC Utilization" abbr="MACU">
+			<step id="0" oper="sub" op1="event1" op2="event2"/>
+			<step id="1" oper="div" op1="step0" op2="event1"/>
+			<event1 id="0x1b"/>
+			<event2 id="0x1c"/>
+		</Ratio>
+		<Ratio name="L2 Data Cache miss-rate" abbr="L2DCMR">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x23"/>
+			<event2 id="0x20"/>
+		</Ratio>
+		<Ratio name="L2 Data Cache hit-rate" abbr="L2DCHR">
+			<step id="0" oper="sub" op1="event2" op2="event1"/>
+			<step id="1" oper="div" op1="step0" op2="event2"/>
+			<event1 id="0x23"/>
+			<event2 id="0x20"/>
+		</Ratio>
+		<Ratio name="Data Bus Utilization" abbr="DBU">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x47"/>
+			<event2 id="0x48"/>
+		</Ratio>
+		<Ratio name="Address Bus Usage" abbr="ABU">
+			<step id="0" oper="div" op1="event1" op2="event2"/>
+			<event1 id="0x41"/>
+			<event2 id="0x40"/>
+		</Ratio>
+		<Ratio name="Average Data Bus Grand Latency" abbr="ADBGL">
+		    <step id="0" oper="div" op1="event1" op2="event2" />
+		    <event1 id="0x45" />
+		    <event2 id="0x44" />
+		</Ratio>
+		<Ratio name="Retried Address Bus Transaction" abbr="RABT">
+		    <step id="0" oper="div" op1="event1" op2="event2" />
+		    <event1 id="0x49" />
+		    <event2 id="0x41" />
+		</Ratio>
+	</Ratios>
+
+</Configuration>

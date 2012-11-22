@@ -1,0 +1,56 @@
+Event Id	Proper Counters		Comments
+[1m0xffff[0m		OS_Timer		Timer
+[1m0x3[0m		PMN0,PMN1,PMN2,PMN3	Cycle Count
+[1m0x5[0m		PMN0			DCache Read Hit
+[1m0x9[0m		PMN0,PMN1		DCache Read Miss
+[1m0x11[0m		PMN0			DCache Write Hit
+[1m0x21[0m		PMN0			DCache Write Miss
+[1m0x41[0m		PMN0			Retired Instruction
+[1m0x401[0m		PMN0			MMU Bus Request (Read Latency)
+[1m0x801[0m		PMN0			ICache Bus Request (Read Latency)
+[1m0x1001[0m		PMN0			WB Bus Request (Write Latency)
+[1m0x2001[0m		PMN0			Hold LDM/STM
+[1m0x40001[0m		PMN0			Data Write Access Count
+[1m0x80001[0m		PMN0			Data Read Access Count
+[1m0x1000001[0m	PMN0			SIMD Cycle Count
+[1m0x2000001[0m	PMN0			Predicted Branch Count
+[1m0x20000001[0m	PMN0,PMN1		L2C Write Hit
+[1m0x40000001[0m	PMN0,PMN1		L2C Write Miss
+[1m0x80000001[0m	PMN0			L2C Read Count
+[1m0x5[0m		PMN1			ICache Read Miss
+[1m0x11[0m		PMN1			DCache Write Miss
+[1m0x21[0m		PMN1			ITLB Miss
+[1m0x41[0m		PMN1			Single Issue
+[1m0x101[0m		PMN1			Branch Retired
+[1m0x201[0m		PMN1			ROB Full
+[1m0x401[0m		PMN1			MMU Read Beat
+[1m0x801[0m		PMN1			ICache Read Beat
+[1m0x8001[0m		PMN1			Hold IS
+[1m0x1001[0m		PMN1			WB Write Beat
+[1m0x10001[0m		PMN1			Data Read Access Count
+[1m0x1000001[0m	PMN1			SIMD Retired Instructions
+[1m0x2000001[0m	PMN1			SIMD Store FIFO Full
+[1m0x80000001[0m	PMN1			L2C Latency
+[1m0x9[0m		PMN2			DCache Access
+[1m0x11[0m		PMN2			DTLB Miss
+[1m0x101[0m		PMN2			Branch Predict Miss
+[1m0x201[0m		PMN2			WB Write Beat
+[1m0x401[0m		PMN2			A1 Stall
+[1m0x801[0m		PMN2			DCache Read Latency
+[1m0x1001[0m		PMN2			DCache Write Latency
+[1m0x10001[0m		PMN2			BIU Simultaneous Access
+[1m0x1000001[0m	PMN2			SIMD Hold IS
+[1m0x2000001[0m	PMN2			SIMD Instr Buffer Full
+[1m0x20000001[0m	PMN2,PMN3		L2C Read Hit
+[1m0x40000001[0m	PMN2,PMN3		L2C Read Miss
+[1m0x5[0m		PMN3			DCache Read Miss
+[1m0x9[0m		PMN3			DCache Write Miss
+[1m0x11[0m		PMN3			TLB Miss
+[1m0x101[0m		PMN3			Branches Taken
+[1m0x201[0m		PMN3			WB Full
+[1m0x801[0m		PMN3			DCache Read Beat
+[1m0x1001[0m		PMN3			DCache Write Beat
+[1m0x10001[0m		PMN3			BIU Any Access
+[1m0x400001[0m	PMN3			Data Write Access Count
+[1m0x1000001[0m	PMN3			SIMD Hold Writeback Stage
+[1m0x2000001[0m	PMN3			SIMD Retire FIFO Full

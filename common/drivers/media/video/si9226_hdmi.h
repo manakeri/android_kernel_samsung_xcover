@@ -1,0 +1,352 @@
+/*******************************************************************
+*	Copyright	?	2010	Marvell	Corporation
+*
+*******************************************************************/
+
+#define	SI_HDMI_640_480		1
+#define	SI_HDMI_720_576		2
+#define	SI_HDMI_1024_768	3
+#define	SI_DVI_640_480		4
+#define	SI_DVI_1024_768		5
+#define	SI_DVI_800_600		6
+#define	SI_DVI_800_480		7
+#define SI_HDMI_1280_720    8
+
+#define	SI_DVI	0
+#define	SI_HDMI	1
+
+
+
+/*	DEFENITIONS	*/
+#define	SiL9226_DEVICE_ID	0xB2
+#define	SiL92xx_DEVICE_ID_OTHER_FAMILY	0xB0
+#define	SiL9226_OTHER_DEVICE_ID	0x26
+#define	SiL9222_DEVICE_ID	0x22
+#define	SiL922x_DEVICE_ID_OTHER_FAMILY	0x20
+#define	SiL9220_MIPI_DEVICE_ID	0x92
+
+#define	SiL92xx_DEVICE_ID_REG	0x1B
+#define	SiL92xx_DEVICE_REVISION_ID_REG	0x1C
+#define	SiL92xx_DEVICE_REVISION_ID_MASK	0x0F
+
+#define	SiL92xx_INTERNAL_PAGE	0xBC
+#define	SiL92xx_FIRST_PAGE	0x01
+#define	SiL92xx_SECOND_PAGE	0x02
+#define	SiL92xx_SET_INDEXED_REGISTER	0xBD
+#define	SiL92xx_FIRST_PAGE_SECOND_REGISTER	0x02
+#define	SiL92xx_FIRST_PAGE_THIRD_REGISTER	0x03
+#define	SiL92xx_SECOND_PAGE_AUDIO_REGISTER	0x2F
+#define	SiL92xx_READ_WRITE_ACCESS	0xBE
+
+/*Video	registers*/
+#define	SiL92xx_VIDEO_REG	0x0
+#define	SiL92xx_PIXEL_REPETITION_REG	0x8
+#define	SiL92xx_INPUT_FORMAT_REG	0x9
+#define	SiL92xx_SYSTEM_CONTROL	0x1A
+#define	SiL92xx_POWER_STATE	0x1E
+#define	SiL92xx_QUERY_DATA	0x29
+#define	SiL92xx_CONTROL_DATA	0x2A
+#define	SiL92xx_DE_REG	0x62
+
+/*CTRL	bus	registers	*/
+#define	SiL92xx_PVT_CONTROL	0x12
+#define	SiL92xx_PVT_ADDRESS	0x13
+
+#define	SiL92xx_CTRL_BUS_SET_CEC_LADDR	0x66
+#define	SiL92xx_CTRL_BUS_GET_CEC_LADDR	0x67
+#define	SiL92xx_PVT_CONTROL_START	(0x1u<<0)
+
+/*SiL92xx_POWER_STATE	bits*/
+#define	SiL92xx_POWER_STATE_TX_POWER_STATE(n)			((n)<<0)
+#define	SiL92xx_POWER_STATE_CTRL_PIN(n)				((n)<<4)
+
+/*SiL92xx_PIXEL_REPETITION_REG	bits*/
+#define	SiL92xx_PIXEL_REPETITION_REG_INPUT_BUS(n)			((n)<<5)
+#define	SiL92xx_PIXEL_REPETITION_REG_EDGE(n)				((n)<<4)
+#define	SiL92xx_PIXEL_REPETITION_REG_PIXEL_REPETITION_FACTOR(n)		((n)<<0)
+
+#define	PIXEL_REPETITION_12_BITS_WIDE	0x0
+#define	PIXEL_REPETITION_24_BITS_WIDE	0x1
+
+#define	PIXEL_REPETITION_FALLING_EDGE	0x0
+#define	PIXEL_REPETITION_RISING_EDGE	0x1
+
+/*SiL92xx_INPUT_FORMAT_REG*/
+#define	SiL92xx_INPUT_FORMAT_REG_FORMAT(n)		((n)<<0)
+#define	SiL92xx_INPUT_FORMAT_REG_QUANTIZATION(n)	((n)<<2)
+#define	SiL92xx_INPUT_FORMAT_REG_10BIT_TO_8BIT(n)	((n)<<6)
+#define	SiL92xx_INPUT_FORMAT_REG_EXTENDED_BIT(n)	((n)<<7)
+
+#define	SII92XX_INPUT_FORMAT_ALL_8_BIT				0
+#define	SII92XX_INPUT_FORMAT_ALL_12_BIT				1
+
+/*SiL92xx_OUTPUT_FORMAT_REG*/
+#define	SiL92xx_OUTPUT_FORMAT_REG_FORMAT(n)		((n)<<0)
+#define	SiL92xx_OUTPUT_FORMAT_REG_QUANTIZATION(n)	((n)<<2)
+#define	SiL92xx_OUTPUT_FORMAT_REG_COLOR_SPACE(n)	((n)<<4)
+
+#define	SII92XX_OUTPUT_FORMAT_BT601					0
+#define	SII92XX_OUTPUT_FORMAT_BT709					1
+
+/*SiL92xx_CONTROL_DATA	bits*/
+#define	SiL92xx_CONTROL_DATA_PROTECTION(n)			((n)<<0)
+
+/*SiL92xx_SYSTEM_CONTROL*/
+#define	SiL92xx_SYSTEM_CONTROL_OUTPUT_MODE(n)			((n)<<0)
+#define	SiL92xx_SYSTEM_CONTROL_DDC(n)				((n)<<2)
+#define	SiL92xx_SYSTEM_CONTROL_MUTE(n)				((n)<<3)
+#define	SiL92xx_SYSTEM_CONTROL_TMDS(n)				((n)<<4)
+
+/*SiL92xx_DE_REG	bits*/
+#define	SiL92xx_DE_REG_ENABLE(n)				((n)<<6)
+#define	SiL92xx_DE_REG_VSYNC_POLARITY(n)			((n)<<5)
+#define	SiL92xx_DE_REG_HSYNC_POLARITY(n)			((n)<<4)
+#define	SiL92xx_DE_REG_DE_DLY(n)				((n)<<0)
+
+#define	SiL92xx_DE_REG_SYNC_POLARITY_POSITIVE		0
+#define	SiL92xx_DE_REG_SYNC_POLARITY_NEGETIVE		1
+
+/*Audio	registers*/
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG	0x1F
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG	0x20
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE0	0x21
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE1	0x22
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE2	0x23
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE3	0x24
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE4	0x25
+#define	SiL92xx_AUDIO_ENABLE_REG			0x26
+#define	SiL92xx_AUDIO_SAMPLE_REG			0x27
+
+/*SiL92xx_AUDIO_ENABLE_REG	bits*/
+#define	SiL92xx_AUDIO_ENABLE_REG_AUDIO_INTERFACE(n)		((n)<<6)
+#define	SiL92xx_AUDIO_ENABLE_REG_MUTE				(0x1u<<4)
+#define	SiL92xx_AUDIO_ENABLE_REG_CODING_TYPE(n)			((n)<<0)
+
+/*SiL92xx_AUDIO_SAMPLE_REG	bits*/
+#define	SiL92xx_AUDIO_SAMPLE_REG_AUDIO_SAMPLE_SIZE(n)	((n)<<6)
+#define	SiL92xx_AUDIO_SAMPLE_REG_AUDIO_SAMPLE_FREQ(n)	((n)<<3)
+#define	SiL92xx_AUDIO_SAMPLE_REG_AUDIO_CHANNEL_COUNT(n)	((n)<<0)
+
+/*SiL92xx_I2S_ENABLE_AND_MAPPING_REG	bits*/
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG_SD_CHANNEL_INPUT	(0x1u<<7)
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG_MAP(n)		((n)<<4)
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG_AUTO_DOWNSAMPLE	(0x1u<<3)
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG_SWAP_LEFT_RIGHT	(0x1u<<2)
+#define	SiL92xx_I2S_ENABLE_AND_MAPPING_REG_SD(n)		((n)<<0)
+
+/*SiL92xx_I2S_INPUT_CONFIGURATION_REG	bits*/
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_SCK_SAMPLE_EDGE	(0x1u<<7)
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_MCLK(n)		((n)<<4)
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_WS_POLARITY		(0x1u<<3)
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_SD_JUSTIFY		(0x1u<<2)
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_SD_DIRECTION	(0x1u<<1)
+#define	SiL92xx_I2S_INPUT_CONFIGURATION_REG_WS_TO_SD		(0x1u<<1)
+
+/*SiL92xx_I2S_CHANNEL_STATUS_BYTE2	bits*/
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE2_SOURCE_NUMBER(n)	((n)<<0)
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE2_CHANNEL_NUMBER(n)	((n)<<4)
+
+/*SiL92xx_I2S_CHANNEL_STATUS_BYTE3	bits*/
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE3_SAMPLING_FREQUENCY(n)	((n)<<0)
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE3_CLOCK_ACCURACY(n)	((n)<<4)
+
+/*SiL92xx_I2S_CHANNEL_STATUS_BYTE4	bits*/
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE4_SAMPLE_LENGTH(n)	((n)<<0)
+#define	SiL92xx_I2S_CHANNEL_STATUS_BYTE4_ORIGINAL_FS(n)		((n)<<4)
+
+/* Device Enum*/
+typedef enum {
+	HDMI_NA			=	0,
+	HDMI_SII9222		=	1,
+	HDMI_SII9226		=	2,
+	HDMI_SII9220_MIPI	=	3,
+} SII92XX_TYPE;
+
+/* Pixel Repetition Factor Enum*/
+typedef enum {
+	SII92XX_PIXEL_REPETITION_NOT_REPLICATED			=	0,
+	SII92XX_PIXEL_REPETITION_TWO_TIMES			=	1,
+	SII92XX_PIXEL_REPETITION_FOUR_TIMES			=	3,
+} SII92XX_PIXEL_REPETITION;
+
+/* Power State Enum*/
+typedef enum {
+	SII92XX_POWER_STATE_D0_STATE			=	0,
+	SII92XX_POWER_STATE_D2_STATE2			=	1,
+	SII92XX_POWER_STATE_D2_STATE			=	2,
+	SII92XX_POWER_STATE_D3_STATE			=	3,
+} SII92XX_POWER_STATE;
+
+/* Input Format Enum*/
+typedef enum {
+	SII92XX_INPUT_FORMAT_RGB		=	0,
+	SII92XX_INPUT_FORMAT_YCBCR444		=	1,
+	SII92XX_INPUT_FORMAT_YCBCR422		=	2,
+	SII92XX_INPUT_FORMAT_BLACK_MODE		=	3,
+} SII92XX_INPUT_FORMAT;
+
+/* Input Video Quantization Enum*/
+typedef enum {
+	SII92XX_INPUT_VIDEO_QUANTIZATION_AUTO		=	0,
+	SII92XX_INPUT_VIDEO_QUANTIZATION_FULL		=	1,
+	SII92XX_INPUT_VIDEO_QUANTIZATION_LIMITED	=	2,
+} SII92XX_INPUT_VIDEO_QUANTIZATION;
+
+/* Output Format Enum*/
+typedef enum {
+	SII92XX_OUTPUT_FORMAT_HDMI_RGB			=	0,
+	SII92XX_OUTPUT_FORMAT_HDMI_YCBCR444		=	1,
+	SII92XX_OUTPUT_FORMAT_HDMI_YCBCR422		=	2,
+	SII92XX_OUTPUT_FORMAT_DVI_RGB			=	3,
+} SII92XX_OUTPUT_FORMAT;
+
+/* Output Video Quantization Enum*/
+typedef enum {
+	SII92XX_OUTPUT_VIDEO_QUANTIZATION_AUTO		=	0,
+	SII92XX_OUTPUT_VIDEO_QUANTIZATION_FULL		=	1,
+	SII92XX_OUTPUT_VIDEO_QUANTIZATION_LIMITED	=	2,
+} SII92XX_OUTPUT_VIDEO_QUANTIZATION;
+
+/* System Control Enum*/
+typedef enum {
+	SII92XX_SYSTEM_CONTROL_OUTPUT_MODE_DVI		=	0,
+	SII92XX_SYSTEM_CONTROL_OUTPUT_MODE_HDMI		=	1,
+} SII92XX_SYSTEM_CONTROL_OUTPUT_MODE;
+
+/* Audio Interface Enum*/
+typedef enum {
+	SII92XX_AUDIO_INTERFACE_DISABLED			=	0,
+	SII92XX_AUDIO_INTERFACE_SPDIF				=	1,
+	SII92XX_AUDIO_INTERFACE_I2S				=	2,
+	SII92XX_AUDIO_INTERFACE_RSVD				=	3,
+} SII92XX_AUDIO_INTERFACE;
+
+/* I2S_Interface_Map Enum*/
+typedef enum {
+	SII92XX_I2S_INTERFACE_MAP_FIFO0				=	0,
+	SII92XX_I2S_INTERFACE_MAP_FIFO1				=	1,
+	SII92XX_I2S_INTERFACE_MAP_FIFO2				=	2,
+	SII92XX_I2S_INTERFACE_MAP_FIFO3				=	3,
+} SII92XX_I2S_INTERFACE_MAP;
+
+/* I2S_Interface_SD Enum*/
+typedef enum {
+	SII92XX_I2S_INTERFACE_SD_SD0		=	0,
+	SII92XX_I2S_INTERFACE_SD_SD1		=	1,
+	SII92XX_I2S_INTERFACE_SD_SD2		=	2,
+	SII92XX_I2S_INTERFACE_SD_SD3		=	3,
+} SII92XX_I2S_INTERFACE_SD;
+
+/* I2S_Interface_MCLK_Multiplier Enum*/
+typedef enum {
+	SII92XX_I2S_INTERFACE_MCLK_128		=	0,
+	SII92XX_I2S_INTERFACE_MCLK_256		=	1,
+	SII92XX_I2S_INTERFACE_MCLK_384		=	2,
+	SII92XX_I2S_INTERFACE_MCLK_512		=	3,
+	SII92XX_I2S_INTERFACE_MCLK_768		=	4,
+	SII92XX_I2S_INTERFACE_MCLK_1024		=	5,
+	SII92XX_I2S_INTERFACE_MCLK_1152		=	6,
+	SII92XX_I2S_INTERFACE_MCLK_192		=	7,
+} SII92XX_I2S_INTERFACE_MCLK;
+
+/* Audio Coding Type Enum*/
+typedef enum {
+	SII92XX_AUDIO_CODING_TYPE_STREAM_HEADER			=	0,
+	SII92XX_AUDIO_CODING_TYPE_PCM				=	1,
+	SII92XX_AUDIO_CODING_TYPE_AC3				=	2,
+	SII92XX_AUDIO_CODING_TYPE_MPEG1				=	3,
+	SII92XX_AUDIO_CODING_TYPE_MP3				=	4,
+	SII92XX_AUDIO_CODING_TYPE_MPEG2				=	5,
+	SII92XX_AUDIO_CODING_TYPE_AAC				=	6,
+	SII92XX_AUDIO_CODING_TYPE_DTS				=	7,
+	SII92XX_AUDIO_CODING_TYPE_ATRAC				=	8,
+} SII92XX_AUDIO_CODING_TYPE;
+
+/* Audio Sample Size Enum*/
+typedef enum {
+	SII92XX_AUDIO_SAMPLE_SIZE_STREAM_HEADER		=	0,
+	SII92XX_AUDIO_SAMPLE_SIZE_16BIT			=	1,
+	SII92XX_AUDIO_SAMPLE_SIZE_20BIT			=	2,
+	SII92XX_AUDIO_SAMPLE_SIZE_24BIT			=	3,
+} SII92XX_AUDIO_SAMPLE_SIZE;
+
+/* Audio Sample Frequency Enum*/
+typedef enum {
+	SII92XX_AUDIO_SAMPLE_FREQ_STREAM_HEADER			=	0,
+	SII92XX_AUDIO_SAMPLE_FREQ_32KHZ				=	1,
+	SII92XX_AUDIO_SAMPLE_FREQ_44KHZ				=	2,
+	SII92XX_AUDIO_SAMPLE_FREQ_48KHZ				=	3,
+	SII92XX_AUDIO_SAMPLE_FREQ_88KHZ				=	4,
+	SII92XX_AUDIO_SAMPLE_FREQ_96KHZ				=	5,
+	SII92XX_AUDIO_SAMPLE_FREQ_176KHZ			=	6,
+	SII92XX_AUDIO_SAMPLE_FREQ_192KHZ			=	7,
+} SII92XX_AUDIO_SAMPLE_FREQ;
+
+/* Audio Channel Count Enum*/
+typedef enum {
+	SII92XX_AUDIO_CHANNEL_COUNT_STREAM_HEADER		=	0,
+	SII92XX_AUDIO_CHANNEL_COUNT_2_CHANNELS			=	1,
+	SII92XX_AUDIO_CHANNEL_COUNT_3_CHANNELS			=	2,
+	SII92XX_AUDIO_CHANNEL_COUNT_4_CHANNELS			=	3,
+	SII92XX_AUDIO_CHANNEL_COUNT_5_CHANNELS			=	4,
+	SII92XX_AUDIO_CHANNEL_COUNT_6_CHANNELS			=	5,
+	SII92XX_AUDIO_CHANNEL_COUNT_7_CHANNELS			=	6,
+	SII92XX_AUDIO_CHANNEL_COUNT_8_CHANNELS			=	7,
+} SII92XX_AUDIO_CHANNEL_COUNT;
+
+typedef struct {
+	unsigned char		byte0;
+	unsigned char		byte1;
+	unsigned char		source_number;
+	unsigned char		channel_number;
+	unsigned char		sampling_frequency;
+	unsigned char		clock_accuracy;
+	unsigned char		sample_length;
+	unsigned char		original_fs;
+} SII92XX_AUDIO_CBIT;
+
+typedef struct {
+	unsigned char		audio_interface;
+	unsigned char		coding_type;
+	unsigned char		mclk;
+	unsigned char		sample_edge;
+	unsigned char		ws_polarity;
+	unsigned char		sd_justify;
+	unsigned char		sd_direction;
+	unsigned char		ws_to_sd;
+	unsigned char		i2s_map;
+	unsigned char		i2s_sd;
+	unsigned char		auto_downsample;
+	unsigned char		swap_left_right;
+	unsigned char		sample_size;
+	unsigned char		freq;
+	unsigned char		channels;
+	SII92XX_AUDIO_CBIT		cbit;
+} SII92XX_AUDIO;
+
+typedef struct {
+	unsigned short	PixelClock;
+	unsigned short	VFreq;
+	unsigned short	Pixels;
+	unsigned short	Lines;
+} SII92XX_VIDEO;
+
+typedef struct {
+	unsigned short	DE_DLY;
+	unsigned short	DE_CNT;
+	unsigned short	DE_LIN;
+	unsigned char	VSYNC_POLARITY;
+	unsigned char	HSYNC_POLARITY;
+	unsigned char	DE_TOP;
+} SII92XX_DE;
+
+typedef struct {
+	SII92XX_INPUT_FORMAT			Input_Format;
+	SII92XX_INPUT_VIDEO_QUANTIZATION	Input_Video_Quantization;
+	SII92XX_OUTPUT_FORMAT			Output_Format;
+	SII92XX_OUTPUT_VIDEO_QUANTIZATION	Output_Video_Quantization;
+	unsigned char		Dither_Enable;
+	unsigned char		Extended_Bit;
+	unsigned char		Color_Space;
+} SII92XX_FORMAT;
+
