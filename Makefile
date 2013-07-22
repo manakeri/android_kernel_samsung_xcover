@@ -6,11 +6,12 @@
 hide:=@
 log=@echo [$(shell date "+%Y-%m-%d %H:%M:%S")]
 
-MAKE_JOBS?=4
-KERNEL_TOOLCHAIN_PREFIX := /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-KERNEL_CONFIG?=alkon_03_defconfig
+MAKE_JOBS ?= 4
+#KERNEL_TOOLCHAIN_PREFIX := ../cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
+KERNEL_CONFIG := defconfig
 
-OUTDIR:=out
+OUTDIR := out
 
 MODULES_BUILT=
 MODULES_CLEAN=
@@ -19,10 +20,10 @@ define add-module
 	MODULES_CLEAN+=clean_$(1)
 endef
 
-export ARCH:=arm
-export CROSS_COMPILE:=$(KERNEL_TOOLCHAIN_PREFIX)
-export KERNELDIR:=$(shell pwd)/common
-export TARGET_PRODUCT:=GT-S5690
+export ARCH := arm
+export CROSS_COMPILE := $(KERNEL_TOOLCHAIN_PREFIX)
+export KERNELDIR := $(shell pwd)/common
+export TARGET_PRODUCT := GT-S5690
 
 .PHONY:help
 help:
@@ -36,18 +37,19 @@ help:
 	$(hide)echo "======================================="
 
 all: kernel modules
-KERNEL_TGT:=common/arch/arm/boot/zImage
+KERNEL_TGT := common/arch/arm/boot/zImage
 .PHONY: kernel clean_kernel
 kernel:
 	$(log) "making kernel [$(KERNEL_CONFIG)]..."
-	$(hide)cd common && \
-	make -j$(MAKE_JOBS)
+	$(hide)cp defconfig common/.config
+	$(hide)cd common && make $(KERNEL_CONFIG) && make -j$(MAKE_JOBS)
 	$(hide)mkdir -p $(OUTDIR)
 	$(hide)cp $(KERNEL_TGT) $(OUTDIR)/
 	$(hide)cat /dev/zero | head -c 4096 > $(OUTDIR)/header
 	$(hide)cat $(OUTDIR)/header $(OUTDIR)/zImage > $(OUTDIR)/header_zImage
 	$(hide)rm $(OUTDIR)/header $(OUTDIR)/zImage
 	$(hide)mv $(OUTDIR)/header_zImage $(OUTDIR)/zImage
+	$(hide)cd $(OUTDIR) && ../pack.sh
 	$(log) "kernel [$(KERNEL_CONFIG)] done"
 
 .PHONY:clean_kernel clean_modules
@@ -96,24 +98,6 @@ clean_sd8787_mbtchar:
 	$(log) "sd8787 mbtchar driver cleaned."
 
 $(eval $(call add-module,sd8787_mbtchar) )
-
-.PHONY: sd8787_bt clean_sd8787_bt
-sd8787_bt:
-	$(log) "making sd8787 bt BT driver..."
-	$(hide)cd $(SD8787_DRVSRC)/bt_src && \
-	make -j$(MAKE_JOBS) default
-	$(hide)mkdir -p $(OUTDIR)/modules/
-	$(hide)cp $(SD8787_DRVSRC)/bt_src/bt8xxx.ko $(OUTDIR)/modules/bt8787.ko
-	$(log) "sd8787 bt bt driver done."
-
-clean_sd8787_bt:
-	$(hide)cd $(SD8787_DRVSRC)/bt_src &&\
-	make clean
-	$(hide)rm -f $(OUTDIR)/modules/bt8xxx.ko
-	$(log) "sd8787 bt driver cleaned."
-
-$(eval $(call add-module,sd8787_bt) )
-
 
 .PHONY: sd8787_mbt clean_sd8787_mbt
 sd8787_mbt:
@@ -268,21 +252,6 @@ clean_cidatatty:
 	$(log) "cidatatty driver cleaned."
 $(eval $(call add-module,cidatatty) )
 
-SEH_DRVSRC:= modules/seh
-.PHONY: seh clean_seh
-seh:
-	$(log) "make seh driver..."
-	$(hide)mkdir -p $(OUTDIR)/modules/
-	$(hide)cd $(SEH_DRVSRC) &&\
-        make all OUTDIR=$(PWD)/$(OUTDIR)
-	$(hide)cp $(SEH_DRVSRC)/*.ko $(OUTDIR)/modules
-	$(log) "seh driver done."
-
-clean_seh:
-	$(hide)cd $(SEH_DRVSRC) &&\
-        make clean OUTDIR=$(PWD)/$(OUTDIR)
-	$(log) "seh driver cleaned."
-$(eval $(call add-module,seh) )
 
 .PHONY: modules
 modules:$(MODULES_BUILT)
