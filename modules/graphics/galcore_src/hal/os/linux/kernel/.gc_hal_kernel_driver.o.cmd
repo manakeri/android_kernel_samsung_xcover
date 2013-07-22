@@ -1,7 +1,7 @@
-cmd_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o := /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/.gc_hal_kernel_driver.o.d  -nostdinc -isystem /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/manakeri/sources/GT-S5690/common/arch/arm/include -Iinclude -I../modules/INC  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-pxa/include -Iarch/arm/plat-pxa/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror -DLINUX -DDRIVER -DENUM_WORKAROUND=0 -DDBG=0 -DNO_DMA_COHERENT -DENABLE_ARM_L2_CACHE=1 -DgcdNO_POWER_MANAGEMENT=0 -DUSE_PLATFORM_DRIVER=1 -DVIVANTE_PROFILER=0 -DANDROID=1 -DENABLE_GPU_CLOCK_BY_DRIVER=1 -DUSE_NEW_LINUX_SIGNAL=0 -DNO_USER_DIRECT_ACCESS_FROM_KERNEL=0 -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/kernel -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/cmodel/inc -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/user  -DMODULE -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gc_hal_kernel_driver)"  -D"KBUILD_MODNAME=KBUILD_STR(hal/driver/galcore)" -D"DEBUG_HASH=0" -D"DEBUG_HASH2=20" -c -o /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.c
+cmd_/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o := /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/.gc_hal_kernel_driver.o.d  -nostdinc -isystem /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include -Iinclude -I../modules/INC  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-pxa/include -Iarch/arm/plat-pxa/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror -DLINUX -DDRIVER -DENUM_WORKAROUND=0 -DDBG=0 -DNO_DMA_COHERENT -DENABLE_ARM_L2_CACHE=1 -DgcdNO_POWER_MANAGEMENT=0 -DUSE_PLATFORM_DRIVER=1 -DVIVANTE_PROFILER=0 -DANDROID=1 -DENABLE_GPU_CLOCK_BY_DRIVER=1 -DUSE_NEW_LINUX_SIGNAL=0 -DNO_USER_DIRECT_ACCESS_FROM_KERNEL=0 -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/kernel -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/arch/unified/hal/kernel -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/arch/unified/cmodel/inc -I/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/user  -DMODULE -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gc_hal_kernel_driver)"  -D"KBUILD_MODNAME=KBUILD_STR(hal/driver/galcore)" -D"DEBUG_HASH=45" -D"DEBUG_HASH2=29" -c -o /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.c
 
-deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o := \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.c \
+deps_/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o := \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.c \
     $(wildcard include/config/dove/gpu.h) \
     $(wildcard include/config/enable/dvfm.h) \
     $(wildcard include/config/proc.h) \
@@ -27,13 +27,13 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/lbdaf.h) \
     $(wildcard include/config/phys/addr/t/64bit.h) \
     $(wildcard include/config/64bit.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/types.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/types.h \
   include/asm-generic/int-ll64.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bitsperlong.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/bitsperlong.h \
   include/asm-generic/bitsperlong.h \
   include/linux/posix_types.h \
   include/linux/stddef.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/posix_types.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/posix_types.h \
   include/linux/kobject.h \
     $(wildcard include/config/hotplug.h) \
   include/linux/list.h \
@@ -41,17 +41,17 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/poison.h \
     $(wildcard include/config/illegal/pointer/value.h) \
   include/linux/prefetch.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/processor.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/processor.h \
     $(wildcard include/config/mmu.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/ptrace.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/ptrace.h \
     $(wildcard include/config/cpu/endian/be8.h) \
     $(wildcard include/config/arm/thumb.h) \
     $(wildcard include/config/smp.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/hwcap.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/cache.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/hwcap.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/cache.h \
     $(wildcard include/config/arm/l1/cache/shift.h) \
     $(wildcard include/config/aeabi.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/system.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/system.h \
     $(wildcard include/config/cpu/xsc3.h) \
     $(wildcard include/config/cpu/fa526.h) \
     $(wildcard include/config/arch/has/barriers.h) \
@@ -60,15 +60,15 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/cpu/sa110.h) \
     $(wildcard include/config/cpu/32v6k.h) \
   include/linux/linkage.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/linkage.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/linkage.h \
   include/linux/irqflags.h \
     $(wildcard include/config/trace/irqflags.h) \
     $(wildcard include/config/irqsoff/tracer.h) \
     $(wildcard include/config/preempt/tracer.h) \
     $(wildcard include/config/trace/irqflags/support.h) \
   include/linux/typecheck.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/irqflags.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/outercache.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/irqflags.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/outercache.h \
     $(wildcard include/config/outer/cache/sync.h) \
     $(wildcard include/config/outer/cache.h) \
   include/asm-generic/cmpxchg-local.h \
@@ -76,7 +76,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/debug/lock/alloc.h) \
     $(wildcard include/config/sysfs.h) \
   include/linux/errno.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/errno.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/errno.h \
   include/asm-generic/errno.h \
   include/asm-generic/errno-base.h \
   include/linux/lockdep.h \
@@ -85,7 +85,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/generic/hardirqs.h) \
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/prove/rcu.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/atomic.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/atomic.h \
     $(wildcard include/config/generic/atomic64.h) \
   include/asm-generic/atomic-long.h \
   include/linux/spinlock.h \
@@ -102,7 +102,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/generic/find/first/bit.h) \
     $(wildcard include/config/generic/find/last/bit.h) \
     $(wildcard include/config/generic/find/next/bit.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bitops.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/bitops.h \
   include/asm-generic/bitops/non-atomic.h \
   include/asm-generic/bitops/fls64.h \
   include/asm-generic/bitops/sched.h \
@@ -110,12 +110,12 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/asm-generic/bitops/arch_hweight.h \
   include/asm-generic/bitops/const_hweight.h \
   include/asm-generic/bitops/lock.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/thread_info.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/thread_info.h \
     $(wildcard include/config/arm/thumbee.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/fpstate.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/fpstate.h \
     $(wildcard include/config/vfpv3.h) \
     $(wildcard include/config/iwmmxt.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/domain.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/domain.h \
     $(wildcard include/config/io/36.h) \
   include/linux/kernel.h \
     $(wildcard include/config/preempt/voluntary.h) \
@@ -124,17 +124,17 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/ring/buffer.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include/stdarg.h \
+  /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include/stdarg.h \
   include/linux/log2.h \
     $(wildcard include/config/arch/has/ilog2/u32.h) \
     $(wildcard include/config/arch/has/ilog2/u64.h) \
   include/linux/dynamic_debug.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/byteorder.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/byteorder.h \
   include/linux/byteorder/little_endian.h \
   include/linux/swab.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/swab.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/swab.h \
   include/linux/byteorder/generic.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bug.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/bug.h \
     $(wildcard include/config/bug.h) \
     $(wildcard include/config/debug/bugverbose.h) \
   include/asm-generic/bug.h \
@@ -150,7 +150,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/spinlock_api_up.h \
   include/linux/kref.h \
   include/linux/wait.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/current.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/current.h \
   include/linux/klist.h \
   include/linux/module.h \
     $(wildcard include/config/symbol/prefix.h) \
@@ -163,14 +163,14 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/module/unload.h) \
     $(wildcard include/config/constructors.h) \
   include/linux/stat.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/stat.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/stat.h \
   include/linux/time.h \
     $(wildcard include/config/arch/uses/gettimeoffset.h) \
   include/linux/cache.h \
     $(wildcard include/config/arch/has/cache/line/size.h) \
   include/linux/seqlock.h \
   include/linux/math64.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/div64.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/div64.h \
   include/linux/kmod.h \
   include/linux/gfp.h \
     $(wildcard include/config/kmemcheck.h) \
@@ -208,12 +208,12 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/bitmap.h \
   include/linux/string.h \
     $(wildcard include/config/binary/printf.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/string.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/string.h \
   include/linux/pageblock-flags.h \
     $(wildcard include/config/hugetlb/page.h) \
     $(wildcard include/config/hugetlb/page/size/variable.h) \
   include/generated/bounds.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/page.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/page.h \
     $(wildcard include/config/cpu/copy/v3.h) \
     $(wildcard include/config/cpu/copy/v4wt.h) \
     $(wildcard include/config/cpu/copy/v4wb.h) \
@@ -221,7 +221,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/cpu/copy/fa.h) \
     $(wildcard include/config/cpu/xscale.h) \
     $(wildcard include/config/cpu/copy/v6.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/glue.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/glue.h \
     $(wildcard include/config/cpu/arm610.h) \
     $(wildcard include/config/cpu/arm710.h) \
     $(wildcard include/config/cpu/abrt/lv4t.h) \
@@ -234,7 +234,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/cpu/pabrt/legacy.h) \
     $(wildcard include/config/cpu/pabrt/v6.h) \
     $(wildcard include/config/cpu/pabrt/v7.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/memory.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/memory.h \
     $(wildcard include/config/page/offset.h) \
     $(wildcard include/config/thumb2/kernel.h) \
     $(wildcard include/config/text/offset.h) \
@@ -250,7 +250,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/mach/gforce.h) \
     $(wildcard include/config/mach/alkon.h) \
     $(wildcard include/config/mach/jetta.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/sizes.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/sizes.h \
   include/asm-generic/memory_model.h \
     $(wildcard include/config/sparsemem/vmemmap.h) \
   include/asm-generic/getorder.h \
@@ -264,7 +264,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/rwsem/generic/spinlock.h) \
   include/linux/rwsem-spinlock.h \
   include/linux/srcu.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/sparsemem.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/sparsemem.h \
   include/linux/topology.h \
     $(wildcard include/config/sched/smt.h) \
     $(wildcard include/config/sched/mc.h) \
@@ -281,11 +281,11 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/need/per/cpu/page/first/chunk.h) \
     $(wildcard include/config/have/setup/per/cpu/area.h) \
   include/linux/pfn.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/percpu.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/percpu.h \
   include/asm-generic/percpu.h \
   include/linux/percpu-defs.h \
     $(wildcard include/config/debug/force/weak/per/cpu.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/topology.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/topology.h \
   include/asm-generic/topology.h \
   include/linux/mmdebug.h \
     $(wildcard include/config/debug/virtual.h) \
@@ -299,9 +299,9 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/jiffies.h \
   include/linux/timex.h \
   include/linux/param.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/param.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/param.h \
     $(wildcard include/config/hz.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/timex.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/timex.h \
   arch/arm/mach-pxa/include/mach/timex.h \
     $(wildcard include/config/pxa25x.h) \
     $(wildcard include/config/pxa27x.h) \
@@ -312,8 +312,8 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/debug/objects/free.h) \
   include/linux/elf.h \
   include/linux/elf-em.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/elf.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/user.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/elf.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/user.h \
   include/linux/moduleparam.h \
     $(wildcard include/config/alpha.h) \
     $(wildcard include/config/ia64.h) \
@@ -327,7 +327,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/completion.h \
   include/linux/rcutree.h \
     $(wildcard include/config/no/hz.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/module.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/module.h \
     $(wildcard include/config/arm/unwind.h) \
   include/trace/events/module.h \
   include/trace/define_trace.h \
@@ -335,11 +335,11 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/pm/sleep.h) \
     $(wildcard include/config/pm/runtime.h) \
     $(wildcard include/config/pm/ops.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/device.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/device.h \
     $(wildcard include/config/dmabounce.h) \
   include/linux/pm_wakeup.h \
     $(wildcard include/config/pm.h) \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_linux.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_linux.h \
   include/linux/version.h \
   include/linux/fs.h \
     $(wildcard include/config/dnotify.h) \
@@ -357,7 +357,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/migration.h) \
   include/linux/limits.h \
   include/linux/ioctl.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/ioctl.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/ioctl.h \
   include/asm-generic/ioctl.h \
   include/linux/kdev_t.h \
   include/linux/dcache.h \
@@ -381,7 +381,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/sunrpc/msg_prot.h \
   include/linux/inet.h \
   include/linux/fcntl.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/fcntl.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/fcntl.h \
   include/asm-generic/fcntl.h \
   include/linux/err.h \
   include/linux/mm.h \
@@ -401,17 +401,17 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/mm/owner.h) \
     $(wildcard include/config/mmu/notifier.h) \
   include/linux/auxvec.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/auxvec.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/auxvec.h \
   include/linux/page-debug-flags.h \
     $(wildcard include/config/page/poisoning.h) \
     $(wildcard include/config/page/debug/something/else.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/mmu.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/mmu.h \
     $(wildcard include/config/cpu/has/asid.h) \
   include/linux/range.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/pgtable.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/pgtable.h \
     $(wildcard include/config/highpte.h) \
   include/asm-generic/4level-fixup.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/proc-fns.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/proc-fns.h \
     $(wildcard include/config/cpu/arm7tdmi.h) \
     $(wildcard include/config/cpu/arm720t.h) \
     $(wildcard include/config/cpu/arm740t.h) \
@@ -430,9 +430,9 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/cpu/feroceon.h) \
     $(wildcard include/config/cpu/v6.h) \
     $(wildcard include/config/cpu/v7.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/cpu-single.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/cpu-single.h \
   arch/arm/mach-pxa/include/mach/vmalloc.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/pgtable-hwdef.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/pgtable-hwdef.h \
   include/asm-generic/pgtable.h \
   include/linux/page-flags.h \
     $(wildcard include/config/pageflags/extended.h) \
@@ -474,17 +474,17 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/debug/stack/usage.h) \
     $(wildcard include/config/cgroup/sched.h) \
     $(wildcard include/config/frame/pointer.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/cputime.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/cputime.h \
   include/asm-generic/cputime.h \
   include/linux/sem.h \
   include/linux/ipc.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/ipcbuf.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/sembuf.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/ipcbuf.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/sembuf.h \
   include/linux/signal.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/signal.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/signal.h \
   include/asm-generic/signal-defs.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/sigcontext.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/siginfo.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/sigcontext.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/siginfo.h \
   include/asm-generic/siginfo.h \
   include/linux/proportions.h \
   include/linux/seccomp.h \
@@ -494,7 +494,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/plist.h \
     $(wildcard include/config/debug/pi/list.h) \
   include/linux/resource.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/resource.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/resource.h \
   include/asm-generic/resource.h \
   include/linux/hrtimer.h \
     $(wildcard include/config/high/res/timers.h) \
@@ -520,8 +520,8 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/lock/kernel.h) \
   include/linux/ftrace_irq.h \
     $(wildcard include/config/ftrace/nmi/enter.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/hardirq.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/irq.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/hardirq.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/irq.h \
   arch/arm/mach-pxa/include/mach/irqs.h \
     $(wildcard include/config/pxa/have/isa/irqs.h) \
     $(wildcard include/config/mfd/88pm860x.h) \
@@ -535,22 +535,22 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
   include/linux/bug.h \
   include/linux/scatterlist.h \
     $(wildcard include/config/debug/sg.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/scatterlist.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/scatterlist.h \
   include/asm-generic/scatterlist.h \
     $(wildcard include/config/need/sg/dma/length.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/io.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/io.h \
   arch/arm/mach-pxa/include/mach/io.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/dma-mapping.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/dma-mapping.h \
   include/asm-generic/dma-coherent.h \
     $(wildcard include/config/have/generic/dma/coherent.h) \
   include/linux/kthread.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/uaccess.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/unified.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/uaccess.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/common/arch/arm/include/asm/unified.h \
     $(wildcard include/config/arm/asm/unified.h) \
   include/linux/clk.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_types.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_options.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_types.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_options.h \
     $(wildcard include/config/cpu/pxa910.h) \
     $(wildcard include/config/pxa95x.h) \
     $(wildcard include/config/cpu/mmp2.h) \
@@ -563,18 +563,18 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/has/earlysuspend.h) \
     $(wildcard include/config/earlysuspend.h) \
     $(wildcard include/config/pxa910/dvfm/stats.h) \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_enum.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_base.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_enum.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_base.h \
     $(wildcard include/config/.h) \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_dump.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_profiler.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_dump.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_profiler.h \
   include/linux/earlysuspend.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_driver.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/kernel/gc_hal_kernel.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_device.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_os.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/user/gc_hal_user_context.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/inc/gc_hal_driver.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/kernel/gc_hal_kernel.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_device.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_os.h \
+  /home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/user/gc_hal_user_context.h \
   include/linux/platform_device.h \
   include/linux/mod_devicetable.h \
   arch/arm/mach-pxa/include/mach/dvfm.h \
@@ -597,6 +597,6 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/k
     $(wildcard include/config/debug/kmemleak.h) \
   include/linux/magic.h \
 
-/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o: $(deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o)
+/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o: $(deps_/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o)
 
-$(deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o):
+$(deps_/home/teemu/sources/ANDROID/android_kernel_samsung_xcover/modules/graphics/galcore_src/hal/os/linux/kernel/gc_hal_kernel_driver.o):

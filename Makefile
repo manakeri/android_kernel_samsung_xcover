@@ -7,7 +7,7 @@ hide:=@
 log=@echo [$(shell date "+%Y-%m-%d %H:%M:%S")]
 
 MAKE_JOBS ?= 4
-KERNEL_TOOLCHAIN_PREFIX := /path/to/arm-eabi-4.4.3/bin/arm-eabi-
+#KERNEL_TOOLCHAIN_PREFIX := /path/to/arm-eabi-4.4.3/bin/arm-eabi-
 OUTDIR := out
 
 MODULES_BUILT=
@@ -18,7 +18,7 @@ define add-module
 endef
 
 export ARCH := arm
-export CROSS_COMPILE := $(KERNEL_TOOLCHAIN_PREFIX)
+#export CROSS_COMPILE := $(KERNEL_TOOLCHAIN_PREFIX)
 export KERNELDIR := $(shell pwd)/common
 export TARGET_PRODUCT := GT-S5690
 
