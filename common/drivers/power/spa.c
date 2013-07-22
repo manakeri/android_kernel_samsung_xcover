@@ -81,8 +81,7 @@ static unsigned char 				gv_NextLevelAlarmValues = 0;
 static unsigned char 				gv_IsThresholdState = FALSE;
 
 static signed long 					gv_AverageVbat = 0;
-signed long 					gv_AverageTbat = 0;
-EXPORT_SYMBOL(gv_AverageTbat);
+static signed long 					gv_AverageTbat = 0;
 
 #ifdef FEAT_EN_FG_PLUSONE
 static unsigned int					gv_FgPollingCnt = 0;

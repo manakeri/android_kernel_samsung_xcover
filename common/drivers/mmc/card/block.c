@@ -299,10 +299,10 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 				msleep(1);
 			msleep(1);
 		}
-	} else {
-		/* Don't set host1->suspend_lock_active */
-		spin_unlock_irq(&md->lock);
-		wake_lock(&host1->suspend_lock);
+		} else {
+			/* Don't set host1->suspend_lock_active */
+			spin_unlock_irq(&md->lock);
+			wake_lock(&host1->suspend_lock);
 	}
 #endif
 #ifdef CONFIG_MMC_BLOCK_DEFERRED_RESUME
@@ -504,7 +504,7 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 	timeout = (host1->suspend_lock_active) ? (HZ/2): 2;
 	spin_unlock_irq(&md->lock);
 	wake_lock_timeout(&host1->suspend_lock, timeout);
-	host1->suspend_lock_active = 0;
+		host1->suspend_lock_active = 0;
 #endif
 	return 1;
 
@@ -544,7 +544,7 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
 	timeout = (host1->suspend_lock_active) ? (HZ/2): 2;
 	spin_unlock_irq(&md->lock);
 	wake_lock_timeout(&host1->suspend_lock, timeout);
-	host1->suspend_lock_active = 0;
+		host1->suspend_lock_active = 0;
 #endif
 	return 0;
 }

@@ -68,7 +68,6 @@ extern int suspend_forbidden;
 #include <linux/wakelock.h>
 #endif
 
-
 /* Enter D2 before exiting D0CS */
 #define DVFM_LP_SAFE
 int ForceOP, ForcedOPIndex, ForceC0, ForceVCTCXO_EN, EnableD2VoltageChange = 1;

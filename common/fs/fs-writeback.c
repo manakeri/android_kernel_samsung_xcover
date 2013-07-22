@@ -574,7 +574,7 @@ static void __writeback_inodes_sb(struct super_block *sb,
  * been forced to throttle against that inode.  Also, the code reevaluates
  * the dirty each time it has written this many pages.
  */
-#define MAX_WRITEBACK_PAGES     1024L
+#define MAX_WRITEBACK_PAGES     1024
 
 static inline bool over_bground_thresh(void)
 {
@@ -629,7 +629,7 @@ static long wb_writeback(struct bdi_writeback *wb,
 		/*
 		 * Stop writeback when nr_pages has been consumed
 		 */
-		if ((work->nr_pages > 0x7FFFFFF0) || (work->nr_pages <= 0))
+		if (work->nr_pages <= 0)
 			break;
 
 		/*
@@ -639,15 +639,15 @@ static long wb_writeback(struct bdi_writeback *wb,
 		if (work->for_background && !over_bground_thresh())
 			break;
 
-		wbc.more_io = 1;
-		wbc.nr_to_write = min(MAX_WRITEBACK_PAGES, work->nr_pages);
+		wbc.more_io = 0;
+		wbc.nr_to_write = MAX_WRITEBACK_PAGES;
 		wbc.pages_skipped = 0;
 		if (work->sb)
 			__writeback_inodes_sb(work->sb, wb, &wbc);
 		else
 			writeback_inodes_wb(wb, &wbc);
-		work->nr_pages -= wbc.nr_to_write;
-		wrote += wbc.nr_to_write;
+		work->nr_pages -= MAX_WRITEBACK_PAGES - wbc.nr_to_write;
+		wrote += MAX_WRITEBACK_PAGES - wbc.nr_to_write;
 
 		/*
 		 * If we consumed everything, see if we have more
@@ -662,8 +662,8 @@ static long wb_writeback(struct bdi_writeback *wb,
 		/*
 		 * Did we write something? Try for more
 		 */
-		/*if (wbc.nr_to_write < MAX_WRITEBACK_PAGES)
-		*	continue;*/
+		if (wbc.nr_to_write < MAX_WRITEBACK_PAGES)
+			continue;
 		/*
 		 * Nothing written. Wait for some inode to
 		 * become available for writeback. Otherwise
@@ -793,22 +793,14 @@ int bdi_writeback_task(struct bdi_writeback *wb)
 			 * Longest period of inactivity that we tolerate. If we
 			 * see dirty data again later, the task will get
 			 * recreated automatically.
-			 *
-			 * For power save reason this period should be less
-			 * then dirty_writeback_interval; thread exits but
-			 * re-created upon dirty_writeback timer if needed
 			 */
-			max_idle = max(1UL * HZ, wait_jiffies);
+			max_idle = max(5UL * 60 * HZ, wait_jiffies);
 			if (time_after(jiffies, max_idle + last_active))
 				break;
 		}
-		/* else - just go to polling with timeout */
 
 		if (dirty_writeback_interval) {
-			/* "dirty_writeback_interval" is good for activation
-			 * by timer. But for quick writeback use ~40mS!
-			 */
-			wait_jiffies = 5;
+			wait_jiffies = msecs_to_jiffies(dirty_writeback_interval * 10);
 			schedule_timeout_interruptible(wait_jiffies);
 		} else {
 			set_current_state(TASK_INTERRUPTIBLE);

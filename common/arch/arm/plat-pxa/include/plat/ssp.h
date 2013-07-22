@@ -210,10 +210,6 @@ static inline u32 pxa_ssp_read_reg(struct ssp_device *dev, u32 reg)
 	return __raw_readl(dev->mmio_base + reg);
 }
 
-#if 0
-void pxa_init_ssp_for_read(struct ssp_device *ssp);
-void pxa_init_ssp_for_write(struct ssp_device *ssp);
-#endif
 int pxa_ssp_write_word(struct ssp_device *ssp, u32 data);
 int pxa_ssp_read_word(struct ssp_device *ssp, u32 *data);
 int pxa_ssp_flush(struct ssp_device *ssp);

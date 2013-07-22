@@ -1433,9 +1433,8 @@ static void wr_mixer0_disable(struct pxa95xfb_info *fbi)
 	}
 
 	if (retry <= 0) {
-		//pr_info("mixer_disable failed: mixer int status %x\n", stat);
+		pr_info("mixer_disable failed\n");
 		dump_regs_base(fbi);
-		BUG_ON(1);
 	} else
 
 		pr_info("mixer_disable done, %d ms...", 50-retry);
@@ -1463,9 +1462,8 @@ static void wr_mixer0_enable(struct pxa95xfb_info *fbi)
 }
 
 	if (retry <= 0) {
-		pr_info("mixer_enable failed: mixer int status %x\n", stat);
+		pr_info("mixer_enable failed\n");
 		dump_regs_base(fbi);
-		BUG_ON(1);
 	} else
 		pr_info("mixer_enable done, %d ms...", 50-retry);
 

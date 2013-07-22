@@ -194,7 +194,6 @@ static ssize_t mmc_ops(struct file *file,
 
 	/* Statistic and Insert/Remove debug
   echo ss > /data/temp/mmc0/ops
-  echo D > /data/temp/mmc0/ops
   echo R > /data/temp/mmc0/ops
   echo I > /data/temp/mmc0/ops
 	*/
@@ -202,8 +201,6 @@ static ssize_t mmc_ops(struct file *file,
 		extern u32 mmc_rq_in_suspend_stats;
 		printk(KERN_INFO "MMC/SD statistic: requests under suspend = %u\n",
 			mmc_rq_in_suspend_stats);
-	} else if (!strncmp(buffer, "Delete", 1)) {
-		mmc_recovery_dbg(host, -2);
 	} else if (!strncmp(buffer, "Remove", 1)) {
 		mmc_recovery_dbg(host, -1);
 	} else if (!strncmp(buffer, "Insert", 1)) {

@@ -92,15 +92,10 @@ volatile static int sd_card_present = -1; /* should be DETECTED */
 #define MFP_DRIVE_SLOW		0x00000000
 #define MFP_DRIVE_MEDIUM	0x00001000
 #define MFP_DRIVE_FAST		0x00001800
-#define MFP_ALTF_MASK		7 /* bits 2:1:0 */
-#define MFP_POOL_MASK		(7<<13) /* bits 15:14:13 */
-#define MFP_POOL_UP_SET		(6<<13) /* bits 15:14:__ */
-#define MFP_POOL_NO			(4<<13) /* bits 15:__:__ */
 
 static void cd_wakelock_op(unsigned int sec);
 static struct wake_lock wifi_delayed_work_wake_lock;
 static struct wake_lock cd_wake_lock;
-static unsigned int sd_mfpr[SDHCI_PIN_MAX];
 
 static struct pm860x_touch_pdata touch = {
 	.gpadc_prebias	= 1,
@@ -553,20 +548,20 @@ static struct platform_device usb_rndis_device = {
 /* include all existing functions in default function list,
 thus all are binded at initialization */
 static char *usb_functions0[] = {
-#ifdef CONFIG_USB_ANDROID_RNDIS
-       "rndis",
-#endif
-#ifdef CONFIG_USB_ANDROID_ADB
-       "adb",
+#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
+       "usb_mass_storage",
 #endif
 #ifdef CONFIG_USB_ANDROID_PXA955_ACM
        "acm",
 #endif
-#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
-       "usb_mass_storage",
+#ifdef CONFIG_USB_ANDROID_ADB
+       "adb",
 #endif
 #ifdef CONFIG_USB_ANDROID_PXA955_DIAG
 	"diag",
+#endif
+#ifdef CONFIG_USB_ANDROID_RNDIS
+       "rndis",
 #endif
 #ifdef CONFIG_USB_ANDROID_MTP
 		"mtp",
@@ -576,14 +571,14 @@ static char *usb_functions0[] = {
 /* following usb_functionsX include functions for
  specific usb composite configurations */
 static char *usb_functions1[] = {
-#ifdef CONFIG_USB_ANDROID_ADB
-	"adb",
+#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
+	"usb_mass_storage",
 #endif
 #ifdef CONFIG_USB_ANDROID_PXA955_ACM
 	"acm",
 #endif
-#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
-	"usb_mass_storage",
+#ifdef CONFIG_USB_ANDROID_ADB
+	"adb",
 #endif
 };
 
@@ -624,14 +619,14 @@ static char *usb_functions6[] = {
 };
 
 static char *usb_functions7[] = {
-#ifdef CONFIG_USB_ANDROID_ADB
-		"adb",
+#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
+		"usb_mass_storage",
 #endif
 #ifdef CONFIG_USB_ANDROID_PXA955_ACM
 		"acm",
 #endif
-#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_FILE_STORAGE)
-		"usb_mass_storage",
+#ifdef CONFIG_USB_ANDROID_ADB
+		"adb",
 #endif
 
 #ifdef CONFIG_USB_ANDROID_PXA955_DIAG
@@ -675,7 +670,7 @@ static struct android_usb_product usb_products[] = {
 		.functions = usb_functions6,
 	},
 	{
-		.product_id = 0x685D,
+		.product_id = 0x685E,
 		.num_functions = ARRAY_SIZE(usb_functions7),
 		.functions = usb_functions7,
 	}
@@ -1277,121 +1272,63 @@ static irqreturn_t sdhci_pxa_cd_irq_thread(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
-/* According to SanDisk manufacturer
-* Best Power ON sequence is:
-* - Disconnect controller (by Pin IN no-pull-up)
-* - Switch power ON
-* - Check the pin-short (with pool-up to be sure)
-* - Connect Controller to all Pins
-*/
-static int sd_before_power_on(struct platform_device *pdev)
+int sdhci_pxa_check_short_circuit(struct platform_device *pdev)
 {
 	struct sdhci_pxa_platdata *pdata = pdev->dev.platform_data;
 	struct sdhci_pins_data *pins_data;
-	unsigned int mfp;
+	unsigned int status = 0;
+	unsigned int *mfpr;
 	int i = 0;
 
 	if (!pdata)
-		return -1;
+		return 0;
 
 	pins_data = pdata->pins_data;
 	if (!pins_data)
-		return -1;
+		return 0;
 
-	/* Switch MMC pins to GPIO and No POOL UP/DOWN*/
+	mfpr = kzalloc(sizeof(unsigned int) +
+				pins_data->number_of_pins, GFP_KERNEL);
+	if (!mfpr)
+		return -ENOMEM;
+
+	/* Switch MMC pins to GPIO */
 	for (i = 0; i < pins_data->number_of_pins; i++) {
-		sd_mfpr[i] = pxa3xx_mfp_read(GPIO_NUM(i));
-		mfp = sd_mfpr[i] & ~(MFP_POOL_MASK | MFP_ALTF_MASK);
-		mfp |= MFP_POOL_NO;
-		gpio_request(GPIO_NUM(i), GPIO_DESCR(i));
-		gpio_direction_input(GPIO_NUM(i));
-		pxa3xx_mfp_write(GPIO_NUM(i), mfp);
-	}
-	return 0;
-}
-
-static int sd_check_short_circuit(struct platform_device *pdev)
-{
-	struct sdhci_pxa_platdata *pdata = pdev->dev.platform_data;
-	struct sdhci_pins_data *pins_data;/*GPIO_NUM*/
-	unsigned int status = 0;
-	unsigned int mfp;
-	int i = 0, retry = 0, retry_ldo13 = 0;
-
-	if (!pdata)
-		return -1;
-
-	pins_data = pdata->pins_data;
-	if (!pins_data)
-		return -1;
-
-	/* Switch MMC pins to GPIO and POOL-UP*/
-	for (i = 0; i < pins_data->number_of_pins; i++) {
-		mfp = sd_mfpr[i] & ~(MFP_POOL_MASK | MFP_ALTF_MASK);
-		mfp |= MFP_POOL_UP_SET;
-		pxa3xx_mfp_write(GPIO_NUM(i), mfp);
+		if (PIN_TYPE(i) == SDHCI_PIN_CLK)
+			continue;
+		mfpr[i] = pxa3xx_mfp_read(GPIO_NUM(i));
+		pxa3xx_mfp_write(GPIO_NUM(i), \
+				(mfpr[i] & 0xFFFFFFF8));
 	}
 	udelay(200);
 	/* if MMC_DATAx and MMC_CMD gpios are high then
 	 * there's no short circuit */
-check_short:
 	for (i = 0; i < pins_data->number_of_pins; i++)	{
-		if (!gpio_get_value(GPIO_NUM(i))) {
-			pr_info("%s is short circuited (try_%d)\n",
-					GPIO_DESCR(i), retry);
+		if (PIN_TYPE(i) == SDHCI_PIN_CLK)
+			continue;
+		if (gpio_is_valid(GPIO_NUM(i))) {
+			gpio_request(GPIO_NUM(i), GPIO_DESCR(i));
+			gpio_direction_input(GPIO_NUM(i));
+			if (!gpio_get_value(GPIO_NUM(i))) {
+				pr_info("%s is short circuited\n",
+						GPIO_DESCR(i));
+				status = -1;
+			}
+		} else {
+			pr_info("mmc gpio[%d] is not valid\n", i);
 			status = -1;
 		}
-	}
-	if ((status != 0) && (retry < 2)) {
-		/* Delay and retry */
-		udelay(200);
-		status = 0;
-		retry++;
-		goto check_short;
+		gpio_free(GPIO_NUM(i));
 	}
 
-	if ((status != 0) && !retry_ldo13) {
-		/* Sometimes all pins LOW detected.
-		* Looks like the LDO13 is not ON.
-		* Print the current reg-value (as debug)
-		* Re-set LDO13 as WORKAROUND */
-		u8 ldo13 = pm860x_codec_reg_read(0x28);
-		pr_info("mmc/sd LDO13 = 0x%x\n", ldo13);
-		ldo13 = 0;
-		pm860x_codec_reg_write(0x28, ldo13);
-		ldo13 |= ((6<<1) | 1);
-		pm860x_codec_reg_write(0x28, ldo13);
-		retry_ldo13 = 1;
-		status = 0;
-		goto check_short;
-	}
+	for (i = 0; i < pins_data->number_of_pins; i++)
+		if (PIN_TYPE(i) != SDHCI_PIN_CLK)
+			pxa3xx_mfp_write(GPIO_NUM(i), mfpr[i]);
 
-	if (retry && (status == 0))
-		pr_info("mmc/sd short circuit is ok after retry\n");
+	kfree(mfpr);
 
 	return status;
 }
-
-static void sd_after_power_on(struct platform_device *pdev)
-{
-	struct sdhci_pxa_platdata *pdata = pdev->dev.platform_data;
-	struct sdhci_pins_data *pins_data;/*GPIO_NUM*/
-	unsigned int i;
-	if (!pdata)
-		return;
-
-	pins_data = pdata->pins_data;
-	if (!pins_data)
-		return;
-
-	/* Restore original MFPR */
-	for (i = 0; i < pins_data->number_of_pins; i++) {
-		pxa3xx_mfp_write(GPIO_NUM(i), sd_mfpr[i]);
-		gpio_free(GPIO_NUM(i));
-	}
-}
-
-
 
 /*
 * Switch MMC/SD pins drive
@@ -1452,8 +1389,6 @@ static void mci_setpower(struct device *dev, unsigned int vdd)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct sdhci_host *host = platform_get_drvdata(pdev);
-	int before = 0;
-/**
 	static unsigned long bitmap = 0;
 	unsigned long oldbitmap = 0;
 	int devbit = 1;
@@ -1467,28 +1402,22 @@ static void mci_setpower(struct device *dev, unsigned int vdd)
 		bitmap |= devbit;
 	else
 		bitmap &= ~devbit;
-**/
-	if (vdd) { /*if (bitmap && !oldbitmap) {*/
+
+	if (bitmap && !oldbitmap) {
 		if (IS_ERR(host->vmmc)) {
 			host->vmmc = NULL;
 			printk(KERN_ERR "LDO is not allocated for SD\n");
 		} else {
-			before = sd_before_power_on(pdev);
-			regulator_enable(host->vmmc);
 			pr_info("mmc power on vmmc=0x%x\n", (int)host->vmmc);
+			regulator_enable(host->vmmc);
 
-			if (!before) {
-				if (sd_check_short_circuit(pdev)) {
-					printk(KERN_ERR "mmc/sd short cirquit occured."
-						" Power it off\n");
-					sdhci_pxa_notify_change(pdev, 0);
-				}
-				/* restore even for "short" */
-				sd_after_power_on(pdev);
+			if (sdhci_pxa_check_short_circuit(pdev)) {
+				pr_info("mmc short cirquit occured, power off\n");
+				sdhci_pxa_notify_change(pdev, 0);
 			}
 		}
 	}
-	else { /*if (!bitmap && oldbitmap) {*/
+	else if (!bitmap && oldbitmap) {
 		if (IS_ERR(host->vmmc)) {
 			host->vmmc = NULL;
 			printk(KERN_ERR "LDO is not allocated for SD\n");
@@ -1715,12 +1644,9 @@ static int mmc1_lp_switch(unsigned int on, int with_card)
 		mmc = card->host;
 		host = mmc_priv(mmc);
 		pxa = sdhci_priv(host);
-	} else {
-		u8 ldo13 = pm860x_codec_reg_read(0x28);
-		ldo13 &= ~1; /* force Off */
-		pm860x_codec_reg_write(0x28, ldo13);
+	} else
 		goto exit;
-	}
+	
 	if (pxa->pdata->setpower) {
 		if (on)
 			pxa->pdata->setpower(card->host->parent,0);/*enter suspend */
@@ -1733,14 +1659,13 @@ exit:
 }
 
 static struct sdhci_gpio sdhci_gpios[SDHCI_PIN_MAX] = {
-	/* Order is important */
-{	.pin_type = SDHCI_PIN_CLK,
-	.gpio_num = MFP_PIN_GPIO56,
-	.description = "MMC CLK",
-},
 {	.pin_type = SDHCI_PIN_CMD,
 	.gpio_num = MFP_PIN_GPIO55,
 	.description = "MMC CMD",
+},
+{	.pin_type = SDHCI_PIN_CLK,
+	.gpio_num = MFP_PIN_GPIO56,
+	.description = "MMC CLK",
 },
 {	.pin_type = SDHCI_PIN_DAT0,
 	.gpio_num = MFP_PIN_GPIO57,

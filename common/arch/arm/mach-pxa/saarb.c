@@ -83,9 +83,6 @@ volatile static int sd_card_present = -1; /* should be DETECTED */
 #define MFP_DRIVE_SLOW		0x00000000
 #define MFP_DRIVE_MEDIUM	0x00001000
 #define MFP_DRIVE_FAST		0x00001800
-#define MFP_ALTF_MASK		7 /* bits 2:1:0 */
-#define MFP_POOL_MASK		(7<<13) /* bits 15:14:13 */
-#define MFP_POOL_UP_SET		(6<<13) /* bits 15:14:13 */
 
 static struct wake_lock wifi_delayed_work_wake_lock;
 static struct wake_lock cd_wake_lock;
@@ -1191,8 +1188,8 @@ int sdhci_pxa_check_short_circuit(struct platform_device *pdev)
 	struct sdhci_pxa_platdata *pdata = pdev->dev.platform_data;
 	struct sdhci_pins_data *pins_data;
 	unsigned int status = 0;
-	unsigned int *mfpr, mfp;
-	int i = 0, retry = 0;
+	unsigned int *mfpr;
+	int i = 0;
 
 	if (!pdata)
 		return 0;
@@ -1206,41 +1203,39 @@ int sdhci_pxa_check_short_circuit(struct platform_device *pdev)
 	if (!mfpr)
 		return -ENOMEM;
 
-	/* Switch MMC pins to GPIO and POOL-UP*/
+	/* Switch MMC pins to GPIO */
 	for (i = 0; i < pins_data->number_of_pins; i++) {
+		if (PIN_TYPE(i) == SDHCI_PIN_CLK)
+			continue;
 		mfpr[i] = pxa3xx_mfp_read(GPIO_NUM(i));
-		mfp = mfpr[i] & ~(MFP_POOL_MASK | MFP_ALTF_MASK);
-		mfp |= MFP_POOL_UP_SET;
-		pxa3xx_mfp_write(GPIO_NUM(i), mfp);
-		gpio_request(GPIO_NUM(i), GPIO_DESCR(i));
-		gpio_direction_input(GPIO_NUM(i));
+		pxa3xx_mfp_write(GPIO_NUM(i), \
+				(mfpr[i] & 0xFFFFFFF8));
 	}
 	udelay(200);
 	/* if MMC_DATAx and MMC_CMD gpios are high then
 	 * there's no short circuit */
-check_short:
 	for (i = 0; i < pins_data->number_of_pins; i++)	{
-		if (!gpio_get_value(GPIO_NUM(i))) {
-			pr_info("%s is short circuited (try_%d)\n",
-					GPIO_DESCR(i), retry);
+		if (PIN_TYPE(i) == SDHCI_PIN_CLK)
+			continue;
+		if (gpio_is_valid(GPIO_NUM(i))) {
+			gpio_request(GPIO_NUM(i), GPIO_DESCR(i));
+			gpio_direction_input(GPIO_NUM(i));
+			if (!gpio_get_value(GPIO_NUM(i))) {
+				pr_info("%s is short circuited\n",
+						GPIO_DESCR(i));
+				status = -1;
+			}
+		} else {
+			pr_info("mmc gpio[%d] is not valid\n", i);
 			status = -1;
 		}
-	}
-	if ((status != 0) && (retry < 2)) {
-		/* Delay and retry */
-		udelay(200);
-		status = 0;
-		retry++;
-		goto check_short;
-	}
-	if (retry && (status == 0))
-		pr_info("mmc/sd short circuit is ok after retry\n");
-
-	/* Restore original MFPR */
-	for (i = 0; i < pins_data->number_of_pins; i++) {
 		gpio_free(GPIO_NUM(i));
-		pxa3xx_mfp_write(GPIO_NUM(i), mfpr[i]);
 	}
+
+	for (i = 0; i < pins_data->number_of_pins; i++)
+		if (PIN_TYPE(i) != SDHCI_PIN_CLK)
+			pxa3xx_mfp_write(GPIO_NUM(i), mfpr[i]);
+
 	kfree(mfpr);
 
 	return status;
@@ -1329,7 +1324,7 @@ static void mci_setpower(struct device *dev, unsigned int vdd)
 			regulator_enable(host->vmmc);
 
 			if (sdhci_pxa_check_short_circuit(pdev)) {
-				printk(KERN_ERR "mmc/sd short cirquit occured. Power it off\n");
+				pr_info("mmc short cirquit occured, power off\n");
 				sdhci_pxa_notify_change(pdev, 0);
 			}
 		}

@@ -402,20 +402,14 @@ scan:
 			    }
 			}
 			input_report_key(keypad->input_dev, current_key, state);
-
-
 			if(state == 0)
 			{
-				//printk("key 0x%x released, pressed key_cnt = %d \n", current_key, num_keys_pressed);
-				printk("key released\n");
+				printk("key 0x%x released, pressed key_cnt = %d \n", current_key, num_keys_pressed);
 			}
 			else
 			{
-				//printk("key 0x%x pressed, pressed key_cnt = %d \n", current_key, num_keys_pressed);
-				printk("key pressed\n");
+				printk("key 0x%x pressed, pressed key_cnt = %d \n", current_key, num_keys_pressed);
 			}
-
-		
 			// - SAMSUNG_SSENI
 
 			code = MATRIX_SCAN_CODE(row, col, MATRIX_ROW_SHIFT);

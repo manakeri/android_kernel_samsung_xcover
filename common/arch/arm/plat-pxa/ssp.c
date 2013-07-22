@@ -95,54 +95,6 @@ int pxa_ssp_read_word(struct ssp_device *ssp, u32 *data)
 }
 EXPORT_SYMBOL(pxa_ssp_read_word);
 
-#if 0
-void pxa_init_ssp_for_read(struct ssp_device *ssp)
-{
-    //For 17 bit commands to support read operations
-	u32 temp1;
-	u32 temp2;
-	u32 temp3;
-	
-	temp1 = pxa_ssp_read_reg(ssp,SSCR0);
-	temp1 &= (~(1 << 7));	
-	pxa_ssp_write_reg(ssp,SSCR0,temp1);
-	
-	/* set up port type, speed, port settings */
-	pxa_ssp_write_reg(ssp,SSCR1,0);
-	pxa_ssp_write_reg(ssp,SSPSP,0);
-	//temp2 = (0xFFF00)|(1 << 7)|(0x100000);
-	pxa_ssp_write_reg(ssp,SSCR0,(0xFFF00)|(1 << 7)|(0x100000));  /*TODO:PPS-a: As per data sheet it is not matching need to confirm */
-
-	temp3 = pxa_ssp_read_reg(ssp,SSCR0);
-	temp3 |= ((1 << 7));
-	pxa_ssp_write_reg(ssp,SSCR0,temp3);
-	
-}
-
-void pxa_init_ssp_for_write(struct ssp_device *ssp)
-{
-    //For 17 bit commands to support read operations
-	u32 temp1;
-	u32 temp2;
-	u32 temp3;
-	
-	temp1 = pxa_ssp_read_reg(ssp,SSCR0);
-	temp1 &= (~(1 << 7));	
-	pxa_ssp_write_reg(ssp,SSCR0,temp1);
-	
-	/* set up port type, speed, port settings */
-	temp2 = ((1<< 3)|(1<< 4));
-	pxa_ssp_write_reg(ssp,SSCR1,temp2);
-	pxa_ssp_write_reg(ssp,SSPSP,0);
-	//temp2 = (0xFFF00)|(1 << 7)|(0x100000);
-	pxa_ssp_write_reg(ssp,SSCR0,(0xFFF00)|(1 << 7)|(0x8));  /*TODO:PPS-a: As per data sheet it is not matching need to confirm */
-
-	temp3 = pxa_ssp_read_reg(ssp,SSCR0);
-	temp3 |= ((1 << 7));
-	pxa_ssp_write_reg(ssp,SSCR0,temp3);
-	
-}
-#endif
 
 /**
  * ssp_flush - flush the transmit and receive FIFOs
