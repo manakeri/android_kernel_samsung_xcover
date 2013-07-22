@@ -7,9 +7,9 @@ hide:=@
 log=@echo [$(shell date "+%Y-%m-%d %H:%M:%S")]
 
 MAKE_JOBS ?= 4
-#KERNEL_TOOLCHAIN_PREFIX := ../cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
 KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
-KERNEL_CONFIG := defconfig
+#KERNEL_TOOLCHAIN_PREFIX := ../cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+
 
 OUTDIR := out
 
@@ -40,9 +40,9 @@ all: kernel modules
 KERNEL_TGT := common/arch/arm/boot/zImage
 .PHONY: kernel clean_kernel
 kernel:
-	$(log) "making kernel [$(KERNEL_CONFIG)]..."
+	$(log) "making kernel..."
 	$(hide)cp defconfig common/.config
-	$(hide)cd common && make $(KERNEL_CONFIG) && make -j$(MAKE_JOBS)
+	$(hide)cd common && make -j$(MAKE_JOBS)
 	$(hide)mkdir -p $(OUTDIR)
 	$(hide)cp $(KERNEL_TGT) $(OUTDIR)/
 	$(hide)cat /dev/zero | head -c 4096 > $(OUTDIR)/header
@@ -115,6 +115,24 @@ clean_sd8787_mbt:
 	$(log) "sd8787 mbt driver cleaned."
 
 $(eval $(call add-module,sd8787_mbt) )
+
+.PHONY: sd8787_bt clean_sd8787_bt
+sd8787_bt:
+	$(log) "making sd8787 bt BT driver..."
+	$(hide)cd $(SD8787_DRVSRC)/bt_src && \
+	make -j$(MAKE_JOBS) default
+	$(hide)mkdir -p $(OUTDIR)/modules/
+	$(hide)cp $(SD8787_DRVSRC)/bt_src/bt8xxx.ko $(OUTDIR)/modules/bt8787.ko
+	$(log) "sd8787 bt bt driver done."
+
+clean_sd8787_bt:
+	$(hide)cd $(SD8787_DRVSRC)/bt_src &&\
+	make clean
+	$(hide)rm -f $(OUTDIR)/modules/bt8xxx.ko
+	$(log) "sd8787 bt driver cleaned."
+
+$(eval $(call add-module,sd8787_bt) )
+
 
 GC800_DRVSRC:= modules/graphics/galcore_src
 export KERNEL_DIR:=$(KERNELDIR)
