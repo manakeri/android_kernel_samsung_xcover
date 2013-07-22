@@ -84,6 +84,11 @@ struct sdhci_host {
 #define SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12		(1<<28)
 /* Controller doesn't have HISPD bit field in HI-SPEED SD card */
 #define SDHCI_QUIRK_NO_HISPD_BIT			(1<<29)
+/* Clock Adjustment:
+*   74 cycles after Power-ON
+*   Don't switch clock on DATA but on IOS only
+*/
+#define SDHCI_QUIRK_EXTEND_CLOCK_TIME		(1<<30)
 
 	int irq;		/* Device IRQ */
 	void __iomem *ioaddr;	/* Mapped address */
@@ -120,7 +125,9 @@ struct sdhci_host {
 	struct mmc_request *mrq;	/* Current request */
 	struct mmc_command *cmd;	/* Current command */
 	struct mmc_data *data;	/* Current data request */
-	unsigned int data_early:1;	/* Data finished before cmd */
+	unsigned char data_early;	/* Data finished before cmd */
+	unsigned char irq_expected; /*=0: request idle or finished*/
+	unsigned char pad[2];
 
 	struct sg_mapping_iter sg_miter;	/* SG state for PIO */
 	unsigned int blocks;	/* remaining PIO blocks */

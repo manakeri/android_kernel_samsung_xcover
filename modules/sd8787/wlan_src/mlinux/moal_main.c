@@ -2136,6 +2136,7 @@ woal_init_priv(moal_private * priv, t_u8 wait_option)
         priv->current_key_index = 0;
         priv->rate_index = AUTO_RATE;
         priv->is_adhoc_link_sensed = MFALSE;
+        priv->scan_type = MLAN_SCAN_TYPE_ACTIVE;
         memset(&priv->nick_name, 0, sizeof(priv->nick_name));
         priv->num_tx_timeout = 0;
         priv->rx_filter = 0;

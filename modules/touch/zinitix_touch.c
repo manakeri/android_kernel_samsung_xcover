@@ -2239,6 +2239,7 @@ static ssize_t read_difference(struct device *dev, struct device_attribute *attr
 	return sprintf(buf, "-1") ;
 }
 
+extern signed long gv_AverageTbat;
 
 static ssize_t rawdata_pass_fail_zinitix(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -2316,6 +2317,8 @@ static ssize_t rawdata_pass_fail_zinitix(struct device *dev, struct device_attri
 	enable_irq(g_touch_dev->client->irq);
 	//return true;
 
+	printk("[TSP] current temperature : %d !!! \r\n",gv_AverageTbat);
+
 	for(i = 0 ; i < 12 ; i++)
 	{
 		printk("[TSP]");
@@ -2326,6 +2329,24 @@ static ssize_t rawdata_pass_fail_zinitix(struct device *dev, struct device_attri
 		printk("\n");
 	}
 
+    if(gv_AverageTbat<200)
+    {
+        printk("[TSP] current temperature1 : %d !!! \r\n",gv_AverageTbat);
+        for(i = 0 ; i < 12 ; i++)
+	 {
+		for(j = 0 ; j < 16 ; j++ )
+		{
+			if(raw_data[i][j]<500) 
+				return sprintf(buf, "0"); // fail
+
+			if(raw_data[i][j]>950)
+				return sprintf(buf, "0"); // fail
+		}
+	 }
+    }
+    else if((gv_AverageTbat>=200)&&(gv_AverageTbat<350))
+    {
+        printk("[TSP] current temperature2 : %d !!! \r\n",gv_AverageTbat);
 	for(i = 0 ; i < 12 ; i++)
 	{
 		for(j = 0 ; j < 16 ; j++ )
@@ -2333,8 +2354,24 @@ static ssize_t rawdata_pass_fail_zinitix(struct device *dev, struct device_attri
 			if(raw_data[i][j]<700) 
 				return sprintf(buf, "0"); // fail
 
-			if(raw_data[i][j]>1020)
+			if(raw_data[i][j]>950)
 				return sprintf(buf, "0"); // fail
+		}
+	}
+    }
+    else if(gv_AverageTbat>=350)
+    {
+        printk("[TSP] current temperature3 : %d !!! \r\n",gv_AverageTbat);
+        for(i = 0 ; i < 12 ; i++)
+	 {
+		for(j = 0 ; j < 16 ; j++ )
+		{
+			if(raw_data[i][j]<700) 
+				return sprintf(buf, "0"); // fail
+
+			if(raw_data[i][j]>1023)
+				return sprintf(buf, "0"); // fail
+		}
 		}
 	}
 

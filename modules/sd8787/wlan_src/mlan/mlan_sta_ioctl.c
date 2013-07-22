@@ -4967,6 +4967,9 @@ wlan_scan_ioctl(IN pmlan_adapter pmadapter, IN pmlan_ioctl_req pioctl_req)
     ENTER();
 
     pscan = (mlan_ds_scan *) pioctl_req->pbuf;
+	if(pscan->sub_command == MLAN_OID_SCAN_CONFIG)
+		goto start_config;
+	
     if (pmadapter->scan_processing && pioctl_req->action == MLAN_ACT_SET &&
         pscan->sub_command != MLAN_OID_SCAN_CANCEL) {
         PRINTM(MINFO, "Scan already in process...\n");
@@ -4980,7 +4983,7 @@ wlan_scan_ioctl(IN pmlan_adapter pmadapter, IN pmlan_ioctl_req pioctl_req)
         LEAVE();
         return status;
     }
-
+start_config:
     /* Set scan */
     if (pioctl_req->action == MLAN_ACT_SET) {
 

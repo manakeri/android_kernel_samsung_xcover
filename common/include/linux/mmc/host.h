@@ -121,22 +121,23 @@ struct mmc_card;
 struct device;
 
 #define MMC_AUTO_RESUME
-#define MMC_RECOVERY_WITH_STATUS
+#define MMC_RECOVERY
+/*#define MMC_RECOVERY_WITH_STATUS*/
 #define MMC_THRESHOLD_CLK_OK		3
 #define MMC_THRESHOLD_SEVERE		3
-#define MMC_THRESHOLD_OOSERVICE		25
+#define MMC_THRESHOLD_OOSERVICE		10
 
-#if defined(MMC_RECOVERY_WITH_STATUS)
+#if defined(MMC_RECOVERY)
 struct mmc_recovery {
+#if defined (MMC_RECOVERY_WITH_STATUS)
 	struct mmc_request	*mrq;		/* Keep original mrq */
-
+#endif
 	u32					clk;		/* Original frequency */
-	u8					clk_reduced;/* counter of reducing */
-	u8					clk_del_reg_adjust;
-	u8					clk_ok_cntr;/* ok threshold to restore the clock */
-
+	u8					clk_ok_cntr;/* ok threshold */
 	u8					severe_err_cntr;
 	u8					out_of_service_cntr;
+	u8					rem_ins_progress;
+	struct work_struct	work; /* recovery task (if required) */
 };
 #endif
 
@@ -269,12 +270,14 @@ struct mmc_host {
 	} embedded_sdio_data;
 #endif
 
-	u32		suspended;	/* LowLevel VLDO. Refer also MMC_AUTO_RESUME*/
+	u8		suspended;	/* LowLevel VLDO. Refer also MMC_AUTO_RESUME*/
+	u8		vcc_is_stable;
+	u8		align[2];
 #if defined(CONFIG_MMC_SDHCI) && defined(CONFIG_DEBUG_FS)
 	u32			skip_suspend;
 #endif
 
-#if defined(MMC_RECOVERY_WITH_STATUS)
+#if defined(MMC_RECOVERY)
 	struct mmc_recovery		recovery;
 #endif
 

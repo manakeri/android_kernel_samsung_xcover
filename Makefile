@@ -6,10 +6,9 @@
 hide:=@
 log=@echo [$(shell date "+%Y-%m-%d %H:%M:%S")]
 
-MAKE_JOBS ?= 4
-#KERNEL_TOOLCHAIN_PREFIX := ../cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
-KERNEL_CONFIG := defconfig
+MAKE_JOBS ?= 3
+KERNEL_TOOLCHAIN_PREFIX := /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+KERNEL_CONFIG := alkon_03_defconfig
 
 OUTDIR := out
 
@@ -41,7 +40,6 @@ KERNEL_TGT := common/arch/arm/boot/zImage
 .PHONY: kernel clean_kernel
 kernel:
 	$(log) "making kernel [$(KERNEL_CONFIG)]..."
-	$(hide)cp defconfig common/.config
 	$(hide)cd common && make $(KERNEL_CONFIG) && make -j$(MAKE_JOBS)
 	$(hide)mkdir -p $(OUTDIR)
 	$(hide)cp $(KERNEL_TGT) $(OUTDIR)/

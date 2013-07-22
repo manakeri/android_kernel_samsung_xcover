@@ -116,8 +116,10 @@ void sdhci_pxa_quality_calib(struct sdhci_host *host)
 
 	if (!(host->mmc) || !(host->mmc->card))
 		return;
+
+	 /* Tricky, just to know the capabilities are known */
 	if (!(host->mmc->card->scr.bus_widths))
-		return; /* Tricky, just to know the capabilities are known */
+		return;
 
 	if (in_interrupt())
 		return; /* ioremap is not permitted */
@@ -166,6 +168,16 @@ printk("\n !!!!!!!!!  Bad Slow configuration for testing !!!!!!!!!\n\n");
 		mmc_host_clk_rate(host->mmc), (hs != 0));
 }
 
+static void pxa_platform_send_init_74_clocks(struct sdhci_host *host, u8 power_mode)
+{
+	if ((host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME) &&
+		!host->mmc->vcc_is_stable && host->clock) {
+		/* Just delay before sdhci_send_command */
+		u32 delay = (1000000/(host->clock))*74 + 1;
+		udelay(delay);
+		host->mmc->vcc_is_stable = 1;
+	}
+}
 
 /*****************************************************************************\
  *                                                                           *
@@ -243,6 +255,18 @@ static int __devinit sdhci_pxa_probe(struct platform_device *pdev)
 		/* on-chip device */
 		host->quirks |= SDHCI_QUIRK_BROKEN_CARD_DETECTION;
 		host->mmc->caps |= MMC_CAP_NONREMOVABLE;
+	}
+
+	if (pdata->ext_cd_init) {
+		host->quirks |= SDHCI_QUIRK_EXTEND_CLOCK_TIME;
+		if (host->ops) {
+			/* 74 clocks required for all PXA platforms
+			* so it is better to set it in one general place - here.
+			* But "struct ops" is CONST. Use pointer to update
+			*/
+			struct sdhci_ops *ops = (struct sdhci_ops*)host->ops;
+			ops->platform_send_init_74_clocks = pxa_platform_send_init_74_clocks;
+		}
 	}
 
 	if (pdata && pdata->flags & PXA_FLAG_DISABLE_CLOCK_GATING)
@@ -408,6 +432,9 @@ static int sdhci_pxa_suspend(struct platform_device *dev, pm_message_t state)
 	if (host->mmc->suspended)
 		return ret; /* already suspended */
 
+	if (pxa->pdata->ext_cd_init && host->ops->set_con_clock)
+		host->ops->set_con_clock(host,1);
+
 	if (device_may_wakeup(&dev->dev))
 		enable_irq_wake(host->irq);
 
@@ -415,6 +442,15 @@ static int sdhci_pxa_suspend(struct platform_device *dev, pm_message_t state)
 	if (ret) {
 		dev_err(&dev->dev, "Cannot sdhci_pxa_suspend since BUSY\n");
 		return ret;
+	}
+
+	if (pxa->pdata->ext_cd_init && host->ops->set_con_clock) {
+		/* mask all interrupts before sleep */
+		sdhci_writel(host, 0, SDHCI_INT_ENABLE);
+		sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
+		mmiowb();
+		/*free_irq(host->irq, host); - already done in suspend()*/
+		host->ops->set_con_clock(host,0);
 	}
 
 	spin_lock(&host->lock);
@@ -428,6 +464,8 @@ static int sdhci_pxa_suspend(struct platform_device *dev, pm_message_t state)
 	if (ret)
 		dev_err(&dev->dev, "Fail to switch MMC LDO off\n");
 	
+	host->mmc->vcc_is_stable = 0;
+
 	return 0;
 }
 

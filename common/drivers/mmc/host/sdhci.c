@@ -38,6 +38,24 @@
 #define DBG(f, x...) \
 	pr_debug(DRIVER_NAME " [%s()]: " f, __func__,## x)
 
+/*#define SDHCI_LOG*/
+#if !defined SDHCI_LOG
+#define LOG(f, x...)  /**/
+#else
+static int max_log_prints = 400;
+#define LOG(f, x...)  { \
+	if (max_log_prints >= 0) { \
+		if (max_log_prints == 0) { \
+			printk("-%s: SDHCI logging stopped\n", mmc_hostname(host->mmc)); \
+		} else { \
+			printk("-%s: ", mmc_hostname(host->mmc)); \
+			printk(f,## x); \
+		} \
+		max_log_prints--; \
+	} \
+}
+#endif
+
 #if defined(CONFIG_LEDS_CLASS) || (defined(CONFIG_LEDS_CLASS_MODULE) && \
 	defined(CONFIG_MMC_SDHCI_MODULE))
 //#define SDHCI_USE_LEDS_CLASS
@@ -115,7 +133,18 @@ void sdhci_dump_regs(struct mmc_host *mmc)
 
 	host = mmc_priv(mmc);
 	spin_lock_irqsave(&host->lock, flags);
+#ifdef CONFIG_PXA95x
+	if(host->ops->set_con_clock) {
+		host->ops->set_con_clock(host,1);
+		dvfm_disable_lowpower(host->dvfm_dev_idx);
+	}
+#endif
 	sdhci_dumpregs(host);
+	/* Do not disable clock after debug command
+	* since debug-command may be issued under transaction
+	* requiring the clock.
+	* Leave clock to be closed by any real "end transaction"
+	*/
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 #endif
@@ -232,6 +261,9 @@ static void sdhci_init(struct sdhci_host *host, int soft)
 	else
 		sdhci_reset(host, SDHCI_RESET_ALL);
 
+	/* Clear potential PowerON's pending false interrupt */
+	sdhci_writel(host, SDHCI_INT_ALL_MASK, SDHCI_INT_STATUS);
+
 	sdhci_clear_set_irqs(host, SDHCI_INT_ALL_MASK,
 		SDHCI_INT_BUS_POWER | SDHCI_INT_DATA_END_BIT |
 		SDHCI_INT_DATA_CRC | SDHCI_INT_DATA_TIMEOUT | SDHCI_INT_INDEX |
@@ -326,6 +358,8 @@ static void sdhci_read_block_pio(struct sdhci_host *host)
 
 			*buf = scratch & 0xFF;
 
+			LOG("read_block : 0x%02X\n", *buf);
+
 			buf++;
 			scratch >>= 8;
 			chunk--;
@@ -336,6 +370,7 @@ static void sdhci_read_block_pio(struct sdhci_host *host)
 	sg_miter_stop(&host->sg_miter);
 
 	local_irq_restore(flags);
+	LOG("finish data read\n");
 }
 
 static void sdhci_write_block_pio(struct sdhci_host *host)
@@ -367,6 +402,8 @@ static void sdhci_write_block_pio(struct sdhci_host *host)
 		while (len) {
 			scratch |= (u32)*buf << (chunk * 8);
 
+			LOG(KERN_ERR "write_block : 0x%02X\n", *buf);
+
 			buf++;
 			chunk++;
 			len--;
@@ -382,6 +419,7 @@ static void sdhci_write_block_pio(struct sdhci_host *host)
 	sg_miter_stop(&host->sg_miter);
 
 	local_irq_restore(flags);
+	LOG("finish data write\n");
 }
 
 static void sdhci_transfer_pio(struct sdhci_host *host)
@@ -645,7 +683,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_data *data)
 	 * timeout value.
 	 */
 	if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
-		return 0xE;
+		return 0xD; /*0xE; use 1.35s instead 2.7s*/
 
 	/* timeout in us */
 	target_timeout = data->timeout_ns / 1000 +
@@ -708,6 +746,8 @@ static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_data *data)
 	BUG_ON(data->blksz * data->blocks > 524288);
 	BUG_ON(data->blksz > host->mmc->max_blk_size);
 	BUG_ON(data->blocks > 65535);
+	LOG("request cmd  for %d_blocks * %d_size\n", data->blocks, data->blksz);
+
 
 	host->data = data;
 	host->data_early = 0;
@@ -907,6 +947,8 @@ static void sdhci_finish_data(struct sdhci_host *host)
 	else
 		data->bytes_xfered = data->blksz * data->blocks;
 
+	LOG("finish data, xfered=%d\n", data->bytes_xfered);
+
 	if (data->stop) {
 		/*
 		 * The controller needs a reset of internal state machines
@@ -917,45 +959,80 @@ static void sdhci_finish_data(struct sdhci_host *host)
 			sdhci_reset(host, SDHCI_RESET_DATA);
 		}
 
+		LOG("finish data, send cmd=STOP\n");
 		sdhci_send_command(host, data->stop);
-	} else
+	} else {
+		host->irq_expected = 0;
 		tasklet_schedule(&host->finish_tasklet);
+	}
+}
+
+/* Wait-For-Idle upon Clock-On/Off and Request/SendCommand */
+static int sdhci_wait4idle(struct sdhci_host *host,
+	bool stop_req, bool in_request)
+{
+#define SDHCI_PRESENT_STATE_IDLE_LOW_MASK	(SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT | \
+		SDHCI_DATACTV | SDHCI_DOING_WRITE | SDHCI_DOING_READ | SDHCI_DATA_AVAILABLE)
+#define SDHCI_PRESENT_STATE_IDLE_HIGH_MASK	(SDHCI_CMDLVL | SDHCI_LWRDATLVL_03)
+	/*SDHCI_SPACE_AVAILABLE  ??? */
+
+	struct sdhci_pxa *pxa = sdhci_priv(host);
+	struct sdhci_pxa_platdata *pdata = pxa->pdata;
+	
+	u32 status, mask_low, mask_high;
+	unsigned long timeout = 11; /* Wait max 10 ms */
+
+	if (!in_request && !pdata->ext_cd_init)
+		return 0; /*meanwhile only for SD*/
+
+#if !defined CONFIG_PXA95x
+	mask_low = (stop_req) ? SDHCI_CMD_INHIBIT :
+		(SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT);
+	mask_high = 0;
+#else
+	if (!pdata->ext_cd_init || stop_req) {
+		/* Use alike sdhci.c:sdhci_send_command() */
+		mask_low = (stop_req) ? SDHCI_CMD_INHIBIT :
+			(SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT);
+		mask_high = 0;
+	} else {
+		mask_low = SDHCI_PRESENT_STATE_IDLE_LOW_MASK;
+		mask_high = SDHCI_PRESENT_STATE_IDLE_HIGH_MASK;
+	}
+#endif
+	do {
+		status = sdhci_readl(host, SDHCI_PRESENT_STATE);
+
+		if (((status & mask_low) == 0) && 
+			((status & mask_high) == mask_high))
+			return 0;
+
+		mdelay(1);
+	} while (--timeout);
+
+	printk(KERN_ERR "%s: Controller BUSY: status=%08x & (low_%08x | high_%08x)\n",
+		mmc_hostname(host->mmc), 
+		status, mask_low, mask_high);
+	return -1;
 }
 
 static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 {
 	int flags;
-	u32 mask;
-	unsigned long timeout;
-
+	bool stop_req = host->mrq->data && (cmd == host->mrq->data->stop);
 	WARN_ON(host->cmd);
 
-	/* Wait max 10 ms */
-	timeout = 10;
-
-	mask = SDHCI_CMD_INHIBIT;
-	if ((cmd->data != NULL) || (cmd->flags & MMC_RSP_BUSY))
-		mask |= SDHCI_DATA_INHIBIT;
-
-	/* We shouldn't wait for data inihibit for stop commands, even
-	   though they might use busy signaling */
-	if (host->mrq->data && (cmd == host->mrq->data->stop))
-		mask &= ~SDHCI_DATA_INHIBIT;
-
-	while (sdhci_readl(host, SDHCI_PRESENT_STATE) & mask) {
-		if (timeout == 0) {
-			printk(KERN_ERR "%s: Controller never released "
-				"inhibit bit(s).\n", mmc_hostname(host->mmc));
-			sdhci_dumpregs(host);
-			cmd->error = -EIO;
-			tasklet_schedule(&host->finish_tasklet);
-			return;
-		}
-		timeout--;
-		mdelay(1);
+	if (sdhci_wait4idle(host, stop_req, 1)) {
+		host->irq_expected = 0;
+		sdhci_dumpregs(host);
+		cmd->error = -EIO;
+		tasklet_schedule(&host->finish_tasklet);
+		return;
 	}
 
-	mod_timer(&host->timer, jiffies + 10 * HZ);
+	LOG("request cmd opcode=0x%02X arg=0x%02X flags=0x%X\n", cmd->opcode, cmd->arg, cmd->flags);
+
+	mod_timer(&host->timer, jiffies + 3 * HZ);
 
 	host->cmd = cmd;
 
@@ -966,6 +1043,7 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 	sdhci_set_transfer_mode(host, cmd->data);
 
 	if ((cmd->flags & MMC_RSP_136) && (cmd->flags & MMC_RSP_BUSY)) {
+		host->irq_expected = 0;
 		printk(KERN_ERR "%s: Unsupported response type!\n",
 			mmc_hostname(host->mmc));
 		cmd->error = -EINVAL;
@@ -989,6 +1067,7 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 	if (cmd->data)
 		flags |= SDHCI_CMD_DATA;
 
+	host->irq_expected = 1;
 	sdhci_writew(host, SDHCI_MAKE_CMD(cmd->opcode, flags), SDHCI_COMMAND);
 }
 
@@ -1004,27 +1083,37 @@ static void sdhci_finish_command(struct sdhci_host *host)
 			for (i = 0;i < 4;i++) {
 				host->cmd->resp[i] = sdhci_readl(host,
 					SDHCI_RESPONSE + (3-i)*4) << 8;
-				if (i != 3)
+					LOG("request cmd-resp[%d]: 0x08%X  ", i, host->cmd->resp[i]);
+				if (i != 3) {
 					host->cmd->resp[i] |=
 						sdhci_readb(host,
 						SDHCI_RESPONSE + (3-i)*4-1);
+					LOG("     cmd-resp-136: 0x%02X \n", host->cmd->resp[i]);
+				}
 			}
 		} else {
 			host->cmd->resp[0] = sdhci_readl(host, SDHCI_RESPONSE);
+			LOG("request cmd-resp[0]: 0x%08X\n", host->cmd->resp[0]);
 		}
 	}
 
+	LOG("request cmd-resp : 0x%08x \n", host->cmd->resp[0]);
+
 	host->cmd->error = 0;
 
-	if (host->cmd->error)
-		goto on_err;
+	if (host->cmd->error) {
+		host->irq_expected = 0;
+		tasklet_schedule(&host->finish_tasklet);
+		return;
+	}
 
 	if (host->data && host->data_early)
 		sdhci_finish_data(host);
 
-	if (!host->cmd->data)
+	if (!host->cmd->data) {
+		host->irq_expected = 0;
 		tasklet_schedule(&host->finish_tasklet);
-on_err:
+	}
 	host->cmd = NULL;
 }
 
@@ -1043,10 +1132,10 @@ static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 			return;
 	}
 
-	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
-
-	if (clock == 0)
+	if (clock == 0) {
+		sdhci_writew(host, clock, SDHCI_CLOCK_CONTROL);
 		goto out;
+	}
 
 	if (host->version >= SDHCI_SPEC_300) {
 		/* Version 3.00 divisors must be a multiple of 2. */
@@ -1170,14 +1259,19 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	host = mmc_priv(mmc);
 
 #ifdef CONFIG_PXA95x
-	dvfm_disable_lowpower(host->dvfm_dev_idx);
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
+		dvfm_disable_lowpower(host->dvfm_dev_idx);
 #else
 	wake_lock(&host->idle_lock);
 	wake_lock(&host->suspend_lock);
 #endif
 
 	spin_lock_irqsave(&host->lock, flags);
-	BUG_ON(host->mmc->suspended);
+
+	if (host->mmc->suspended) {
+		struct sdhci_pxa *pxa = sdhci_priv(host);
+		BUG_ON(pxa->pdata->lp_switch);
+	}
 	WARN_ON(host->mrq != NULL);
 	if(host->ops->set_con_clock)
 		host->ops->set_con_clock(host,1);
@@ -1197,8 +1291,13 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
 				SDHCI_CARD_PRESENT;
 
+	LOG("request start clk=%u\n", host->clock);
+
 	if (!present || host->flags & SDHCI_DEVICE_DEAD) {
+		host->irq_expected = 0;
 		host->mrq->cmd->error = -ENOMEDIUM;
+		LOG("request clk=%d err=ENOMEDIUM withData=%d\n",
+			host->clock, (host->mrq->data != 0));
 		tasklet_schedule(&host->finish_tasklet);
 	} else {
 #ifdef CONFIG_PXA95x
@@ -1217,7 +1316,7 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	struct sdhci_host *host;
 	struct sdhci_pxa *pxa;
 	unsigned long flags;
-	u8 ctrl;
+	u8 ctrl, off_required = 1;
 
 	host = mmc_priv(mmc);
 	pxa = sdhci_priv(host);
@@ -1228,6 +1327,8 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	wake_lock(&host->idle_lock);
 	wake_lock(&host->suspend_lock);
 #endif
+	LOG("request IOS clk(cur/new)=%u/%u powerOn=%d\n",
+		host->clock, ios->clock, ios->power_mode != MMC_POWER_OFF);
 
 	spin_lock_irqsave(&host->lock, flags);
 	
@@ -1240,6 +1341,7 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	if (host->flags & SDHCI_DEVICE_DEAD)
 		goto out;
 
+	sdhci_wait4idle(host, 0, 0);
 	/*
 	 * Reset the chip on each power off.
 	 * Should clear out any weird states.
@@ -1251,10 +1353,12 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 
 	sdhci_set_clock(host, ios->clock);
 
-	if (ios->power_mode == MMC_POWER_OFF)
+	if (ios->power_mode == MMC_POWER_OFF) {
 		sdhci_set_power(host, -1);
-	else
+		WARN_ON(ios->clock);
+	} else {
 		sdhci_set_power(host, ios->vdd);
+	}
 
 	if (host->ops->platform_send_init_74_clocks)
 		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
@@ -1301,15 +1405,18 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	if(host->quirks & SDHCI_QUIRK_RESET_CMD_DATA_ON_IOS)
 		sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
 
+	if (host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME)
+		off_required = (host->clock == 0);
 out:
 	mmiowb();
-	if(host->ops->set_con_clock)
-		host->ops->set_con_clock(host,0);
-
 	spin_unlock_irqrestore(&host->lock, flags);
 
+	if (off_required && host->ops->set_con_clock)
+		host->ops->set_con_clock(host,0);
+
 #ifdef CONFIG_PXA95x
-	dvfm_enable_lowpower(host->dvfm_dev_idx);
+	if (off_required || !(host->ops->set_con_clock))
+		dvfm_enable_lowpower(host->dvfm_dev_idx);
 #else
 	wake_unlock(&host->idle_lock);
 	wake_unlock(&host->suspend_lock);
@@ -1326,7 +1433,8 @@ static int sdhci_get_ro(struct mmc_host *mmc)
 	host = mmc_priv(mmc);
 	pxa = sdhci_priv(host);
 #ifdef CONFIG_PXA95x
-	dvfm_disable_lowpower(host->dvfm_dev_idx);
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
+		dvfm_disable_lowpower(host->dvfm_dev_idx);
 #else
 	wake_lock(&host->idle_lock);
 	wake_lock(&host->suspend_lock);
@@ -1336,8 +1444,10 @@ static int sdhci_get_ro(struct mmc_host *mmc)
 	if(host->ops->set_con_clock)
 		host->ops->set_con_clock(host,1);
 
-	BUG_ON(host->mmc->suspended);
-
+	if (host->mmc->suspended) {
+		struct sdhci_pxa *pxa = sdhci_priv(host);
+		BUG_ON(pxa->pdata->lp_switch);
+	}
 	if (host->flags & SDHCI_DEVICE_DEAD)
 		is_readonly = 0;
 	else if (host->ops->get_ro)
@@ -1346,12 +1456,15 @@ static int sdhci_get_ro(struct mmc_host *mmc)
 		is_readonly = !(sdhci_readl(host, SDHCI_PRESENT_STATE)
 				& SDHCI_WRITE_PROTECT);
 
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
 	if(host->ops->set_con_clock)
 		host->ops->set_con_clock(host,0);
+
 	spin_unlock_irqrestore(&host->lock, flags);
 
 #ifdef CONFIG_PXA95x
-	dvfm_enable_lowpower(host->dvfm_dev_idx);
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
+		dvfm_enable_lowpower(host->dvfm_dev_idx);
 #else
 	wake_unlock(&host->idle_lock);
 	wake_unlock(&host->suspend_lock);
@@ -1416,6 +1529,7 @@ static void sdhci_tasklet_card(unsigned long param)
 		present = sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT;
 
 	if (!present) {
+			host->irq_expected = 0;
 		if (host->mrq) {
 			printk(KERN_ERR "%s: Card removed during transfer!\n",
 				mmc_hostname(host->mmc));
@@ -1447,6 +1561,7 @@ static void sdhci_tasklet_finish(unsigned long param)
 
 	del_timer(&host->timer);
 
+	host->irq_expected = 0;
 	mrq = host->mrq;
 
 	/*
@@ -1482,6 +1597,7 @@ static void sdhci_tasklet_finish(unsigned long param)
 #ifndef SDHCI_USE_LEDS_CLASS
 	sdhci_deactivate_led(host);
 #endif
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
 	if(host->ops->set_con_clock)
 		host->ops->set_con_clock(host,0);
 
@@ -1491,7 +1607,8 @@ static void sdhci_tasklet_finish(unsigned long param)
 	mmc_request_done(host->mmc, mrq);
 
 #ifdef CONFIG_PXA95x
-	dvfm_enable_lowpower(host->dvfm_dev_idx);
+	if (!(host->quirks & SDHCI_QUIRK_EXTEND_CLOCK_TIME))
+		dvfm_enable_lowpower(host->dvfm_dev_idx);
 #else
 	wake_unlock(&host->idle_lock);
 	wake_unlock(&host->suspend_lock);
@@ -1507,19 +1624,21 @@ static void sdhci_timeout_timer(unsigned long data)
 
 	spin_lock_irqsave(&host->lock, flags);
 
+	host->irq_expected = 0;
 	if (host->mrq) {
 		printk(KERN_ERR "%s: Timeout waiting for hardware "
 			"interrupt.\n", mmc_hostname(host->mmc));
 		sdhci_dumpregs(host);
 
+		/* The controller or SD works improperly. Stop them */
 		if (host->data) {
-			host->data->error = -ETIMEDOUT;
+			host->data->error = -ENOMEDIUM;/*ETIMEDOUT*/
 			sdhci_finish_data(host);
 		} else {
 			if (host->cmd)
-				host->cmd->error = -ETIMEDOUT;
+				host->cmd->error = -ENOMEDIUM;/*ETIMEDOUT*/
 			else
-				host->mrq->cmd->error = -ETIMEDOUT;
+				host->mrq->cmd->error = -ENOMEDIUM;/*ETIMEDOUT*/
 
 			tasklet_schedule(&host->finish_tasklet);
 		}
@@ -1554,6 +1673,7 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask)
 		host->cmd->error = -EILSEQ;
 
 	if (host->cmd->error) {
+		host->irq_expected = 0;
 		tasklet_schedule(&host->finish_tasklet);
 		return;
 	}
@@ -1685,7 +1805,7 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
 {
 	irqreturn_t result;
 	struct sdhci_host* host = dev_id;
-	u32 intmask;
+	u32 intmask, early_finished = 0;
 	int cardint = 0;
 	struct sdhci_pxa *pxa = sdhci_priv(host);
 
@@ -1698,22 +1818,33 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
 		goto out;
 	}
 
+	if (pxa->pdata->ext_cd_init && !host->irq_expected)
+		goto finished; /* for SD card only */
+
 	DBG("*** %s got interrupt: 0x%08x\n",
 		mmc_hostname(host->mmc), intmask);
 
-	if ((intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) &&
-			(!host->ops->ext_cd_status)) {
+	if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
 		sdhci_writel(host, intmask & (SDHCI_INT_CARD_INSERT |
 			SDHCI_INT_CARD_REMOVE), SDHCI_INT_STATUS);
-		tasklet_schedule(&host->card_tasklet);
+		if (!host->ops->ext_cd_status)
+			tasklet_schedule(&host->card_tasklet);
+		intmask &= ~(SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE);
 	}
-
-	intmask &= ~(SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE);
 
 	if (intmask & SDHCI_INT_CMD_MASK) {
 		sdhci_writel(host, intmask & SDHCI_INT_CMD_MASK,
 			SDHCI_INT_STATUS);
 		sdhci_cmd_irq(host, intmask & SDHCI_INT_CMD_MASK);
+		if (!host->irq_expected) {
+			/* Skip Data-IRQs
+			* Sure for SD-card; for others - let's meanhile keep
+			*/
+			if (pxa->pdata->ext_cd_init) {
+				early_finished = 1;
+				goto finished;
+			}
+		}
 	}
 
 	if (intmask & SDHCI_INT_DATA_MASK) {
@@ -1737,13 +1868,15 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
 	if (intmask & SDHCI_INT_CARD_INT)
 		cardint = 1;
 
+finished:
 	intmask &= ~SDHCI_INT_CARD_INT;
 
 	if (intmask) {
-		printk(KERN_ERR "%s: Unexpected interrupt 0x%08x.\n",
-			mmc_hostname(host->mmc), intmask);
-		/*sdhci_dumpregs(host);*/
-
+		if (!early_finished) {
+			printk(KERN_ERR "%s: Unexpected interrupt 0x%08x.\n",
+				mmc_hostname(host->mmc), intmask);
+			sdhci_dumpregs(host);
+		}
 		sdhci_writel(host, intmask, SDHCI_INT_STATUS);
 	}
 
@@ -1840,6 +1973,7 @@ EXPORT_SYMBOL_GPL(sdhci_suspend_host);
 
 int sdhci_resume_host(struct sdhci_host *host)
 {
+	struct sdhci_pxa *pxa = sdhci_priv(host);
 	int ret;
 
 	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
@@ -1851,6 +1985,17 @@ int sdhci_resume_host(struct sdhci_host *host)
 		host->mmc->card->disabled = 0;
 	}
 
+	if (pxa->pdata->ext_cd_init && host->ops->set_con_clock) {
+		/* SD card
+		* Clear all interrupts BEFORE cpu-irq enabling
+		*/
+		host->ops->set_con_clock(host,1);
+		mmiowb();
+		sdhci_writel(host, SDHCI_INT_ALL_MASK, SDHCI_INT_STATUS);
+		mmiowb();
+		host->ops->set_con_clock(host,0);
+	}
+
 	/* no need to request irq if it is not disable when suspend */
 	if (host && host->mmc && !(host->mmc->pm_flags & MMC_PM_IRQ_ALWAYS_ON)) {
 		ret = request_irq(host->irq, sdhci_irq, IRQF_SHARED,
@@ -1859,15 +2004,19 @@ int sdhci_resume_host(struct sdhci_host *host)
 			return ret;
 	}
 
-	sdhci_init(host, (host->mmc->pm_flags & MMC_PM_KEEP_POWER));
-	mmiowb();
+	/* Non SD, keep legacy */
+	if (!pxa->pdata->ext_cd_init || !host->ops->set_con_clock) {
+		sdhci_init(host, (host->mmc->pm_flags & MMC_PM_KEEP_POWER));
+		mmiowb();
+	}
 
 	ret = mmc_resume_host(host->mmc);
 
 	if (host->mmc->card)
 		host->mmc->card->pending_interrupt = 0;
 
-	sdhci_enable_card_detection(host);
+	if (!pxa->pdata->ext_cd_init || !host->ops->set_con_clock)
+		sdhci_enable_card_detection(host); /* Non SD, keep legacy */
 
 	return ret;
 }
@@ -2195,6 +2344,7 @@ untasklet:
 	tasklet_kill(&host->card_tasklet);
 	tasklet_kill(&host->finish_tasklet);
 #ifdef CONFIG_PXA95x
+	dvfm_enable_lowpower(host->dvfm_dev_idx);
 	dvfm_unregister((char *)mmc_hostname(host->mmc), &host->dvfm_dev_idx);
 #else
 	wake_lock_destroy(&host->idle_lock);
@@ -2215,6 +2365,7 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
 		host->flags |= SDHCI_DEVICE_DEAD;
 
 		if (host->mrq) {
+			host->irq_expected = 0;
 			printk(KERN_ERR "%s: Controller removed during "
 				" transfer!\n", mmc_hostname(host->mmc));
 
@@ -2249,6 +2400,7 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
 	host->adma_desc = NULL;
 	host->align_buffer = NULL;
 #ifdef CONFIG_PXA95x
+	dvfm_enable_lowpower(host->dvfm_dev_idx);
 	dvfm_unregister((char *)mmc_hostname(host->mmc), &host->dvfm_dev_idx);
 #else
 	wake_lock_destroy(&host->idle_lock);

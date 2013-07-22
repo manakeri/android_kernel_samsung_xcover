@@ -608,9 +608,9 @@ return: 0 - active configuration was not modified
 	/* ADB */
 	} else if (!strcmp(f->name, "adb")) {
 		if (enable)
-			next_config = "adb,acm,usb_mass_storage";
+			next_config = "usb_mass_storage,acm,adb,diag";
 		else /*disable adb*/
-			next_config = "acm,usb_mass_storage";
+			next_config = "usb_mass_storage,acm";
 	/* MASS */
 	} else if (!strcmp(f->name, "usb_mass_storage")) {
 		struct usb_function adb_func;

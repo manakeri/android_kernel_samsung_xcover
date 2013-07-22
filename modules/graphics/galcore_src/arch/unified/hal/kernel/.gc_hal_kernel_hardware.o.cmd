@@ -1,10 +1,10 @@
-cmd_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o := /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/.gc_hal_kernel_hardware.o.d  -nostdinc -isystem /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/manakeri/sources/GT-S5690/common/arch/arm/include -Iinclude -I../modules/INC  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-pxa/include -Iarch/arm/plat-pxa/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror -DLINUX -DDRIVER -DENUM_WORKAROUND=0 -DDBG=0 -DNO_DMA_COHERENT -DENABLE_ARM_L2_CACHE=1 -DgcdNO_POWER_MANAGEMENT=0 -DUSE_PLATFORM_DRIVER=1 -DVIVANTE_PROFILER=0 -DANDROID=1 -DENABLE_GPU_CLOCK_BY_DRIVER=1 -DUSE_NEW_LINUX_SIGNAL=0 -DNO_USER_DIRECT_ACCESS_FROM_KERNEL=0 -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/kernel -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/cmodel/inc -I/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/user  -DMODULE -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gc_hal_kernel_hardware)"  -D"KBUILD_MODNAME=KBUILD_STR(hal/driver/galcore)" -D"DEBUG_HASH=48" -D"DEBUG_HASH2=1" -c -o /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.c
+cmd_/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o := /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/.gc_hal_kernel_hardware.o.d  -nostdinc -isystem /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/teemu/sources/ANDROID/s5690m/common/arch/arm/include -Iinclude -I../modules/INC  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-pxa/include -Iarch/arm/plat-pxa/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror -DLINUX -DDRIVER -DENUM_WORKAROUND=0 -DDBG=0 -DNO_DMA_COHERENT -DENABLE_ARM_L2_CACHE=1 -DgcdNO_POWER_MANAGEMENT=0 -DUSE_PLATFORM_DRIVER=1 -DVIVANTE_PROFILER=0 -DANDROID=1 -DENABLE_GPU_CLOCK_BY_DRIVER=1 -DUSE_NEW_LINUX_SIGNAL=0 -DNO_USER_DIRECT_ACCESS_FROM_KERNEL=0 -I/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc -I/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/kernel -I/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel -I/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/cmodel/inc -I/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/user  -DMODULE -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gc_hal_kernel_hardware)"  -D"KBUILD_MODNAME=KBUILD_STR(hal/driver/galcore)" -D"DEBUG_HASH=61" -D"DEBUG_HASH2=22" -c -o /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.c
 
-deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o := \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.c \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_types.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_options.h \
+deps_/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o := \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.c \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_types.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_options.h \
     $(wildcard include/config/cpu/pxa910.h) \
     $(wildcard include/config/pxa95x.h) \
     $(wildcard include/config/cpu/mmp2.h) \
@@ -19,14 +19,14 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/h
     $(wildcard include/config/earlysuspend.h) \
     $(wildcard include/config/enable/earlysuspend.h) \
     $(wildcard include/config/pxa910/dvfm/stats.h) \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_enum.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_base.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_enum.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_base.h \
     $(wildcard include/config/.h) \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_dump.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_profiler.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/kernel/gc_hal_kernel.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.h \
-  /home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/hal/inc/gc_hal_driver.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_dump.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_profiler.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/kernel/gc_hal_kernel.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.h \
+  /home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/hal/inc/gc_hal_driver.h \
   include/linux/delay.h \
   include/linux/kernel.h \
     $(wildcard include/config/lbdaf.h) \
@@ -39,7 +39,7 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/h
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/numa.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /home/manakeri/sources/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include/stdarg.h \
+  /home/teemu/sources/ANDROID/cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/compiler.h \
     $(wildcard include/config/trace/branch/profiling.h) \
@@ -50,25 +50,25 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/h
     $(wildcard include/config/arch/supports/optimized/inlining.h) \
     $(wildcard include/config/optimize/inlining.h) \
   include/linux/compiler-gcc4.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/linkage.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/linkage.h \
   include/linux/stddef.h \
   include/linux/types.h \
     $(wildcard include/config/uid16.h) \
     $(wildcard include/config/phys/addr/t/64bit.h) \
     $(wildcard include/config/64bit.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/types.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/types.h \
   include/asm-generic/int-ll64.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bitsperlong.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/bitsperlong.h \
   include/asm-generic/bitsperlong.h \
   include/linux/posix_types.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/posix_types.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/posix_types.h \
   include/linux/bitops.h \
     $(wildcard include/config/generic/find/first/bit.h) \
     $(wildcard include/config/generic/find/last/bit.h) \
     $(wildcard include/config/generic/find/next/bit.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bitops.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/bitops.h \
     $(wildcard include/config/smp.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/system.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/system.h \
     $(wildcard include/config/cpu/xsc3.h) \
     $(wildcard include/config/cpu/fa526.h) \
     $(wildcard include/config/arch/has/barriers.h) \
@@ -82,12 +82,12 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/h
     $(wildcard include/config/preempt/tracer.h) \
     $(wildcard include/config/trace/irqflags/support.h) \
   include/linux/typecheck.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/irqflags.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/ptrace.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/irqflags.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/ptrace.h \
     $(wildcard include/config/cpu/endian/be8.h) \
     $(wildcard include/config/arm/thumb.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/hwcap.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/outercache.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/hwcap.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/outercache.h \
     $(wildcard include/config/outer/cache/sync.h) \
     $(wildcard include/config/outer/cache.h) \
   include/asm-generic/cmpxchg-local.h \
@@ -102,21 +102,21 @@ deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/h
     $(wildcard include/config/arch/has/ilog2/u32.h) \
     $(wildcard include/config/arch/has/ilog2/u64.h) \
   include/linux/dynamic_debug.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/byteorder.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/byteorder.h \
   include/linux/byteorder/little_endian.h \
   include/linux/swab.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/swab.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/swab.h \
   include/linux/byteorder/generic.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/bug.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/bug.h \
     $(wildcard include/config/bug.h) \
     $(wildcard include/config/debug/bugverbose.h) \
   include/asm-generic/bug.h \
     $(wildcard include/config/generic/bug.h) \
     $(wildcard include/config/generic/bug/relative/pointers.h) \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/delay.h \
-  /home/manakeri/sources/GT-S5690/common/arch/arm/include/asm/param.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/delay.h \
+  /home/teemu/sources/ANDROID/s5690m/common/arch/arm/include/asm/param.h \
     $(wildcard include/config/hz.h) \
 
-/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o: $(deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o)
+/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o: $(deps_/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o)
 
-$(deps_/home/manakeri/sources/GT-S5690/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o):
+$(deps_/home/teemu/sources/ANDROID/s5690m/modules/graphics/galcore_src/arch/unified/hal/kernel/gc_hal_kernel_hardware.o):

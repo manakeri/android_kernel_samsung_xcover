@@ -1,2 +1,2 @@
-/home/manakeri/sources/GT-S5690/modules/touch/touch.ko
-/home/manakeri/sources/GT-S5690/modules/touch/zinitix_touch.o
+/home/teemu/sources/ANDROID/s5690m/modules/touch/touch.ko
+/home/teemu/sources/ANDROID/s5690m/modules/touch/zinitix_touch.o

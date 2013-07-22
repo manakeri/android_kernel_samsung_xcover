@@ -694,7 +694,10 @@ int dirty_writeback_suspend(void)
 		in_suspend_state = 1;
 		dirty_writeback_interval = dirty_writeback_interval + 5000;
 		local_irq_restore(flags);
+		/* Only change the dirty_writeback_interval to biggest
+		 * Do NOT restart timer, give to finish on old short timeout
 		bdi_arm_supers_timer();
+		*/
 	}
 	return 0;
 }
@@ -708,7 +711,9 @@ int dirty_writeback_resume(void)
 	/* prevent multi decrease of dirty_writeback_interval variable  */
 	if (in_suspend_state == 1) {
 		in_suspend_state = 0;
-		dirty_writeback_interval = dirty_writeback_interval - 5000;
+		if (dirty_writeback_interval > 5000)
+			dirty_writeback_interval = dirty_writeback_interval - 5000;
+		/*else - possibly changed over the proc */
 		local_irq_restore(flags);
 		bdi_arm_supers_timer();
 	}

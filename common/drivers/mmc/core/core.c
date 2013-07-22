@@ -40,7 +40,6 @@
 #include "sd_ops.h"
 #include "sdio_ops.h"
 
-#undef MMC_RECOVERY_WITH_STATUS
 #define RETCLK_DEL_NUM_SUMPLES	20
 #define RETCLK_DEL_IDX_MAX	20 /* <= RETCLK_DEL_TAB_SIZE */
 
@@ -76,6 +75,7 @@ static u32 retclk_del[2][RETCLK_DEL_NUM_SUMPLES] =
  }
 };
 
+static struct workqueue_struct *workqueue_recov;
 static struct workqueue_struct *workqueue;
 static struct wake_lock mmc_delayed_work_wake_lock;
 
@@ -206,6 +206,111 @@ static int mmc_getstatus_stuffing(struct mmc_host *host, struct mmc_request **p_
 }/*mmc_getstatus_stuffing*/
 
 
+/* Special handling upon Threshold counter statistic
+* to prevent endless recovery.
+* Removes the card permanently
+*/
+static int mmc_recovery_deadend_check(struct mmc_host *host, 
+									struct mmc_request *mrq)
+{
+	struct sdhci_host *host1 = mmc_priv(host);
+	struct sdhci_pxa *pxa = sdhci_priv(host1);
+
+	if (host->recovery.severe_err_cntr < 2*MMC_THRESHOLD_SEVERE)
+		return 0;
+
+	host->recovery.clk_ok_cntr = 0;
+
+	if (!host->card || !mmc_card_sd(host->card))
+		return 0;
+
+	host1 = mmc_priv(host);
+	pxa = sdhci_priv(host1);
+
+	host->recovery.severe_err_cntr = 0;
+
+	if (!pxa || !pxa->pdata)
+		return 0;
+
+	if (++host->recovery.out_of_service_cntr > MMC_THRESHOLD_OOSERVICE) {
+		printk(KERN_WARNING "\n%s: Out-Of-Service (Too many recoveries)\n\n",
+				mmc_hostname(host));
+		pxa->pdata->cd_wakelock(0);
+		if (mrq && mrq->cmd)
+			mrq->cmd->error = -ENOMEDIUM;
+		pxa->pdata->cd_force_status = -2;
+		mmc_detect_change(host, 1);
+		mmc_detect_change(host, HZ);
+		return -1; /*deadend*/
+	}
+	return 0;
+}
+
+/* If mmc_recovery_calib() desn't help try to Re-Init card by
+* Remove and further Insert
+*/
+static void mmc_recovery_exec(struct work_struct *work)
+{
+	struct mmc_host *host =
+		container_of(work, struct mmc_host, recovery.work);
+	struct sdhci_host *host1 = mmc_priv(host);
+	struct sdhci_pxa *pxa = sdhci_priv(host1);
+
+	host->recovery.severe_err_cntr++;
+	host->recovery.rem_ins_progress = 1;
+	printk(KERN_WARNING "%s: recovery REMOVE (%d/%d)\n",
+			mmc_hostname(host),
+			host->recovery.severe_err_cntr,
+			host->recovery.out_of_service_cntr);
+	pxa->pdata->cd_wakelock(0);
+	msleep(1);
+
+	pxa->pdata->cd_force_status = -2;
+	mmc_detect_change(host, 1);
+	mmc_detect_change(host, HZ/2);
+
+	if (mmc_recovery_deadend_check(host, NULL))
+		return; /* deadend. Never try to INSERT, keep OOS */
+
+	while (host->card && mmc_card_present(host->card)) {
+		msleep(20);
+	}
+	pxa->pdata->cd_wakelock(0);
+	msleep(100); /* Upper layer unmount could take time */
+	printk(KERN_WARNING "%s: recovery INSERT\n",
+			mmc_hostname(host));
+	pxa->pdata->cd_force_status = 0;
+	mmc_detect_change(host, 1);
+	mmc_detect_change(host, 1*HZ);
+	host->recovery.rem_ins_progress = 0;
+}
+
+/* This procedure could be used by Low-Level SDHCI
+* and called with mrq or with NULL.
+*/
+int mmc_recovery_rem_ins_start(struct mmc_host *host,
+							  struct mmc_request *mrq)
+{
+	if (!host->card || !mmc_card_sd(host->card))
+		return 0;
+
+	if (host->recovery.rem_ins_progress) {
+		if (mrq && mrq->cmd) {
+			mrq->cmd->error = -ENOMEDIUM;
+		}
+		return 0;
+	}
+	host->recovery.rem_ins_progress = 1;
+	if (mrq && mrq->cmd)
+		mrq->cmd->error = -ENOMEDIUM;
+
+	if (!host->recovery.work.func) {
+		INIT_WORK(&host->recovery.work, mmc_recovery_exec);
+	}
+	queue_work(workqueue_recov, &host->recovery.work);
+	return 1;
+}
+EXPORT_SYMBOL(mmc_recovery_rem_ins_start);
 
 /*
 * tune timing of read data/command when any error happen
@@ -230,7 +335,7 @@ static int mmc_recovery_calib(struct mmc_host *host, struct mmc_request *mrq,
 	struct sdhci_host *host1 = mmc_priv(host);
 	struct sdhci_pxa *pxa = sdhci_priv(host1);
 	u32 clk = mmc_host_clk_rate(host);
-	int delay_idx, error = 0;
+	int delay_idx, error = 0, error_cmd = 0;
 	u32 delay;
 
 	if (clk <= 12000000)
@@ -242,22 +347,32 @@ static int mmc_recovery_calib(struct mmc_host *host, struct mmc_request *mrq,
 		return -1;
 
 	if (mrq->cmd->error)
-		error = mrq->cmd->error;
+		error_cmd = mrq->cmd->error;
 	else if (mrq->data && mrq->data->error)
 		error = mrq->data->error;
 
-	if (error == -ENOMEDIUM)
+	if ((error_cmd == -ENOMEDIUM) || (error == -ENOMEDIUM))
 		return -1;
 
-	if (host->recovery.severe_err_cntr >= MMC_THRESHOLD_SEVERE)
-		return -1;
+	/*if (host->recovery.severe_err_cntr >= MMC_THRESHOLD_SEVERE)
+	*	return -1; */
 
 	/* Ok. Calibration may be active */
 
 	if ((u32*)pxa->MM4_RETCLK_DEL_calib == NULL)
 		return -1;
 
-	if (state == 0) { /*init*/
+	if (state == 0) { /*init BEFORE sending to Low-Driver */
+		if (host->recovery.rem_ins_progress) {
+			/* REMOVE in progress but there are some queued requests.
+			* Also UnMount takes time and meanwhile upper layers
+			* continue to send requests. Flush all of them with
+			* error at once, don't go to the Controller.
+			* Traces "mmcblkN: error -123" will be seen
+			*/
+			mrq->cmd->error = -ENOMEDIUM;
+			return ENOMEDIUM;
+		}
 		mrq->cmd->retries = 0; /*no retries*/
 		if (host->recovery.clk == 0)
 			host->recovery.clk = clk; /*save orig*/
@@ -295,9 +410,14 @@ static int mmc_recovery_calib(struct mmc_host *host, struct mmc_request *mrq,
 		msleep(1);
 		if (calib_data->mfp_toggled) {
 			/* all samples and MFPs have been tried
-			* Try to slow ckock
+			* Try to slow ckock = return 0
 			*/
-			return 0;
+			if (mmc_recovery_rem_ins_start(host, mrq)) {
+				/* say ERROR to upper layer. Do NOT slow clock */
+				return -1;
+			}
+			else
+				return 0; /* could try more with clock*/
 		}
 		calib_data->mfp_val = sdhci_pxa_mfpr_drive(pxa->pdata, 0xFFFFFFFF);
 		calib_data->mfp_toggled = 1;
@@ -310,8 +430,8 @@ static int mmc_recovery_calib(struct mmc_host *host, struct mmc_request *mrq,
 
 	writel(delay, (u32*)pxa->MM4_RETCLK_DEL_calib);
 
-	printk(KERN_WARNING "%s: Error %d recovery/%-2d HS=%d, calib=0x%x, mfpr[%x]=%x \n",
-		mmc_hostname(host), error, delay_idx, calib_data->sd_hspeed,
+	printk(KERN_WARNING "%s: Error %d/%d recovery/%-2d HS=%d, calib=0x%x, mfpr[%x]=%x \n",
+		mmc_hostname(host), error_cmd, error, delay_idx, calib_data->sd_hspeed,
 		readl((u32*)pxa->MM4_RETCLK_DEL_calib) & 0xFFFF,
 		calib_data->mfp_toggled, calib_data->mfp_val);
 
@@ -403,7 +523,13 @@ mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
 			 mrq->stop->arg, mrq->stop->flags);
 	}
 
-	WARN_ON(!host->claimed);
+	/*WARN_ON(!host->claimed);*/
+	if (!host->claimed) {
+		printk(KERN_ERR "%s: not initialized (start_req)\n",
+			mmc_hostname(host));
+		mrq->cmd->error = -ENOMEDIUM;
+		return;
+	}
 
 	led_trigger_event(host->led, LED_FULL);
 
@@ -455,18 +581,16 @@ static void mmc_wait_done(struct mmc_request *mrq)
 void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq)
 {
 	DECLARE_COMPLETION_ONSTACK(complete);
-	extern struct platform_device *pdev_sd_mmc;
-	extern void sdhci_pxa_notify_change(struct platform_device *pdev, int state);
-	extern int sdhci_pxa_check_short_circuit(struct platform_device *pdev);
-	struct sdhci_host *host1;
-	struct sdhci_pxa *pxa;
 	int recovery_calib;
 	struct mmc_calib_data calib_data = {0};
 
 	mrq->done_data = &complete;
 	mrq->done = mmc_wait_done;
 
-	mmc_recovery_calib(host, mrq, 0/*init*/, &calib_data);
+	if (mmc_recovery_calib(host, mrq, 0/*init*/, &calib_data) == ENOMEDIUM) {
+		return;
+	}
+
 	do {
 		mmc_start_request(host, mrq);
 
@@ -532,38 +656,7 @@ void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq)
 
 	} while (1);
 
-	/* Special handling upon Threshold counter statistic */
-	if (host->recovery.severe_err_cntr >= 2*MMC_THRESHOLD_SEVERE) {
-
-		host->recovery.severe_err_cntr = 0;
-		host->recovery.clk_ok_cntr = 0;
-
-		if (!host->card || !mmc_card_sd(host->card))
-			return;
-
-		 /* Restart the whole SD idetificaion & configuration */
-		host1 = mmc_priv(host);
-		pxa = sdhci_priv(host1);
-
-		if (!pxa || !pxa->pdata)
-			return;
-
-		BUG_ON(pdev_sd_mmc==0);
-		pxa->pdata->cd_wakelock(0);
-
-		if (++host->recovery.out_of_service_cntr > MMC_THRESHOLD_OOSERVICE) {
-			printk(KERN_WARNING "\n%s: Out-Of-Service (Too many recoveries)\n\n",
-					mmc_hostname(host));
-			mrq->cmd->error = -ENOMEDIUM;
-			pxa->pdata->cd_force_status = -2;
-			mmc_detect_change(host, 1);
-		} else {
-			printk(KERN_WARNING "%s: Remove-Insert\n",
-					mmc_hostname(host));
-			pxa->pdata->cd_force_status = 1;
-			mmc_detect_change(host, 0);
-		}
-	}
+	mmc_recovery_deadend_check(host, mrq);
 }
 
 EXPORT_SYMBOL(mmc_wait_for_req);
@@ -582,7 +675,13 @@ int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd, int retries
 {
 	struct mmc_request mrq;
 
-	WARN_ON(!host->claimed);
+	/*WARN_ON(!host->claimed);*/
+	if (!host->claimed) {
+		printk(KERN_ERR "%s: not initialized (wait_for_cmd)\n",
+			mmc_hostname(host));
+		cmd->error = -ENOMEDIUM;
+		return cmd->error;
+	}
 
 	memset(&mrq, 0, sizeof(struct mmc_request));
 
@@ -941,8 +1040,12 @@ EXPORT_SYMBOL(mmc_host_lazy_disable);
  */
 void mmc_release_host(struct mmc_host *host)
 {
-	WARN_ON(!host->claimed);
-
+	if (!host->claimed) {
+		printk(KERN_ERR "%s: not initialized (release_host)\n",
+			mmc_hostname(host));
+		/*WARN_ON(!host->claimed);*/
+		return;
+	}
 	mmc_host_lazy_disable(host);
 
 	mmc_do_release_host(host);
@@ -2218,7 +2321,7 @@ int mmc_pm_notify(struct notifier_block *notify_block,
 		}
 		host->rescan_disable = 0;
 		spin_unlock_irqrestore(&host->lock, flags);
-		mmc_detect_change(host, 0);
+			mmc_detect_change(host, 0);
 
 	}
 
@@ -2257,6 +2360,7 @@ static int __init mmc_init(void)
 
 	wake_lock_init(&mmc_delayed_work_wake_lock, WAKE_LOCK_SUSPEND, "mmc_delayed_work");
 
+	workqueue_recov = create_singlethread_workqueue("kmmcd_recov");
 	workqueue = create_singlethread_workqueue("kmmcd");
 	if (!workqueue)
 		return -ENOMEM;
@@ -2281,6 +2385,7 @@ unregister_bus:
 	mmc_unregister_bus();
 destroy_workqueue:
 	destroy_workqueue(workqueue);
+	destroy_workqueue(workqueue_recov);
 
 	return ret;
 }
@@ -2291,6 +2396,7 @@ static void __exit mmc_exit(void)
 	mmc_unregister_host_class();
 	mmc_unregister_bus();
 	destroy_workqueue(workqueue);
+	destroy_workqueue(workqueue_recov);
 	wake_lock_destroy(&mmc_delayed_work_wake_lock);
 }
 

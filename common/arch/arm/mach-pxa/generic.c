@@ -385,6 +385,27 @@ long get_board_id(void)
 }
 EXPORT_SYMBOL(get_board_id);
 
+/* Board ID based on lcdid= cmdline token get from OBM */
+static long g_lcd_id = -1;
+static int __init set_lcd_id(char *p)
+{
+        int ret;
+        ret = strict_strtol(p, 16, &g_lcd_id);
+        if (ret < 0) {
+                printk(KERN_ERR "%s g_lcd_id is not right\n", __func__);
+                return ret;
+        }
+        printk(KERN_INFO "%s g_lcd_id = %ld\n", __func__, g_lcd_id);
+        return 1;
+}
+__setup("lcdid=", set_lcd_id);
+
+long get_lcd_id(void)
+{
+        return g_lcd_id;
+}
+EXPORT_SYMBOL(get_lcd_id);
+
 void __init pxa_map_io(void)
 {
 	iotable_init(standard_io_desc, ARRAY_SIZE(standard_io_desc));

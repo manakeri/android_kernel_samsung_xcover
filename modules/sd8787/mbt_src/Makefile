@@ -35,7 +35,7 @@ MODEXT = ko
 # make KERNELDIR=/usr/src/arm/<arch-bsp-path>
 # Alternatively KERNELDIR can be set in the environment.
 # Default value for KERNELDIR is set below.
-KERNELDIR ?= /usr/src/arm/linux-2.6.35-pxa920
+KERNELDIR ?= /home/sst/mg1/src/ML8DSP2.01.08/android_base/kernel/kernel
 
 # CROSS_COMPILE specify the prefix used for all executables used
 # during compilation. Only gcc and related bin-utils executables
@@ -43,7 +43,7 @@ KERNELDIR ?= /usr/src/arm/linux-2.6.35-pxa920
 # make CROSS_COMPILE=</usr/local/arm/4.1.1/bin/>arm-linux-
 # Alternatively CROSS_COMPILE can be set in the environment.
 # Default value for CROSS_COMPILE is set below.
-CROSS_COMPILE ?= /usr/local/arm-marvell-linux-gnueabi/bin/arm-marvell-linux-gnueabi-
+CROSS_COMPILE ?= /home/sst/mg1/src/ML8DSP2.01.08/android_base/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
 
 # INSTALLDIR specify the path to install the kernel module after
 # succesful compilation.

@@ -630,6 +630,10 @@ struct _moal_private
         /** uAP started or not */
     BOOLEAN bss_started;
 #endif
+#ifdef STA_SUPPORT
+	/** scan type */
+	t_u8			scan_type;
+#endif 	
         /** Net device pointer */
     struct net_device *netdev;
         /** Net device statistics structure */

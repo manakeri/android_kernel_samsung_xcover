@@ -1471,7 +1471,6 @@ void enter_lowpower_mode(int state)
 		wakeup_data = pm_postset_standby();
 		pm_logger_app_add_trace(1, PM_D2_EXIT, start_tick, wakeup_data);
 
-		// temp fix: At syssleep command prevent suspend
 		// need renable suspend at end of AT sysleep test, temporary set here 
 		// should be done via user mode command at end of AT syssleep test 
 	} else if (state == POWER_MODE_CG) {

@@ -1161,6 +1161,12 @@ static void __devinit device_8607_init(struct pm860x_chip *chip,
 		goto out_dev;
 	}
 
+	/* Clear REF_SLP_EN and  LDOBK_FREEZE_SLP*/
+	pm860x_reg_write(i2c, 0x39, 0);
+
+	/* Clear BK_CKSLP_DIS */
+	pm860x_reg_write(i2c, 0x41, 0);
+
 	return;
 out_dev:
 	mfd_remove_devices(chip->dev);

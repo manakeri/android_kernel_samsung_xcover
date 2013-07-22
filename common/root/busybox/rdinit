@@ -4,96 +4,116 @@ PATH=/busybox/bin:/busybox/sbin:/busybox/usr/bin:/busybox/usr/sbin
 export PATH
 
 ROOTFS=/rootfs
+LOG=/cache/recovery/initramfs_log
+
 INIT_FSRBLK=/dev/bml13
-INIT_FSRBLK2=/dev/bml14
-INIT_RCVBLK=/dev/bml15
 INIT_SIZE=256k
-INIT_RCVSIZE=1536k
 INIT_IMG=/tmp/ramdisk.img
-INIT_RECIMG=/tmp/ramdisk-recovery.img
+
+INIT_RCVBLK=/dev/bml12
+INIT_RCVSIZE=4096k
+INIT_RCVIMG=/tmp/ramdisk-recovery.img
+
 PANIC_CMD=panic_debug
 DCMD_M=/dcmd_ko
 
 rdinit_prepare() {
 	mkdir /dev
-	mkdir /rootfs
+	mkdir $ROOTFS
 	mkdir /tmp
+	mknod $INIT_RCVBLK b 137 12
 	mknod $INIT_FSRBLK b 137 13
-	mknod $INIT_FSRBLK2 b 137 14
-	mknod $INIT_RCVBLK b 137 15
+
 	mknod /dev/console c 5 1
 	exec > /dev/console
 	exec < /dev/console
-	cd /
+
 	mkdir /proc
 	mount -t proc proc /proc
+
 	mkdir /sys
 	mount -t sysfs sysfs /sys
-	insmod fsr.ko
-	insmod fsr_stl.ko
+
 	cmdline=`cat /proc/cmdline`
 	for arg in $cmdline ; do
-		if [ "$PANIC_CMD" = $arg ]; then
-			echo "enable panic debug..."
-			insmod $DCMD_M
-		fi
-
 		cmd=`echo $arg | cut -d'=' -f1`
 
-		if [ "bootrd" = $cmd ]; then
+		if [ $cmd = "bootrd" ]; then
 			INIT_FSRBLK=`echo $arg | cut -d'=' -f2`
-			echo "Boot from $INIT_FSRBLK"
 		fi
-		if [ "recovery_mode" = $cmd ]; then
+
+		if [ $cmd = "recovery_mode" ]; then
 			INIT_SIZE=$INIT_RCVSIZE
 			INIT_FSRBLK=$INIT_RCVBLK
-			INIT_IMG=$INIT_RECIMG
-			echo "Boot from recovery mode"
+			INIT_IMG=$INIT_RCVIMG
 		fi
 	done
-	insmod sec_param.ko
-	chown radio radio /proc/LinuStoreIII/efs_info 
+
+	insmod /fsr.ko
+	insmod /fsr_stl.ko
+	insmod /sec_param.ko
+	insmod /rfs_glue.ko
+	insmod /rfs_fat.ko
+    	insmod /j4fs.ko
+
+	mknod /dev/stl20 b 138 20
+	mkdir /cache
+	mount -t rfs /dev/stl20 /cache
+	echo "[starting initramfs log]" > $LOG
+
+	echo "chown linustore" >> $LOG
+	chown radio radio /proc/LinuStoreIII/efs_info
 	chmod 0664 /proc/LinuStoreIII/efs_info
-	chown radio radio /proc/LinuStoreIII/keystr 
+
+	chown radio radio /proc/LinuStoreIII/keystr
 	chmod 0664 /proc/LinuStoreIII/keystr
-	chown radio radio /proc/LinuStoreIII/ril_prop 
+
+	chown radio radio /proc/LinuStoreIII/ril_prop
 	chmod 0664 /proc/LinuStoreIII/ril_prop
 }
 
 rdinit_cleanup() {
+	echo "rdinit cleanup" >> $LOG
 	umount /proc
 	umount /sys
+	umount /cache
 	mount -o remount,rw rootfs /
-	rm -rf /g_ether.ko /proc /sys /tmp /dev
+	rm -rf /proc /sys /tmp /dev
 }
 
 try_boot_from_ramdisk() {
-	dd if=$1 of=$INIT_IMG bs=$INIT_SIZE count=1
+	echo "try boot from ramdisk" >> $LOG
+	dd if=$INIT_FSRBLK of=$INIT_IMG bs=$INIT_SIZE count=1
+
 	cd $ROOTFS
 	gzip -dc $INIT_IMG | cpio -i
 	rm -rf $INIT_IMG
 	cd /
-	insmod rfs_glue.ko
-	insmod rfs_fat.ko
-    	insmod j4fs.ko
+
 	rdinit_cleanup
+
 	mv $ROOTFS/* /
-	rm -rf $ROOTFS
-	rm /rfs_glue.ko /rfs_fat.ko /j4fs.ko /fsr.ko /fsr_stl.ko /sec_param.ko
+	rm -rf $ROOTFS busybox rdinit
+
+	echo "exec init" >> $LOG
 	exec /init
 	return 0
 }
 
 boot_abort() {
-	echo "boot abort ..."
+	echo "boot abort" >> $LOG
+
 	rdinit_cleanup
+
 	rm -rf $ROOTFS
 	mv /busybox/* /
-	/bin/rm /busybox rdinit -rf
+
+	/bin/rm -rf /busybox rdinit
+
 	exec /sbin/init
 }
 
 rdinit_prepare
-try_boot_from_ramdisk $INIT_FSRBLK
+try_boot_from_ramdisk
 boot_abort
 

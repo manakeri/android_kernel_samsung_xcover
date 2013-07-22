@@ -2404,9 +2404,13 @@ woal_set_combo_scan(moal_private * priv, char *buf, int length)
         if (num_ssid) {
             /* Add broadcast scan to ssid_list */
             scan_cfg.ssid_list[num_ssid].max_len = 0xff;
+            if(priv->scan_type == MLAN_SCAN_TYPE_PASSIVE)
+                woal_set_scan_type(priv, MLAN_SCAN_TYPE_ACTIVE);
         }
         if (MLAN_STATUS_FAILURE == woal_do_combo_scan(priv, &scan_cfg))
             ret = -EFAULT;
+        if(num_ssid && (priv->scan_type == MLAN_SCAN_TYPE_PASSIVE))
+            woal_set_scan_type(priv, MLAN_SCAN_TYPE_PASSIVE);
     } else {
         /* request broadcast scan */
         if (MLAN_STATUS_FAILURE == woal_do_combo_scan(priv, NULL))
@@ -2708,6 +2712,7 @@ woal_set_priv(struct net_device *dev, struct iw_request_info *info,
             ret = -EFAULT;
             goto done;
         }
+        priv->scan_type = MLAN_SCAN_TYPE_ACTIVE;
         PRINTM(MIOCTL, "Set Active Scan\n");
         len = sprintf(buf, "OK\n") + 1;
     } else if (strncmp(buf, "SCAN-PASSIVE", strlen("SCAN-PASSIVE")) == 0) {
@@ -2716,6 +2721,7 @@ woal_set_priv(struct net_device *dev, struct iw_request_info *info,
             ret = -EFAULT;
             goto done;
         }
+        priv->scan_type = MLAN_SCAN_TYPE_PASSIVE;
         PRINTM(MIOCTL, "Set Passive Scan\n");
         len = sprintf(buf, "OK\n") + 1;
     } else if (strncmp(buf, "POWERMODE", strlen("POWERMODE")) == 0) {
@@ -2992,6 +2998,9 @@ woal_set_essid(struct net_device *dev, struct iw_request_info *info,
         ret = -E2BIG;
         goto setessid_ret;
     }
+    if(priv->scan_type == MLAN_SCAN_TYPE_PASSIVE)
+        woal_set_scan_type(priv, MLAN_SCAN_TYPE_ACTIVE);	
+	
     memset(&req_ssid, 0, sizeof(mlan_802_11_ssid));
     memset(&ssid_bssid, 0, sizeof(mlan_ssid_bssid));
 
@@ -3078,8 +3087,9 @@ woal_set_essid(struct net_device *dev, struct iw_request_info *info,
     memcpy(&priv->prev_ssid_bssid.bssid, &bss_info.bssid, MLAN_MAC_ADDR_LENGTH);
 #endif /* REASSOCIATION */
 
-  setessid_ret:
-
+setessid_ret:
+	if(priv->scan_type == MLAN_SCAN_TYPE_PASSIVE)
+		woal_set_scan_type(priv, MLAN_SCAN_TYPE_PASSIVE);
 #ifdef REASSOCIATION
     MOAL_REL_SEMAPHORE(&handle->reassoc_sem);
 #endif
