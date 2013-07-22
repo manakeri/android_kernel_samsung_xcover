@@ -7,10 +7,7 @@ hide:=@
 log=@echo [$(shell date "+%Y-%m-%d %H:%M:%S")]
 
 MAKE_JOBS ?= 4
-KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
-#KERNEL_TOOLCHAIN_PREFIX := ../cyanogenmod/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-
-
+KERNEL_TOOLCHAIN_PREFIX := /path/to/arm-eabi-4.4.3/bin/arm-eabi-
 OUTDIR := out
 
 MODULES_BUILT=
@@ -32,7 +29,6 @@ help:
 	$(hide)echo "= make all: to make  kernel, all modules and telephony. The kernel, modules and telephony will be output to 'out' directory."
 	$(hide)echo "= make kernel: only make the kernel. Using KERNEL_CONFIG variable to specify the kernel config file to be used. By default it is: $(KERNEL_CONFIG)"
 	$(hide)echo "= make modules: only make all the modules. The kernel should already be built. Otherwise building modules will fail."
-	$(hide)echo "= make telephony: only make telephony."
 	$(hide)echo "= make clean: clean the kernel, modules and telephony"
 	$(hide)echo "======================================="
 
@@ -44,18 +40,14 @@ kernel:
 	$(hide)cp defconfig common/.config
 	$(hide)cd common && make -j$(MAKE_JOBS)
 	$(hide)mkdir -p $(OUTDIR)
-	$(hide)cp $(KERNEL_TGT) $(OUTDIR)/
 	$(hide)cat /dev/zero | head -c 4096 > $(OUTDIR)/header
-	$(hide)cat $(OUTDIR)/header $(OUTDIR)/zImage > $(OUTDIR)/header_zImage
-	$(hide)rm $(OUTDIR)/header $(OUTDIR)/zImage
-	$(hide)mv $(OUTDIR)/header_zImage $(OUTDIR)/zImage
+	$(hide)cat $(OUTDIR)/header $(KERNEL_TGT) > $(OUTDIR)/zImage
 	$(hide)cd $(OUTDIR) && ../pack.sh
 	$(log) "kernel [$(KERNEL_CONFIG)] done"
 
 .PHONY:clean_kernel clean_modules
 clean_kernel:
-	$(hide)cd common &&\
-	make clean
+	$(hide)cd common && make clean
 	$(hide)rm -f $(OUTDIR)/zImage
 	$(log) "Kernel cleaned."
 
